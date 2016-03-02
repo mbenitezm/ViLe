@@ -1,5 +1,4 @@
 main {
-		sddqq
 	int variable = 3;
 	if (variable > 4){
 		variable = 4;
@@ -16,6 +15,8 @@ main {
 		print(2,3);
 	}
 	funcion(2);
+
+	variable = funciones2(2);
 	
 }
 

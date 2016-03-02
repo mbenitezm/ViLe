@@ -1,4 +1,8 @@
 # ViLe
+-Propuesta inicial del proyecto V1.1
+- Análisis léxico y sintáctico V1-0
+
+
 Proyecto de compiladores
 
 Bitácora de cambios
