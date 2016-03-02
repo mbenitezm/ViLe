@@ -33,40 +33,44 @@ reserved = {
 }
 
 # Declaracion de tokens
-tokens = ( 'PROGRAM', 'IF', 'ELSE', 'VAR', 'PRINT','COMA' ,'PUNTOCOMA', 'DOSPUNTOS',
-           'IGUAL', 'APARENTESIS', 'CPARENTESIS', 'ABRAQUET', 'CBRAQUET',
-           'MAYOR', 'MENOR', 'IGUALDAD', 'PUNTO', 'SUMA', 'RESTA', 'MULT',
-           'DIV', 'ID', 'INT', 'FLOAT','CTESTRING', 'CTEINT', 'CTEFLOAT' )
+tokens = ('FUNCTION', 'MAIN', 'RETURN', 'VOID', 'IF', 'ELSE', 'VAR', 'PRINT',
+          'WHILE', 'TIMES', 'INT', 'FLOAT', 'STRING', 'LIST', 'BOOL', 'TRUE',
+          'FALSE', 'AND', 'OR', 'MINUS', 'SUM', 'MULTIPLY', 'DIVIDE', 'MOD',
+          'EQUALS', 'EQUALITY', 'GREATER', 'LESS', 'GREATER_EQUAL',
+          'LESS_EQUAL', 'DIFFERENT', 'SEMICOLON', 'COLON', 'COMA',
+          'O_PARENTHESIS', 'C_PARENTHESIS', 'O_BRACKET', 'C_BRACKET',
+          'O_S_BRACKET', 'C_S_BRACKET','STRINGCONST', 'INTCONST', 'FLOATCONST',
+          'ID' )
 
 # Definicion de tokens
 # Operadores y delimitadores
 t_ignore = ' \t\n'
 t_SUM = '+'
 t_MINUS = '-'
-T_MULTIPLY = '*'
-T_DIVIDE = '/'
-T_MOD = '%'
-T_EQUALS = '='
-T_EQUIALITY = '=='
-T_GREATER = '>'
-T_LESS = '<'
-T_GREATER_EQUAL = '>='
-T_LESS_EQUAL = '<='
-T_DIFFERENT = '!='
-T_SEMICOLON = ';'
-T_COLON = ':'
-T_COMA = ','
-T_O_PARENTHESIS = '('
-T_C_PARENTHESIS = ')'
-T_O_BRACKET = '{'
-T_C_BRACKET = '}'
-T_O_S_BRACKET = '['
-T_O_C_BRACKET = ']'
+t_MULTIPLY = '*'
+t_DIVIDE = '/'
+t_MOD = '%'
+t_EQUALS = '='
+t_EQUALITY = '=='
+t_GREATER = '>'
+t_LESS = '<'
+t_GREATER_EQUAL = '>='
+t_LESS_EQUAL = '<='
+t_DIFFERENT = '!='
+t_SEMICOLON = ';'
+t_COLON = ':'
+t_COMA = ','
+t_O_PARENTHESIS = '('
+t_C_PARENTHESIS = ')'
+t_O_BRACKET = '{'
+t_C_BRACKET = '}'
+t_O_S_BRACKET = '['
+t_C_S_BRACKET = ']'
 # Expresiones regulares
-T_STRINGCONST = '"-*"'
-T_INTCONST = '-?[0-9]+'
-T_FLOATCONST = '-?[0-9]+.+[0-9]+'
-T_ID = '[a-zA-Z]+(_?[a-zA-Z0-9])*'
+t_STRINGCONST = '"-*"'
+t_INTCONST = '-?[0-9]+'
+t_FLOATCONST = '-?[0-9]+.+[0-9]+'
+t_ID = '[a-zA-Z]+(_?[a-zA-Z0-9])*'
 
 #Se revisan palabras reservadas
 def t_ID(t):
