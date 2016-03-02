@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Analizador léxico de ViLe
 # Marcel Benítez Martínez 1139855
 # Abraham Rodríguez
@@ -45,9 +46,9 @@ tokens = ('FUNCTION', 'MAIN', 'RETURN', 'VOID', 'IF', 'ELSE', 'VAR', 'PRINT',
 # Definicion de tokens
 # Operadores y delimitadores
 t_ignore = ' \t\n'
-t_SUM = '+'
+t_SUM = '\+'
 t_MINUS = '-'
-t_MULTIPLY = '*'
+t_MULTIPLY = '\*'
 t_DIVIDE = '/'
 t_MOD = '%'
 t_EQUALS = '='
@@ -60,17 +61,16 @@ t_DIFFERENT = '!='
 t_SEMICOLON = ';'
 t_COLON = ':'
 t_COMA = ','
-t_O_PARENTHESIS = '('
-t_C_PARENTHESIS = ')'
-t_O_BRACKET = '{'
-t_C_BRACKET = '}'
-t_O_S_BRACKET = '['
-t_C_S_BRACKET = ']'
+t_O_PARENTHESIS = '\('
+t_C_PARENTHESIS = '\)'
+t_O_BRACKET = '\{'
+t_C_BRACKET = '\}'
+t_O_S_BRACKET = '\['
+t_C_S_BRACKET = '\]'
 # Expresiones regulares
 t_STRINGCONST = '"-*"'
 t_INTCONST = '-?[0-9]+'
 t_FLOATCONST = '-?[0-9]+.+[0-9]+'
-t_ID = '[a-zA-Z]+(_?[a-zA-Z0-9])*'
 
 #Se revisan palabras reservadas
 def t_ID(t):
