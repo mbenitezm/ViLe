@@ -15,7 +15,6 @@ reserved = {
   # Palabras reservadas para estatutos
   'if'     : 'IF',
   'else'   : 'ELSE',
-  'var'    : 'VAR',
   'print'  : 'PRINT',
   'while'  : 'WHILE',
   'times'  : 'TIMES',
@@ -34,11 +33,11 @@ reserved = {
 }
 
 # Declaracion de tokens
-tokens = ('FUNCTION', 'MAIN', 'RETURN', 'VOID', 'IF', 'ELSE', 'VAR', 'PRINT',
+tokens = ('FUNCTION', 'MAIN', 'RETURN', 'VOID', 'IF', 'ELSE', 'PRINT',
           'WHILE', 'TIMES', 'INT', 'FLOAT', 'STRING', 'LIST', 'BOOL', 'TRUE',
           'FALSE', 'AND', 'OR', 'MINUS', 'SUM', 'MULTIPLY', 'DIVIDE', 'MOD',
           'EQUALS', 'EQUALITY', 'GREATER', 'LESS', 'GREATER_EQUAL',
-          'LESS_EQUAL', 'DIFFERENT', 'SEMICOLON', 'COLON', 'COMA',
+          'LESS_EQUAL', 'DIFFERENT', 'SEMICOLON', 'COMMA',
           'O_PARENTHESIS', 'C_PARENTHESIS', 'O_BRACKET', 'C_BRACKET',
           'O_S_BRACKET', 'C_S_BRACKET','STRINGCONST', 'INTCONST', 'FLOATCONST',
           'ID' )
@@ -59,8 +58,7 @@ t_GREATER_EQUAL = '>='
 t_LESS_EQUAL = '<='
 t_DIFFERENT = '!='
 t_SEMICOLON = ';'
-t_COLON = ':'
-t_COMA = ','
+t_COMMA = ','
 t_O_PARENTHESIS = '\('
 t_C_PARENTHESIS = '\)'
 t_O_BRACKET = '\{'
