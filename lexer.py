@@ -80,9 +80,9 @@ def t_ID(t):
 
 #Error en lexico
 def t_error(t):
-  print "Error in token ", t
+  raise TypeError("Unknown token '%s'" % (t.value,))
+  # No se si está de más lo del exit despues del TypeError, hay que checarlo
   exit(-1)
   t.lexer.skip(1)
-
 
 lexer = lex.lex()
