@@ -41,7 +41,7 @@ def p_block(p):
 
 # Regla para que pueda haber un return en una función
 def p_functionreturn(p):
-  '''functionreturn : RETURN 
+  '''functionreturn : RETURN expression SEMICOLON
                     |'''
 
 # Regla del ciclo de estatutos
@@ -107,6 +107,7 @@ def p_else(p):
   ''' else : ELSE block
            |'''
 
+# Las siguientes 4 reglas son para expresiones
 def p_expression(p):
   ''' expression : expression2 expressionoptional'''
 
@@ -228,7 +229,8 @@ def p_error(p):
     if type(p).__name__ == 'NoneType':
       print('Syntax error')
     else:
-      print('Syntax error at token', p.type, p.value)
+      print('Syntax error before', p.value, 'at ', p.lineno - 1)
+      p.lineno = 0
 
 # Build the parser
 parser = yacc.yacc(start='program')
@@ -240,3 +242,5 @@ def check(filename):
   f.close()
   if parser.parse(data) == 'Valid':
     print('VALID!')
+  exit(0);
+  

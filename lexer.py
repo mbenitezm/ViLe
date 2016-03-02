@@ -44,7 +44,7 @@ tokens = ('FUNCTION', 'MAIN', 'RETURN', 'VOID', 'IF', 'ELSE', 'PRINT',
 
 # Definicion de tokens
 # Operadores y delimitadores
-t_ignore = ' \t\n'
+t_ignore = ' \t'
 t_SUM = '\+'
 t_MINUS = '-'
 t_MULTIPLY = '\*'
@@ -70,16 +70,20 @@ t_STRINGCONST = '"-*"'
 t_INTCONST = '-?[0-9]+'
 t_FLOATCONST = '-?[0-9]+.+[0-9]+'
 
+# Contador de líneas de código
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+
 #Se revisan palabras reservadas
 def t_ID(t):
   '[a-zA-Z]+[0-9]*(_[a-zA-Z0-9]+)?'
   t.type = reserved.get(t.value, 'ID')
   return t
 
-#Error en lexico
+#Error en léxico
 def t_error(t):
-  raise TypeError("Unknown token '%s'" % (t.value,))
-  # No se si está de más lo del exit despues del TypeError, hay que checarlo
+  print("Illegal character '%s'" % t.value[0])
   exit(-1)
   t.lexer.skip(1)
 
