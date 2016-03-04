@@ -174,9 +174,16 @@ def p_listaccess(p):
                  |'''
 # Regla para variables o constantes
 def p_varconst(p):
-  ''' varconst : var
-               | constants
-               | functioncall'''
+  ''' varconst : varconstfunction
+               | constants'''
+
+def p_varconstfunction(p):
+  ''' varconstfunction : ID functionorlist'''
+
+def p_functionoflist(p):
+  ''' functionorlist : O_S_BRACKET INTCONST C_S_BRACKET
+                     | O_PARENTHESIS parametersinput C_PARENTHESIS
+                     |'''
 
 # Regla para constantes
 def p_constants(p):
