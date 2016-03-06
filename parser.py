@@ -98,6 +98,7 @@ def p_listelements(p):
 def p_optionalconstants(p):
   ''' optionalconstants : COMMA constants optionalconstants
                         |'''
+
 # Regla de estatuto de condición
 def p_condition(p):
   ''' condition : IF O_PARENTHESIS expression C_PARENTHESIS block else'''
@@ -121,10 +122,12 @@ def p_expression2(p):
 def p_expression2optional(p):
   ''' expression2optional : relop exp
                           |'''
+                          
 # Reglas de operadores lógicos
 def p_logicop(p):
   ''' logicop : AND
               | OR'''
+
 # Reglas de operaciones relacionales
 def p_relop(p):
   ''' relop : EQUALITY

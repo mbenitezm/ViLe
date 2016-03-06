@@ -1,0 +1,20 @@
+Tienes que abrir la consola de python tecleando 'python' en tu consola
+
+Teclear el comando from parser import *
+Y ahora simplemente se utiliza una funcion llamada check de la siguiente manera:
+
+>>> from parser import *
+>>> check('nombreDelArchivo')
+VALID!
+
+Nombres de los archivos:
+test1.mlduck -> accepted
+test2.mlduck -> accepted
+test3.mlduck -> accepted
+test4.mlduck -> not accepted
+test5.mlduck -> not accepted
+test6.mlduck -> not accepted
+
+
+
+
