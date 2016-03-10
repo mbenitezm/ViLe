@@ -16,7 +16,6 @@ var_options = {
   'id' : None,
   'scope' : 'global',
   'type' : 'none',
-  'initialization' : False
 }
 
 fun_options = {
@@ -63,5 +62,4 @@ def reset_options():
     'id' : None,
     'scope' : 'global',
     'type' : 'none',
-    'initialization' : False
   }

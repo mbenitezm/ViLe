@@ -66,7 +66,7 @@ def p_statute(p):
 
 # Regla para estatuto de asignación
 def p_assignation(p):
-  ''' assignation : var EQUALS expression SEMICOLON'''
+  ''' assignation : var_assign EQUALS expression SEMICOLON'''
 
 # Regla de estatuto para escritura
 def p_writting(p):
@@ -84,17 +84,14 @@ def p_optionalwritting(p):
 def p_init(p):
   ''' init : listinit
            | normalinit'''
-  var_options['initialization'] = True
 
 # Regla de inicialización de variables normales
 def p_normalinit(p):
   ''' normalinit : type var EQUALS expression SEMICOLON'''
-  var_options['initialization'] = True
 
 # Regla de inicialización de variables tipo lista
 def p_listinit(p):
   ''' listinit : LIST type var EQUALS list SEMICOLON'''
-  var_options['initialization'] = True
 
 # Regla de formato de variable tipo listo
 def p_list(p):
@@ -176,19 +173,18 @@ def p_divmult(p):
 def p_fact(p):
   ''' fact : varconst
            | O_PARENTHESIS expression C_PARENTHESIS'''
+def p_var_assign(p):
+  ''' var_assign : ID listaccess'''
 
 # Regla para las variables
 def p_var(p):
   ''' var : ID listaccess'''
   var_options['id'] = p[1]
-  if var_options['initialization']:
-    if var_exists(var_options['id'], var_options['scope']):
-      print("The variable ", var_options['id'], "has been used before.")
-      exit(0)
-    else:
-      add_var_to_dict(var_options['id'], var_options['type'], var_options['scope'])
-  var_options['initialization'] = False
-
+  if var_exists(var_options['id'], var_options['scope']):
+    print("The variable ", var_options['id'], "has been used before.")
+    exit(0)
+  else:
+    add_var_to_dict(var_options['id'], var_options['type'], var_options['scope'])
 
 # Regla para cuando se accesara una variable de tipo lista
 def p_listaccess(p):
@@ -240,10 +236,12 @@ def p_functioncall(p):
 def p_parametersinput(p):
   ''' parametersinput : expression parametersinputloop
                       |'''
+
 # Regla para ciclo de ingresar parametros a una función en input
 def p_parametersinputloop(p):
   ''' parametersinputloop : COMMA expression parametersinputloop
                          |'''
+
 # Regla para parametros de una función
 def p_parameters(p):
   ''' parameters : type ID parametersloop
