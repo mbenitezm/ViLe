@@ -30,7 +30,7 @@ def p_function(p):
 def p_functiontype(p):
   ''' functiontype : VOID
                    | type'''
-                   
+
 # Regla que contiene los tipos de funciones
 def p_type(p):
   ''' type : BOOL
@@ -178,11 +178,13 @@ def p_fact(p):
 def p_var(p):
   ''' var : ID listaccess'''
   var_options['id'] = p[1]
-  if var_exists(var_options['id'], var_options['scope']) and var_options['initialization'] == True:
-    print("The variable ", var_options['id'], "has been used before.")
-    exit(0)
-  else:
-    add_var_to_dict(var_options['id'], var_options['type'], var_options['scope'])
+  if var_options['initialization']:
+    if var_exists(var_options['id'], var_options['scope']):
+      print("The variable ", var_options['id'], "has been used before.")
+      exit(0)
+    else:
+      add_var_to_dict(var_options['id'], var_options['type'], var_options['scope'])
+
 
 # Regla para cuando se accesara una variable de tipo lista
 def p_listaccess(p):
