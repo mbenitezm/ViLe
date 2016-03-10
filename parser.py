@@ -16,6 +16,8 @@ def p_program(p):
 # Regla del bloque de main
 def p_main(p):
   '''main : MAIN block'''
+  add_main_to_dict()
+
 
 # Regla de loop de funciones
 def p_functionloop(p):

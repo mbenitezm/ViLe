@@ -4,7 +4,7 @@ pp = pprint.PrettyPrinter()
 
 ###### Initialize structures ###################################################
 
-proc_dict = {}
+funct_dict = {}
 var_dict = {
     'global' : {
      },
@@ -18,8 +18,10 @@ var_options = {
   'type' : 'none',
 }
 
-fun_options = {
-  
+funct_options = {
+  'id' : None,
+  'type' : 'none',
+  params : {}
 }
 
 ################################################################################
@@ -28,22 +30,29 @@ def print_var_dict():
   print "\nVAR DICT"
   pp.pprint(var_dict)
 
-def print_proc_dict():
-  print "\nPROC DICT"
+def print_funct_dict():
+  print "\nFUNCT DICT"
   pp.pprint(local_var_dict)
 
 def add_var_to_dict(var_id, var_type, scope):
-    var_dict[scope][var_id] = {
-        'type': var_type
-    }
-    print_var_dict()
-
-def add_proc_to_dict(proc_id, proc_type, proc_params, proc_address):
-  proc_dict[proc_id] = {
-      'type' : proc_type,
-      'params' : proc_params,
-      'address' : proc_address
+  var_dict[scope][var_id] = {
+      'type': var_type
   }
+  print_var_dict()
+
+# def add_proc_to_dict(proc_id, proc_type, proc_params, proc_address):
+#   proc_dict[proc_id] = {
+#       'type' : proc_type,
+#       'params' : proc_params,
+#       'address' : proc_address
+#   }
+
+def add_funct_to_dict(funct_id, funct_type, funct_params):
+  funct_dict[funct_id] = {
+      'type' : types[funct_type],
+      'params' : funct_params
+  }
+  print_funct_dict()
 
 def var_exists(var_id, scope):
   if var_id in var_dict[scope]:
@@ -63,3 +72,6 @@ def reset_options():
     'scope' : 'global',
     'type' : 'none',
   }
+
+def add_main_to_dict():
+  add_funct_to_dict('main', 'void', {})
