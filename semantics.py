@@ -1,7 +1,4 @@
-# The pprint module provides a capability to “pretty-print” arbitrary Python 
-# data structures in a form which can be used as input to the interpreter. 
-# If the formatted structures include objects which are not fundamental 
-# Python types, the representation may not be loadable. 
+# -*- coding: utf-8 -*-
 import pprint
 pp = pprint.PrettyPrinter()
 
@@ -11,30 +8,49 @@ proc_dict = {}
 var_dict = {
     'global' : {
      },
-    'local' : {
+    'function' : {
     }
+}
+
+var_options = {
+  'id' : None,
+  'scope' : 'global',
+  'type' : 'none',
+  'initialization' : False
+}
+
+fun_options = {
+  
 }
 
 ################################################################################
 
 def print_var_dict():
   print "\nVAR DICT"
-  pp.pprint(local_var_dict)
+  pp.pprint(var_dict)
 
 def print_proc_dict():
   print "\nPROC DICT"
   pp.pprint(local_var_dict)
 
-def add_var_to_dict(address, var_id, size, scope):
-    var_dict[scope][address] = {
-        'id': var_id,
-        'size': size
+def add_var_to_dict(var_id, var_type, scope):
+    var_dict[scope][var_id] = {
+        'type': var_type
     }
     print_var_dict()
 
 def add_proc_to_dict(proc_id, proc_type, proc_params, proc_address):
-  func_dict[proc_id] = {
+  proc_dict[proc_id] = {
       'type' : proc_type,
       'params' : proc_params,
       'address' : proc_address
   }
+
+def var_exists(var_id, scope):
+  if var_id in var_dict[scope]:
+    return True
+  else:
+    if var_id in var_dict['global']:
+      return True
+    else:
+      return False

@@ -5,6 +5,7 @@ main {
 	}
 	else {
 		int otravariable = 10;
+		int otravariable = 11;
 	}
 	
 	while (true) {

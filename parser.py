@@ -5,6 +5,7 @@
 
 import ply.yacc as yacc
 import lexer
+from semantics import var_options, fun_options, add_var_to_dict, add_proc_to_dict, var_exists
 tokens = lexer.tokens
 
 # Regla inicial de programa
@@ -23,17 +24,20 @@ def p_functionloop(p):
 # Regla para definición de funciones
 def p_function(p):
   ''' function : FUNCTION functiontype ID O_PARENTHESIS parameters C_PARENTHESIS block'''
+  var_options['scope'] = 'function'
 
 # Regla que define el tipo de función
 def p_functiontype(p):
   ''' functiontype : VOID
                    | type'''
+                   
 # Regla que contiene los tipos de funciones
 def p_type(p):
   ''' type : BOOL
            | INT
            | FLOAT
            | STRING'''
+  var_options['type'] = p[1]
 
 # Regla del bloque principal del programa
 def p_block(p):
@@ -60,6 +64,8 @@ def p_statute(p):
 # Regla para estatuto de asignación
 def p_assignation(p):
   ''' assignation : var EQUALS expression SEMICOLON'''
+  var_options['initialization'] = False
+
 
 # Regla de estatuto para escritura
 def p_writting(p):
@@ -77,6 +83,7 @@ def p_optionalwritting(p):
 def p_init(p):
   ''' init : listinit
            | normalinit'''
+  var_options['initialization'] = True
 
 # Regla de inicialización de variables normales
 def p_normalinit(p):
@@ -170,6 +177,12 @@ def p_fact(p):
 # Regla para las variables
 def p_var(p):
   ''' var : ID listaccess'''
+  var_options['id'] = p[1]
+  if var_exists(var_options['id'], var_options['scope']) and var_options['initialization'] == True:
+    print("The variable ", var_options['id'], "has been used before.")
+    exit(0)
+  else:
+    add_var_to_dict(var_options['id'], var_options['type'], var_options['scope'])
 
 # Regla para cuando se accesara una variable de tipo lista
 def p_listaccess(p):
@@ -183,7 +196,7 @@ def p_varconst(p):
 def p_varconstfunction(p):
   ''' varconstfunction : ID functionorlist'''
 
-def p_functionoflist(p):
+def p_functionorlist(p):
   ''' functionorlist : O_S_BRACKET INTCONST C_S_BRACKET
                      | O_PARENTHESIS parametersinput C_PARENTHESIS
                      |'''

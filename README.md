@@ -18,3 +18,6 @@ Bitácora de cambios
 
 2 de Marzo
 - Pequeñas correcciones a análisis léxico y sintáctico V 1.0
+
+9 de Marzo
+- Tablas de variables.
