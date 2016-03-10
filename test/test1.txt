@@ -9,6 +9,7 @@ main {
 		int otravariable = 10;
 	}
 
+	printAlgo = 2;
 
 	while (true) {
 		otravariable = otravariable * 2;
@@ -32,7 +33,7 @@ def void funcion (int x) {
 	return variable * 2;
 }
 
-def int funcion2 (int x) {
+def int funcion2 (int y, int otra) {
   int algo = 2;
   int prueba = 2;
   if (algo > 5) { 

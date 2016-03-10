@@ -5,6 +5,15 @@ pp = pprint.PrettyPrinter()
 ###### Initialize structures ###################################################
 
 funct_dict = {}
+
+types = {
+  'int' : 1,
+  'float' : 2,
+  'string' : 3,
+  'bool' : 4 ,
+  'void' : 5
+}
+
 var_dict = {
     'global' : {
      },
@@ -21,7 +30,7 @@ var_options = {
 funct_options = {
   'id' : None,
   'type' : 'none',
-  params : {}
+  'params' : {}
 }
 
 ################################################################################
@@ -32,11 +41,11 @@ def print_var_dict():
 
 def print_funct_dict():
   print "\nFUNCT DICT"
-  pp.pprint(local_var_dict)
+  pp.pprint(funct_dict)
 
 def add_var_to_dict(var_id, var_type, scope):
   var_dict[scope][var_id] = {
-      'type': var_type
+    'type': types[var_type]
   }
   print_var_dict()
 
@@ -75,3 +84,10 @@ def reset_options():
 
 def add_main_to_dict():
   add_funct_to_dict('main', 'void', {})
+
+def clean_funct_options():
+  funct_options = {
+    'id' : None,
+    'type' : 'none',
+    'params' : {}
+  }

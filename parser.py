@@ -5,7 +5,7 @@
 
 import ply.yacc as yacc
 import lexer
-from semantics import var_options, fun_options, add_var_to_dict, add_proc_to_dict, var_exists, clear_var_dict, reset_options
+from semantics import *
 tokens = lexer.tokens
 
 # Regla inicial de programa
@@ -26,13 +26,21 @@ def p_functionloop(p):
 
 # Regla para definición de funciones
 def p_function(p):
-  ''' function : FUNCTION functiontype ID O_PARENTHESIS parameters C_PARENTHESIS block'''  
+  ''' function : FUNCTION functiontype ID O_PARENTHESIS parameters C_PARENTHESIS block'''
+  funct_options['id'] = p[3]
+  add_funct_to_dict(funct_options['id'], funct_options['type'], funct_options['params'])
+  funct_options['params'] = {}
+
 
 # Regla que define el tipo de función
 def p_functiontype(p):
   ''' functiontype : VOID
-                   | type'''
-  var_options['scope'] = 'function' 
+                   | BOOL
+                   | INT
+                   | FLOAT
+                   | STRING'''
+  var_options['scope'] = 'function'
+  funct_options['type'] = p[1]
 
 # Regla que contiene los tipos de funciones
 def p_type(p):
@@ -246,19 +254,24 @@ def p_parametersinputloop(p):
 
 # Regla para parametros de una función
 def p_parameters(p):
-  ''' parameters : type ID parametersloop
+  ''' parameters : parameterinit parametersloop
                  |'''
+
+def p_parameterinit(p):
+  ''' parameterinit : type ID '''
   var_options['id'] = p[2]
   if var_exists(var_options['id'], var_options['scope']):
     print("The variable ", var_options['id'], "has been used before.")
     exit(0)
   else:
     add_var_to_dict(var_options['id'], var_options['type'], var_options['scope'])
+    funct_options['params'][var_options['id']] = types[var_options['type']]
 
 # Regal para el ciclio de ingresar más parametros a uan función
 def p_parametersloop(p):
-  ''' parametersloop : COMMA type ID parametersloop
+  ''' parametersloop : COMMA parameterinit parametersloop
                      |'''
+
 # Función de error del parser
 def p_error(p):
     if type(p).__name__ == 'NoneType':
