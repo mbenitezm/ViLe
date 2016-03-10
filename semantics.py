@@ -54,3 +54,14 @@ def var_exists(var_id, scope):
       return True
     else:
       return False
+
+def clear_var_dict():
+  var_dict['function'].clear()
+
+def reset_options():
+  var_options = {
+    'id' : None,
+    'scope' : 'global',
+    'type' : 'none',
+    'initialization' : False
+  }

@@ -25,7 +25,7 @@ Rule 19    statute -> writting
 Rule 20    statute -> loop
 Rule 21    statute -> assignation
 Rule 22    statute -> functioncall
-Rule 23    assignation -> var EQUALS expression SEMICOLON
+Rule 23    assignation -> ID EQUALS expression SEMICOLON
 Rule 24    writting -> PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON
 Rule 25    writtingloop -> expression optionalwritting
 Rule 26    optionalwritting -> COMMA writtingloop
@@ -117,7 +117,7 @@ FLOATCONST           : 77
 FUNCTION             : 5
 GREATER              : 49
 GREATER_EQUAL        : 50
-ID                   : 5 67 72 86 91 93
+ID                   : 5 23 67 72 86 91 93
 IF                   : 37
 INT                  : 9
 INTCONST             : 68 73 76 85
@@ -190,7 +190,7 @@ term                 : 54 60
 termloop             : 59
 timesloop            : 83
 type                 : 7 30 31 91 93
-var                  : 23 30 31
+var                  : 30 31
 varconst             : 65
 varconstfunction     : 70
 whileloop            : 82
@@ -294,13 +294,12 @@ state 7
     (24) writting -> . PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON
     (82) loop -> . whileloop
     (83) loop -> . timesloop
-    (23) assignation -> . var EQUALS expression SEMICOLON
+    (23) assignation -> . ID EQUALS expression SEMICOLON
     (86) functioncall -> . ID O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON
     (31) listinit -> . LIST type var EQUALS list SEMICOLON
     (30) normalinit -> . type var EQUALS expression SEMICOLON
     (84) whileloop -> . WHILE O_PARENTHESIS expression C_PARENTHESIS block
     (85) timesloop -> . TIMES O_PARENTHESIS INTCONST C_PARENTHESIS block
-    (67) var -> . ID listaccess
     (8) type -> . BOOL
     (9) type -> . INT
     (10) type -> . FLOAT
@@ -308,10 +307,10 @@ state 7
 
     RETURN          reduce using rule 16 (statutesloop -> .)
     C_BRACKET       reduce using rule 16 (statutesloop -> .)
-    IF              shift and go to state 30
+    IF              shift and go to state 29
     PRINT           shift and go to state 19
-    ID              shift and go to state 28
-    LIST            shift and go to state 34
+    ID              shift and go to state 27
+    LIST            shift and go to state 33
     WHILE           shift and go to state 18
     TIMES           shift and go to state 17
     BOOL            shift and go to state 15
@@ -320,19 +319,18 @@ state 7
     STRING          shift and go to state 10
 
     whileloop                      shift and go to state 20
+    statute                        shift and go to state 30
+    assignation                    shift and go to state 31
+    listinit                       shift and go to state 24
+    statutesloop                   shift and go to state 32
+    type                           shift and go to state 22
+    timesloop                      shift and go to state 26
+    writting                       shift and go to state 25
     init                           shift and go to state 21
-    var                            shift and go to state 22
-    type                           shift and go to state 23
-    normalinit                     shift and go to state 24
-    listinit                       shift and go to state 25
-    writting                       shift and go to state 26
-    timesloop                      shift and go to state 27
-    condition                      shift and go to state 29
-    statute                        shift and go to state 31
-    assignation                    shift and go to state 32
-    statutesloop                   shift and go to state 33
-    functioncall                   shift and go to state 35
-    loop                           shift and go to state 36
+    loop                           shift and go to state 35
+    functioncall                   shift and go to state 34
+    condition                      shift and go to state 28
+    normalinit                     shift and go to state 23
 
 state 8
 
@@ -395,28 +393,28 @@ state 16
 
     (5) function -> FUNCTION functiontype . ID O_PARENTHESIS parameters C_PARENTHESIS block
 
-    ID              shift and go to state 37
+    ID              shift and go to state 36
 
 
 state 17
 
     (85) timesloop -> TIMES . O_PARENTHESIS INTCONST C_PARENTHESIS block
 
-    O_PARENTHESIS   shift and go to state 38
+    O_PARENTHESIS   shift and go to state 37
 
 
 state 18
 
     (84) whileloop -> WHILE . O_PARENTHESIS expression C_PARENTHESIS block
 
-    O_PARENTHESIS   shift and go to state 39
+    O_PARENTHESIS   shift and go to state 38
 
 
 state 19
 
     (24) writting -> PRINT . O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON
 
-    O_PARENTHESIS   shift and go to state 40
+    O_PARENTHESIS   shift and go to state 39
 
 
 state 20
@@ -457,21 +455,14 @@ state 21
 
 state 22
 
-    (23) assignation -> var . EQUALS expression SEMICOLON
-
-    EQUALS          shift and go to state 41
-
-
-state 23
-
     (30) normalinit -> type . var EQUALS expression SEMICOLON
     (67) var -> . ID listaccess
 
-    ID              shift and go to state 43
+    ID              shift and go to state 41
 
-    var                            shift and go to state 42
+    var                            shift and go to state 40
 
-state 24
+state 23
 
     (29) init -> normalinit .
 
@@ -489,7 +480,7 @@ state 24
     C_BRACKET       reduce using rule 29 (init -> normalinit .)
 
 
-state 25
+state 24
 
     (28) init -> listinit .
 
@@ -507,7 +498,7 @@ state 25
     C_BRACKET       reduce using rule 28 (init -> listinit .)
 
 
-state 26
+state 25
 
     (19) statute -> writting .
 
@@ -525,7 +516,7 @@ state 26
     C_BRACKET       reduce using rule 19 (statute -> writting .)
 
 
-state 27
+state 26
 
     (83) loop -> timesloop .
 
@@ -543,20 +534,16 @@ state 27
     C_BRACKET       reduce using rule 83 (loop -> timesloop .)
 
 
-state 28
+state 27
 
+    (23) assignation -> ID . EQUALS expression SEMICOLON
     (86) functioncall -> ID . O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON
-    (67) var -> ID . listaccess
-    (68) listaccess -> . O_S_BRACKET INTCONST C_S_BRACKET
-    (69) listaccess -> .
 
-    O_PARENTHESIS   shift and go to state 46
-    O_S_BRACKET     shift and go to state 44
-    EQUALS          reduce using rule 69 (listaccess -> .)
+    EQUALS          shift and go to state 42
+    O_PARENTHESIS   shift and go to state 43
 
-    listaccess                     shift and go to state 45
 
-state 29
+state 28
 
     (18) statute -> condition .
 
@@ -574,14 +561,14 @@ state 29
     C_BRACKET       reduce using rule 18 (statute -> condition .)
 
 
-state 30
+state 29
 
     (37) condition -> IF . O_PARENTHESIS expression C_PARENTHESIS block else
 
-    O_PARENTHESIS   shift and go to state 47
+    O_PARENTHESIS   shift and go to state 44
 
 
-state 31
+state 30
 
     (15) statutesloop -> statute . statutesloop
     (15) statutesloop -> . statute statutesloop
@@ -598,13 +585,12 @@ state 31
     (24) writting -> . PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON
     (82) loop -> . whileloop
     (83) loop -> . timesloop
-    (23) assignation -> . var EQUALS expression SEMICOLON
+    (23) assignation -> . ID EQUALS expression SEMICOLON
     (86) functioncall -> . ID O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON
     (31) listinit -> . LIST type var EQUALS list SEMICOLON
     (30) normalinit -> . type var EQUALS expression SEMICOLON
     (84) whileloop -> . WHILE O_PARENTHESIS expression C_PARENTHESIS block
     (85) timesloop -> . TIMES O_PARENTHESIS INTCONST C_PARENTHESIS block
-    (67) var -> . ID listaccess
     (8) type -> . BOOL
     (9) type -> . INT
     (10) type -> . FLOAT
@@ -612,10 +598,10 @@ state 31
 
     RETURN          reduce using rule 16 (statutesloop -> .)
     C_BRACKET       reduce using rule 16 (statutesloop -> .)
-    IF              shift and go to state 30
+    IF              shift and go to state 29
     PRINT           shift and go to state 19
-    ID              shift and go to state 28
-    LIST            shift and go to state 34
+    ID              shift and go to state 27
+    LIST            shift and go to state 33
     WHILE           shift and go to state 18
     TIMES           shift and go to state 17
     BOOL            shift and go to state 15
@@ -624,21 +610,20 @@ state 31
     STRING          shift and go to state 10
 
     whileloop                      shift and go to state 20
-    statute                        shift and go to state 31
-    assignation                    shift and go to state 32
-    listinit                       shift and go to state 25
-    statutesloop                   shift and go to state 48
-    type                           shift and go to state 23
-    timesloop                      shift and go to state 27
-    writting                       shift and go to state 26
+    statute                        shift and go to state 30
+    assignation                    shift and go to state 31
+    listinit                       shift and go to state 24
+    statutesloop                   shift and go to state 45
+    type                           shift and go to state 22
+    timesloop                      shift and go to state 26
+    writting                       shift and go to state 25
     init                           shift and go to state 21
-    functioncall                   shift and go to state 35
-    condition                      shift and go to state 29
-    var                            shift and go to state 22
-    loop                           shift and go to state 36
-    normalinit                     shift and go to state 24
+    functioncall                   shift and go to state 34
+    condition                      shift and go to state 28
+    loop                           shift and go to state 35
+    normalinit                     shift and go to state 23
 
-state 32
+state 31
 
     (21) statute -> assignation .
 
@@ -656,18 +641,18 @@ state 32
     C_BRACKET       reduce using rule 21 (statute -> assignation .)
 
 
-state 33
+state 32
 
     (12) block -> O_BRACKET statutesloop . functionreturn C_BRACKET
     (13) functionreturn -> . RETURN expression SEMICOLON
     (14) functionreturn -> .
 
-    RETURN          shift and go to state 49
+    RETURN          shift and go to state 46
     C_BRACKET       reduce using rule 14 (functionreturn -> .)
 
-    functionreturn                 shift and go to state 50
+    functionreturn                 shift and go to state 47
 
-state 34
+state 33
 
     (31) listinit -> LIST . type var EQUALS list SEMICOLON
     (8) type -> . BOOL
@@ -680,9 +665,9 @@ state 34
     FLOAT           shift and go to state 14
     STRING          shift and go to state 10
 
-    type                           shift and go to state 51
+    type                           shift and go to state 48
 
-state 35
+state 34
 
     (22) statute -> functioncall .
 
@@ -700,7 +685,7 @@ state 35
     C_BRACKET       reduce using rule 22 (statute -> functioncall .)
 
 
-state 36
+state 35
 
     (20) statute -> loop .
 
@@ -718,21 +703,21 @@ state 36
     C_BRACKET       reduce using rule 20 (statute -> loop .)
 
 
-state 37
+state 36
 
     (5) function -> FUNCTION functiontype ID . O_PARENTHESIS parameters C_PARENTHESIS block
 
-    O_PARENTHESIS   shift and go to state 52
+    O_PARENTHESIS   shift and go to state 49
 
 
-state 38
+state 37
 
     (85) timesloop -> TIMES O_PARENTHESIS . INTCONST C_PARENTHESIS block
 
-    INTCONST        shift and go to state 53
+    INTCONST        shift and go to state 50
 
 
-state 39
+state 38
 
     (84) whileloop -> WHILE O_PARENTHESIS . expression C_PARENTHESIS block
     (40) expression -> . expression2 expressionoptional
@@ -751,25 +736,25 @@ state 39
     (80) booleanconst -> . TRUE
     (81) booleanconst -> . FALSE
 
-    O_PARENTHESIS   shift and go to state 55
-    ID              shift and go to state 61
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    O_PARENTHESIS   shift and go to state 52
+    ID              shift and go to state 58
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    term                           shift and go to state 63
-    booleanconst                   shift and go to state 66
-    varconst                       shift and go to state 65
-    fact                           shift and go to state 69
-    exp                            shift and go to state 67
-    varconstfunction               shift and go to state 58
-    constants                      shift and go to state 62
-    expression2                    shift and go to state 60
-    expression                     shift and go to state 68
+    term                           shift and go to state 60
+    booleanconst                   shift and go to state 63
+    varconst                       shift and go to state 62
+    fact                           shift and go to state 66
+    exp                            shift and go to state 64
+    varconstfunction               shift and go to state 55
+    constants                      shift and go to state 59
+    expression2                    shift and go to state 57
+    expression                     shift and go to state 65
 
-state 40
+state 39
 
     (24) writting -> PRINT O_PARENTHESIS . writtingloop C_PARENTHESIS SEMICOLON
     (25) writtingloop -> . expression optionalwritting
@@ -789,28 +774,46 @@ state 40
     (80) booleanconst -> . TRUE
     (81) booleanconst -> . FALSE
 
-    O_PARENTHESIS   shift and go to state 55
-    ID              shift and go to state 61
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    O_PARENTHESIS   shift and go to state 52
+    ID              shift and go to state 58
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    term                           shift and go to state 63
-    booleanconst                   shift and go to state 66
-    varconst                       shift and go to state 65
-    constants                      shift and go to state 62
-    exp                            shift and go to state 67
-    varconstfunction               shift and go to state 58
-    writtingloop                   shift and go to state 70
-    expression2                    shift and go to state 60
-    expression                     shift and go to state 71
-    fact                           shift and go to state 69
+    term                           shift and go to state 60
+    booleanconst                   shift and go to state 63
+    varconst                       shift and go to state 62
+    constants                      shift and go to state 59
+    exp                            shift and go to state 64
+    varconstfunction               shift and go to state 55
+    writtingloop                   shift and go to state 67
+    expression2                    shift and go to state 57
+    expression                     shift and go to state 68
+    fact                           shift and go to state 66
+
+state 40
+
+    (30) normalinit -> type var . EQUALS expression SEMICOLON
+
+    EQUALS          shift and go to state 69
+
 
 state 41
 
-    (23) assignation -> var EQUALS . expression SEMICOLON
+    (67) var -> ID . listaccess
+    (68) listaccess -> . O_S_BRACKET INTCONST C_S_BRACKET
+    (69) listaccess -> .
+
+    O_S_BRACKET     shift and go to state 71
+    EQUALS          reduce using rule 69 (listaccess -> .)
+
+    listaccess                     shift and go to state 70
+
+state 42
+
+    (23) assignation -> ID EQUALS . expression SEMICOLON
     (40) expression -> . expression2 expressionoptional
     (43) expression2 -> . exp expression2optional
     (54) exp -> . term exploop
@@ -827,57 +830,25 @@ state 41
     (80) booleanconst -> . TRUE
     (81) booleanconst -> . FALSE
 
-    O_PARENTHESIS   shift and go to state 55
-    ID              shift and go to state 61
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    O_PARENTHESIS   shift and go to state 52
+    ID              shift and go to state 58
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    term                           shift and go to state 63
-    booleanconst                   shift and go to state 66
-    varconstfunction               shift and go to state 58
-    varconst                       shift and go to state 65
-    constants                      shift and go to state 62
-    exp                            shift and go to state 67
-    expression2                    shift and go to state 60
+    term                           shift and go to state 60
+    booleanconst                   shift and go to state 63
+    varconst                       shift and go to state 62
+    constants                      shift and go to state 59
+    exp                            shift and go to state 64
+    varconstfunction               shift and go to state 55
+    expression2                    shift and go to state 57
     expression                     shift and go to state 72
-    fact                           shift and go to state 69
-
-state 42
-
-    (30) normalinit -> type var . EQUALS expression SEMICOLON
-
-    EQUALS          shift and go to state 73
-
+    fact                           shift and go to state 66
 
 state 43
-
-    (67) var -> ID . listaccess
-    (68) listaccess -> . O_S_BRACKET INTCONST C_S_BRACKET
-    (69) listaccess -> .
-
-    O_S_BRACKET     shift and go to state 44
-    EQUALS          reduce using rule 69 (listaccess -> .)
-
-    listaccess                     shift and go to state 45
-
-state 44
-
-    (68) listaccess -> O_S_BRACKET . INTCONST C_S_BRACKET
-
-    INTCONST        shift and go to state 74
-
-
-state 45
-
-    (67) var -> ID listaccess .
-
-    EQUALS          reduce using rule 67 (var -> ID listaccess .)
-
-
-state 46
 
     (86) functioncall -> ID O_PARENTHESIS . parametersinput C_PARENTHESIS SEMICOLON
     (87) parametersinput -> . expression parametersinputloop
@@ -899,26 +870,26 @@ state 46
     (81) booleanconst -> . FALSE
 
     C_PARENTHESIS   reduce using rule 88 (parametersinput -> .)
-    O_PARENTHESIS   shift and go to state 55
-    ID              shift and go to state 61
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    O_PARENTHESIS   shift and go to state 52
+    ID              shift and go to state 58
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    term                           shift and go to state 63
-    parametersinput                shift and go to state 75
-    booleanconst                   shift and go to state 66
-    varconst                       shift and go to state 65
-    constants                      shift and go to state 62
-    exp                            shift and go to state 67
-    varconstfunction               shift and go to state 58
-    expression2                    shift and go to state 60
-    expression                     shift and go to state 76
-    fact                           shift and go to state 69
+    term                           shift and go to state 60
+    parametersinput                shift and go to state 73
+    booleanconst                   shift and go to state 63
+    varconst                       shift and go to state 62
+    constants                      shift and go to state 59
+    exp                            shift and go to state 64
+    varconstfunction               shift and go to state 55
+    expression2                    shift and go to state 57
+    expression                     shift and go to state 74
+    fact                           shift and go to state 66
 
-state 47
+state 44
 
     (37) condition -> IF O_PARENTHESIS . expression C_PARENTHESIS block else
     (40) expression -> . expression2 expressionoptional
@@ -937,25 +908,25 @@ state 47
     (80) booleanconst -> . TRUE
     (81) booleanconst -> . FALSE
 
-    O_PARENTHESIS   shift and go to state 55
-    ID              shift and go to state 61
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    O_PARENTHESIS   shift and go to state 52
+    ID              shift and go to state 58
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    term                           shift and go to state 63
-    booleanconst                   shift and go to state 66
-    varconst                       shift and go to state 65
-    fact                           shift and go to state 69
-    exp                            shift and go to state 67
-    varconstfunction               shift and go to state 58
-    constants                      shift and go to state 62
-    expression2                    shift and go to state 60
-    expression                     shift and go to state 77
+    term                           shift and go to state 60
+    booleanconst                   shift and go to state 63
+    varconst                       shift and go to state 62
+    fact                           shift and go to state 66
+    exp                            shift and go to state 64
+    varconstfunction               shift and go to state 55
+    constants                      shift and go to state 59
+    expression2                    shift and go to state 57
+    expression                     shift and go to state 75
 
-state 48
+state 45
 
     (15) statutesloop -> statute statutesloop .
 
@@ -963,7 +934,7 @@ state 48
     C_BRACKET       reduce using rule 15 (statutesloop -> statute statutesloop .)
 
 
-state 49
+state 46
 
     (13) functionreturn -> RETURN . expression SEMICOLON
     (40) expression -> . expression2 expressionoptional
@@ -982,41 +953,41 @@ state 49
     (80) booleanconst -> . TRUE
     (81) booleanconst -> . FALSE
 
-    O_PARENTHESIS   shift and go to state 55
-    ID              shift and go to state 61
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    O_PARENTHESIS   shift and go to state 52
+    ID              shift and go to state 58
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    term                           shift and go to state 63
-    booleanconst                   shift and go to state 66
-    varconst                       shift and go to state 65
-    constants                      shift and go to state 62
-    exp                            shift and go to state 67
-    varconstfunction               shift and go to state 58
-    expression2                    shift and go to state 60
-    expression                     shift and go to state 78
-    fact                           shift and go to state 69
+    term                           shift and go to state 60
+    booleanconst                   shift and go to state 63
+    varconst                       shift and go to state 62
+    constants                      shift and go to state 59
+    exp                            shift and go to state 64
+    varconstfunction               shift and go to state 55
+    expression2                    shift and go to state 57
+    expression                     shift and go to state 76
+    fact                           shift and go to state 66
 
-state 50
+state 47
 
     (12) block -> O_BRACKET statutesloop functionreturn . C_BRACKET
 
-    C_BRACKET       shift and go to state 79
+    C_BRACKET       shift and go to state 77
 
 
-state 51
+state 48
 
     (31) listinit -> LIST type . var EQUALS list SEMICOLON
     (67) var -> . ID listaccess
 
-    ID              shift and go to state 43
+    ID              shift and go to state 41
 
-    var                            shift and go to state 80
+    var                            shift and go to state 78
 
-state 52
+state 49
 
     (5) function -> FUNCTION functiontype ID O_PARENTHESIS . parameters C_PARENTHESIS block
     (91) parameters -> . type ID parametersloop
@@ -1032,17 +1003,17 @@ state 52
     FLOAT           shift and go to state 14
     STRING          shift and go to state 10
 
-    type                           shift and go to state 82
-    parameters                     shift and go to state 81
+    type                           shift and go to state 80
+    parameters                     shift and go to state 79
 
-state 53
+state 50
 
     (85) timesloop -> TIMES O_PARENTHESIS INTCONST . C_PARENTHESIS block
 
-    C_PARENTHESIS   shift and go to state 83
+    C_PARENTHESIS   shift and go to state 81
 
 
-state 54
+state 51
 
     (77) constants -> FLOATCONST .
 
@@ -1059,13 +1030,13 @@ state 54
     DIFFERENT       reduce using rule 77 (constants -> FLOATCONST .)
     AND             reduce using rule 77 (constants -> FLOATCONST .)
     OR              reduce using rule 77 (constants -> FLOATCONST .)
-    COMMA           reduce using rule 77 (constants -> FLOATCONST .)
-    C_PARENTHESIS   reduce using rule 77 (constants -> FLOATCONST .)
-    C_S_BRACKET     reduce using rule 77 (constants -> FLOATCONST .)
     SEMICOLON       reduce using rule 77 (constants -> FLOATCONST .)
+    C_PARENTHESIS   reduce using rule 77 (constants -> FLOATCONST .)
+    COMMA           reduce using rule 77 (constants -> FLOATCONST .)
+    C_S_BRACKET     reduce using rule 77 (constants -> FLOATCONST .)
 
 
-state 55
+state 52
 
     (66) fact -> O_PARENTHESIS . expression C_PARENTHESIS
     (40) expression -> . expression2 expressionoptional
@@ -1084,25 +1055,25 @@ state 55
     (80) booleanconst -> . TRUE
     (81) booleanconst -> . FALSE
 
-    O_PARENTHESIS   shift and go to state 55
-    ID              shift and go to state 61
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    O_PARENTHESIS   shift and go to state 52
+    ID              shift and go to state 58
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    term                           shift and go to state 63
-    booleanconst                   shift and go to state 66
-    varconst                       shift and go to state 65
-    constants                      shift and go to state 62
-    exp                            shift and go to state 67
-    varconstfunction               shift and go to state 58
-    expression2                    shift and go to state 60
-    expression                     shift and go to state 84
-    fact                           shift and go to state 69
+    term                           shift and go to state 60
+    booleanconst                   shift and go to state 63
+    varconst                       shift and go to state 62
+    constants                      shift and go to state 59
+    exp                            shift and go to state 64
+    varconstfunction               shift and go to state 55
+    expression2                    shift and go to state 57
+    expression                     shift and go to state 82
+    fact                           shift and go to state 66
 
-state 56
+state 53
 
     (80) booleanconst -> TRUE .
 
@@ -1117,15 +1088,15 @@ state 56
     LESS            reduce using rule 80 (booleanconst -> TRUE .)
     LESS_EQUAL      reduce using rule 80 (booleanconst -> TRUE .)
     DIFFERENT       reduce using rule 80 (booleanconst -> TRUE .)
-    C_PARENTHESIS   reduce using rule 80 (booleanconst -> TRUE .)
-    COMMA           reduce using rule 80 (booleanconst -> TRUE .)
-    SEMICOLON       reduce using rule 80 (booleanconst -> TRUE .)
-    C_S_BRACKET     reduce using rule 80 (booleanconst -> TRUE .)
     AND             reduce using rule 80 (booleanconst -> TRUE .)
     OR              reduce using rule 80 (booleanconst -> TRUE .)
+    COMMA           reduce using rule 80 (booleanconst -> TRUE .)
+    C_PARENTHESIS   reduce using rule 80 (booleanconst -> TRUE .)
+    SEMICOLON       reduce using rule 80 (booleanconst -> TRUE .)
+    C_S_BRACKET     reduce using rule 80 (booleanconst -> TRUE .)
 
 
-state 57
+state 54
 
     (78) constants -> STRINGCONST .
 
@@ -1142,13 +1113,13 @@ state 57
     DIFFERENT       reduce using rule 78 (constants -> STRINGCONST .)
     AND             reduce using rule 78 (constants -> STRINGCONST .)
     OR              reduce using rule 78 (constants -> STRINGCONST .)
-    COMMA           reduce using rule 78 (constants -> STRINGCONST .)
-    C_PARENTHESIS   reduce using rule 78 (constants -> STRINGCONST .)
-    C_S_BRACKET     reduce using rule 78 (constants -> STRINGCONST .)
     SEMICOLON       reduce using rule 78 (constants -> STRINGCONST .)
+    C_PARENTHESIS   reduce using rule 78 (constants -> STRINGCONST .)
+    COMMA           reduce using rule 78 (constants -> STRINGCONST .)
+    C_S_BRACKET     reduce using rule 78 (constants -> STRINGCONST .)
 
 
-state 58
+state 55
 
     (70) varconst -> varconstfunction .
 
@@ -1170,7 +1141,7 @@ state 58
     SEMICOLON       reduce using rule 70 (varconst -> varconstfunction .)
 
 
-state 59
+state 56
 
     (76) constants -> INTCONST .
 
@@ -1187,13 +1158,13 @@ state 59
     DIFFERENT       reduce using rule 76 (constants -> INTCONST .)
     AND             reduce using rule 76 (constants -> INTCONST .)
     OR              reduce using rule 76 (constants -> INTCONST .)
-    COMMA           reduce using rule 76 (constants -> INTCONST .)
-    C_PARENTHESIS   reduce using rule 76 (constants -> INTCONST .)
-    C_S_BRACKET     reduce using rule 76 (constants -> INTCONST .)
     SEMICOLON       reduce using rule 76 (constants -> INTCONST .)
+    C_PARENTHESIS   reduce using rule 76 (constants -> INTCONST .)
+    COMMA           reduce using rule 76 (constants -> INTCONST .)
+    C_S_BRACKET     reduce using rule 76 (constants -> INTCONST .)
 
 
-state 60
+state 57
 
     (40) expression -> expression2 . expressionoptional
     (41) expressionoptional -> . logicop expression2
@@ -1204,21 +1175,21 @@ state 60
     C_PARENTHESIS   reduce using rule 42 (expressionoptional -> .)
     COMMA           reduce using rule 42 (expressionoptional -> .)
     SEMICOLON       reduce using rule 42 (expressionoptional -> .)
-    AND             shift and go to state 85
-    OR              shift and go to state 88
+    AND             shift and go to state 83
+    OR              shift and go to state 86
 
-    logicop                        shift and go to state 86
-    expressionoptional             shift and go to state 87
+    logicop                        shift and go to state 84
+    expressionoptional             shift and go to state 85
 
-state 61
+state 58
 
     (72) varconstfunction -> ID . functionorlist
     (73) functionorlist -> . O_S_BRACKET INTCONST C_S_BRACKET
     (74) functionorlist -> . O_PARENTHESIS parametersinput C_PARENTHESIS
     (75) functionorlist -> .
 
-    O_S_BRACKET     shift and go to state 89
-    O_PARENTHESIS   shift and go to state 91
+    O_S_BRACKET     shift and go to state 87
+    O_PARENTHESIS   shift and go to state 89
     MULTIPLY        reduce using rule 75 (functionorlist -> .)
     DIVIDE          reduce using rule 75 (functionorlist -> .)
     MOD             reduce using rule 75 (functionorlist -> .)
@@ -1236,9 +1207,9 @@ state 61
     COMMA           reduce using rule 75 (functionorlist -> .)
     SEMICOLON       reduce using rule 75 (functionorlist -> .)
 
-    functionorlist                 shift and go to state 90
+    functionorlist                 shift and go to state 88
 
-state 62
+state 59
 
     (71) varconst -> constants .
 
@@ -1260,7 +1231,7 @@ state 62
     SEMICOLON       reduce using rule 71 (varconst -> constants .)
 
 
-state 63
+state 60
 
     (54) exp -> term . exploop
     (55) exploop -> . addsub exp
@@ -1279,13 +1250,13 @@ state 63
     C_PARENTHESIS   reduce using rule 56 (exploop -> .)
     COMMA           reduce using rule 56 (exploop -> .)
     SEMICOLON       reduce using rule 56 (exploop -> .)
-    SUM             shift and go to state 92
-    MINUS           shift and go to state 95
+    SUM             shift and go to state 90
+    MINUS           shift and go to state 93
 
-    exploop                        shift and go to state 93
-    addsub                         shift and go to state 94
+    exploop                        shift and go to state 91
+    addsub                         shift and go to state 92
 
-state 64
+state 61
 
     (81) booleanconst -> FALSE .
 
@@ -1300,15 +1271,15 @@ state 64
     LESS            reduce using rule 81 (booleanconst -> FALSE .)
     LESS_EQUAL      reduce using rule 81 (booleanconst -> FALSE .)
     DIFFERENT       reduce using rule 81 (booleanconst -> FALSE .)
-    C_PARENTHESIS   reduce using rule 81 (booleanconst -> FALSE .)
-    COMMA           reduce using rule 81 (booleanconst -> FALSE .)
-    SEMICOLON       reduce using rule 81 (booleanconst -> FALSE .)
-    C_S_BRACKET     reduce using rule 81 (booleanconst -> FALSE .)
     AND             reduce using rule 81 (booleanconst -> FALSE .)
     OR              reduce using rule 81 (booleanconst -> FALSE .)
+    COMMA           reduce using rule 81 (booleanconst -> FALSE .)
+    C_PARENTHESIS   reduce using rule 81 (booleanconst -> FALSE .)
+    SEMICOLON       reduce using rule 81 (booleanconst -> FALSE .)
+    C_S_BRACKET     reduce using rule 81 (booleanconst -> FALSE .)
 
 
-state 65
+state 62
 
     (65) fact -> varconst .
 
@@ -1325,12 +1296,12 @@ state 65
     DIFFERENT       reduce using rule 65 (fact -> varconst .)
     AND             reduce using rule 65 (fact -> varconst .)
     OR              reduce using rule 65 (fact -> varconst .)
-    COMMA           reduce using rule 65 (fact -> varconst .)
-    C_PARENTHESIS   reduce using rule 65 (fact -> varconst .)
     SEMICOLON       reduce using rule 65 (fact -> varconst .)
+    C_PARENTHESIS   reduce using rule 65 (fact -> varconst .)
+    COMMA           reduce using rule 65 (fact -> varconst .)
 
 
-state 66
+state 63
 
     (79) constants -> booleanconst .
 
@@ -1347,13 +1318,13 @@ state 66
     DIFFERENT       reduce using rule 79 (constants -> booleanconst .)
     AND             reduce using rule 79 (constants -> booleanconst .)
     OR              reduce using rule 79 (constants -> booleanconst .)
-    COMMA           reduce using rule 79 (constants -> booleanconst .)
-    C_PARENTHESIS   reduce using rule 79 (constants -> booleanconst .)
-    C_S_BRACKET     reduce using rule 79 (constants -> booleanconst .)
     SEMICOLON       reduce using rule 79 (constants -> booleanconst .)
+    C_PARENTHESIS   reduce using rule 79 (constants -> booleanconst .)
+    COMMA           reduce using rule 79 (constants -> booleanconst .)
+    C_S_BRACKET     reduce using rule 79 (constants -> booleanconst .)
 
 
-state 67
+state 64
 
     (43) expression2 -> exp . expression2optional
     (44) expression2optional -> . relop exp
@@ -1370,24 +1341,24 @@ state 67
     C_PARENTHESIS   reduce using rule 45 (expression2optional -> .)
     COMMA           reduce using rule 45 (expression2optional -> .)
     SEMICOLON       reduce using rule 45 (expression2optional -> .)
-    EQUALITY        shift and go to state 97
-    GREATER         shift and go to state 98
-    GREATER_EQUAL   shift and go to state 99
-    LESS            shift and go to state 100
-    LESS_EQUAL      shift and go to state 102
-    DIFFERENT       shift and go to state 96
+    EQUALITY        shift and go to state 95
+    GREATER         shift and go to state 96
+    GREATER_EQUAL   shift and go to state 97
+    LESS            shift and go to state 98
+    LESS_EQUAL      shift and go to state 100
+    DIFFERENT       shift and go to state 94
 
-    relop                          shift and go to state 103
-    expression2optional            shift and go to state 101
+    relop                          shift and go to state 101
+    expression2optional            shift and go to state 99
 
-state 68
+state 65
 
     (84) whileloop -> WHILE O_PARENTHESIS expression . C_PARENTHESIS block
 
-    C_PARENTHESIS   shift and go to state 104
+    C_PARENTHESIS   shift and go to state 102
 
 
-state 69
+state 66
 
     (59) term -> fact . termloop
     (60) termloop -> . divmult term
@@ -1409,39 +1380,32 @@ state 69
     C_PARENTHESIS   reduce using rule 61 (termloop -> .)
     COMMA           reduce using rule 61 (termloop -> .)
     SEMICOLON       reduce using rule 61 (termloop -> .)
-    MULTIPLY        shift and go to state 107
-    DIVIDE          shift and go to state 105
-    MOD             shift and go to state 109
+    MULTIPLY        shift and go to state 105
+    DIVIDE          shift and go to state 103
+    MOD             shift and go to state 107
 
-    termloop                       shift and go to state 106
-    divmult                        shift and go to state 108
+    termloop                       shift and go to state 104
+    divmult                        shift and go to state 106
 
-state 70
+state 67
 
     (24) writting -> PRINT O_PARENTHESIS writtingloop . C_PARENTHESIS SEMICOLON
 
-    C_PARENTHESIS   shift and go to state 110
+    C_PARENTHESIS   shift and go to state 108
 
 
-state 71
+state 68
 
     (25) writtingloop -> expression . optionalwritting
     (26) optionalwritting -> . COMMA writtingloop
     (27) optionalwritting -> .
 
-    COMMA           shift and go to state 112
+    COMMA           shift and go to state 110
     C_PARENTHESIS   reduce using rule 27 (optionalwritting -> .)
 
-    optionalwritting               shift and go to state 111
+    optionalwritting               shift and go to state 109
 
-state 72
-
-    (23) assignation -> var EQUALS expression . SEMICOLON
-
-    SEMICOLON       shift and go to state 113
-
-
-state 73
+state 69
 
     (30) normalinit -> type var EQUALS . expression SEMICOLON
     (40) expression -> . expression2 expressionoptional
@@ -1460,69 +1424,81 @@ state 73
     (80) booleanconst -> . TRUE
     (81) booleanconst -> . FALSE
 
-    O_PARENTHESIS   shift and go to state 55
-    ID              shift and go to state 61
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    O_PARENTHESIS   shift and go to state 52
+    ID              shift and go to state 58
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    term                           shift and go to state 63
-    booleanconst                   shift and go to state 66
-    varconstfunction               shift and go to state 58
-    varconst                       shift and go to state 65
-    constants                      shift and go to state 62
-    exp                            shift and go to state 67
-    expression2                    shift and go to state 60
-    expression                     shift and go to state 114
-    fact                           shift and go to state 69
+    term                           shift and go to state 60
+    booleanconst                   shift and go to state 63
+    varconstfunction               shift and go to state 55
+    varconst                       shift and go to state 62
+    constants                      shift and go to state 59
+    exp                            shift and go to state 64
+    expression2                    shift and go to state 57
+    expression                     shift and go to state 111
+    fact                           shift and go to state 66
 
-state 74
+state 70
 
-    (68) listaccess -> O_S_BRACKET INTCONST . C_S_BRACKET
+    (67) var -> ID listaccess .
 
-    C_S_BRACKET     shift and go to state 115
+    EQUALS          reduce using rule 67 (var -> ID listaccess .)
 
 
-state 75
+state 71
+
+    (68) listaccess -> O_S_BRACKET . INTCONST C_S_BRACKET
+
+    INTCONST        shift and go to state 112
+
+
+state 72
+
+    (23) assignation -> ID EQUALS expression . SEMICOLON
+
+    SEMICOLON       shift and go to state 113
+
+
+state 73
 
     (86) functioncall -> ID O_PARENTHESIS parametersinput . C_PARENTHESIS SEMICOLON
 
-    C_PARENTHESIS   shift and go to state 116
+    C_PARENTHESIS   shift and go to state 114
 
 
-state 76
+state 74
 
     (87) parametersinput -> expression . parametersinputloop
     (89) parametersinputloop -> . COMMA expression parametersinputloop
     (90) parametersinputloop -> .
 
-    COMMA           shift and go to state 118
+    COMMA           shift and go to state 116
     C_PARENTHESIS   reduce using rule 90 (parametersinputloop -> .)
 
-    parametersinputloop            shift and go to state 117
+    parametersinputloop            shift and go to state 115
 
-state 77
+state 75
 
     (37) condition -> IF O_PARENTHESIS expression . C_PARENTHESIS block else
 
-    C_PARENTHESIS   shift and go to state 119
+    C_PARENTHESIS   shift and go to state 117
 
 
-state 78
+state 76
 
     (13) functionreturn -> RETURN expression . SEMICOLON
 
-    SEMICOLON       shift and go to state 120
+    SEMICOLON       shift and go to state 118
 
 
-state 79
+state 77
 
     (12) block -> O_BRACKET statutesloop functionreturn C_BRACKET .
 
-    FUNCTION        reduce using rule 12 (block -> O_BRACKET statutesloop functionreturn C_BRACKET .)
-    $end            reduce using rule 12 (block -> O_BRACKET statutesloop functionreturn C_BRACKET .)
     IF              reduce using rule 12 (block -> O_BRACKET statutesloop functionreturn C_BRACKET .)
     PRINT           reduce using rule 12 (block -> O_BRACKET statutesloop functionreturn C_BRACKET .)
     ID              reduce using rule 12 (block -> O_BRACKET statutesloop functionreturn C_BRACKET .)
@@ -1535,47 +1511,49 @@ state 79
     STRING          reduce using rule 12 (block -> O_BRACKET statutesloop functionreturn C_BRACKET .)
     RETURN          reduce using rule 12 (block -> O_BRACKET statutesloop functionreturn C_BRACKET .)
     C_BRACKET       reduce using rule 12 (block -> O_BRACKET statutesloop functionreturn C_BRACKET .)
+    FUNCTION        reduce using rule 12 (block -> O_BRACKET statutesloop functionreturn C_BRACKET .)
+    $end            reduce using rule 12 (block -> O_BRACKET statutesloop functionreturn C_BRACKET .)
     ELSE            reduce using rule 12 (block -> O_BRACKET statutesloop functionreturn C_BRACKET .)
+
+
+state 78
+
+    (31) listinit -> LIST type var . EQUALS list SEMICOLON
+
+    EQUALS          shift and go to state 119
+
+
+state 79
+
+    (5) function -> FUNCTION functiontype ID O_PARENTHESIS parameters . C_PARENTHESIS block
+
+    C_PARENTHESIS   shift and go to state 120
 
 
 state 80
 
-    (31) listinit -> LIST type var . EQUALS list SEMICOLON
+    (91) parameters -> type . ID parametersloop
 
-    EQUALS          shift and go to state 121
+    ID              shift and go to state 121
 
 
 state 81
-
-    (5) function -> FUNCTION functiontype ID O_PARENTHESIS parameters . C_PARENTHESIS block
-
-    C_PARENTHESIS   shift and go to state 122
-
-
-state 82
-
-    (91) parameters -> type . ID parametersloop
-
-    ID              shift and go to state 123
-
-
-state 83
 
     (85) timesloop -> TIMES O_PARENTHESIS INTCONST C_PARENTHESIS . block
     (12) block -> . O_BRACKET statutesloop functionreturn C_BRACKET
 
     O_BRACKET       shift and go to state 7
 
-    block                          shift and go to state 124
+    block                          shift and go to state 122
 
-state 84
+state 82
 
     (66) fact -> O_PARENTHESIS expression . C_PARENTHESIS
 
-    C_PARENTHESIS   shift and go to state 125
+    C_PARENTHESIS   shift and go to state 123
 
 
-state 85
+state 83
 
     (46) logicop -> AND .
 
@@ -1588,7 +1566,7 @@ state 85
     FALSE           reduce using rule 46 (logicop -> AND .)
 
 
-state 86
+state 84
 
     (41) expressionoptional -> logicop . expression2
     (43) expression2 -> . exp expression2optional
@@ -1606,24 +1584,24 @@ state 86
     (80) booleanconst -> . TRUE
     (81) booleanconst -> . FALSE
 
-    O_PARENTHESIS   shift and go to state 55
-    ID              shift and go to state 61
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    O_PARENTHESIS   shift and go to state 52
+    ID              shift and go to state 58
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    term                           shift and go to state 63
-    booleanconst                   shift and go to state 66
-    varconst                       shift and go to state 65
-    constants                      shift and go to state 62
-    exp                            shift and go to state 67
-    varconstfunction               shift and go to state 58
-    expression2                    shift and go to state 126
-    fact                           shift and go to state 69
+    term                           shift and go to state 60
+    booleanconst                   shift and go to state 63
+    varconst                       shift and go to state 62
+    constants                      shift and go to state 59
+    exp                            shift and go to state 64
+    varconstfunction               shift and go to state 55
+    expression2                    shift and go to state 124
+    fact                           shift and go to state 66
 
-state 87
+state 85
 
     (40) expression -> expression2 expressionoptional .
 
@@ -1632,7 +1610,7 @@ state 87
     SEMICOLON       reduce using rule 40 (expression -> expression2 expressionoptional .)
 
 
-state 88
+state 86
 
     (47) logicop -> OR .
 
@@ -1645,14 +1623,14 @@ state 88
     FALSE           reduce using rule 47 (logicop -> OR .)
 
 
-state 89
+state 87
 
     (73) functionorlist -> O_S_BRACKET . INTCONST C_S_BRACKET
 
-    INTCONST        shift and go to state 127
+    INTCONST        shift and go to state 125
 
 
-state 90
+state 88
 
     (72) varconstfunction -> ID functionorlist .
 
@@ -1661,20 +1639,20 @@ state 90
     MOD             reduce using rule 72 (varconstfunction -> ID functionorlist .)
     SUM             reduce using rule 72 (varconstfunction -> ID functionorlist .)
     MINUS           reduce using rule 72 (varconstfunction -> ID functionorlist .)
-    AND             reduce using rule 72 (varconstfunction -> ID functionorlist .)
-    OR              reduce using rule 72 (varconstfunction -> ID functionorlist .)
-    C_PARENTHESIS   reduce using rule 72 (varconstfunction -> ID functionorlist .)
-    COMMA           reduce using rule 72 (varconstfunction -> ID functionorlist .)
-    SEMICOLON       reduce using rule 72 (varconstfunction -> ID functionorlist .)
     EQUALITY        reduce using rule 72 (varconstfunction -> ID functionorlist .)
     GREATER         reduce using rule 72 (varconstfunction -> ID functionorlist .)
     GREATER_EQUAL   reduce using rule 72 (varconstfunction -> ID functionorlist .)
     LESS            reduce using rule 72 (varconstfunction -> ID functionorlist .)
     LESS_EQUAL      reduce using rule 72 (varconstfunction -> ID functionorlist .)
     DIFFERENT       reduce using rule 72 (varconstfunction -> ID functionorlist .)
+    AND             reduce using rule 72 (varconstfunction -> ID functionorlist .)
+    OR              reduce using rule 72 (varconstfunction -> ID functionorlist .)
+    C_PARENTHESIS   reduce using rule 72 (varconstfunction -> ID functionorlist .)
+    SEMICOLON       reduce using rule 72 (varconstfunction -> ID functionorlist .)
+    COMMA           reduce using rule 72 (varconstfunction -> ID functionorlist .)
 
 
-state 91
+state 89
 
     (74) functionorlist -> O_PARENTHESIS . parametersinput C_PARENTHESIS
     (87) parametersinput -> . expression parametersinputloop
@@ -1696,26 +1674,26 @@ state 91
     (81) booleanconst -> . FALSE
 
     C_PARENTHESIS   reduce using rule 88 (parametersinput -> .)
-    O_PARENTHESIS   shift and go to state 55
-    ID              shift and go to state 61
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    O_PARENTHESIS   shift and go to state 52
+    ID              shift and go to state 58
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    term                           shift and go to state 63
-    parametersinput                shift and go to state 128
-    booleanconst                   shift and go to state 66
-    varconst                       shift and go to state 65
-    constants                      shift and go to state 62
-    exp                            shift and go to state 67
-    varconstfunction               shift and go to state 58
-    expression2                    shift and go to state 60
-    expression                     shift and go to state 76
-    fact                           shift and go to state 69
+    term                           shift and go to state 60
+    parametersinput                shift and go to state 126
+    booleanconst                   shift and go to state 63
+    varconst                       shift and go to state 62
+    constants                      shift and go to state 59
+    exp                            shift and go to state 64
+    varconstfunction               shift and go to state 55
+    expression2                    shift and go to state 57
+    expression                     shift and go to state 74
+    fact                           shift and go to state 66
 
-state 92
+state 90
 
     (57) addsub -> SUM .
 
@@ -1728,24 +1706,24 @@ state 92
     FALSE           reduce using rule 57 (addsub -> SUM .)
 
 
-state 93
+state 91
 
     (54) exp -> term exploop .
 
-    AND             reduce using rule 54 (exp -> term exploop .)
-    OR              reduce using rule 54 (exp -> term exploop .)
-    C_PARENTHESIS   reduce using rule 54 (exp -> term exploop .)
-    COMMA           reduce using rule 54 (exp -> term exploop .)
-    SEMICOLON       reduce using rule 54 (exp -> term exploop .)
     EQUALITY        reduce using rule 54 (exp -> term exploop .)
     GREATER         reduce using rule 54 (exp -> term exploop .)
     GREATER_EQUAL   reduce using rule 54 (exp -> term exploop .)
     LESS            reduce using rule 54 (exp -> term exploop .)
     LESS_EQUAL      reduce using rule 54 (exp -> term exploop .)
     DIFFERENT       reduce using rule 54 (exp -> term exploop .)
+    AND             reduce using rule 54 (exp -> term exploop .)
+    OR              reduce using rule 54 (exp -> term exploop .)
+    C_PARENTHESIS   reduce using rule 54 (exp -> term exploop .)
+    COMMA           reduce using rule 54 (exp -> term exploop .)
+    SEMICOLON       reduce using rule 54 (exp -> term exploop .)
 
 
-state 94
+state 92
 
     (55) exploop -> addsub . exp
     (54) exp -> . term exploop
@@ -1762,23 +1740,23 @@ state 94
     (80) booleanconst -> . TRUE
     (81) booleanconst -> . FALSE
 
-    O_PARENTHESIS   shift and go to state 55
-    ID              shift and go to state 61
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    O_PARENTHESIS   shift and go to state 52
+    ID              shift and go to state 58
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    term                           shift and go to state 63
-    booleanconst                   shift and go to state 66
-    varconst                       shift and go to state 65
-    constants                      shift and go to state 62
-    exp                            shift and go to state 129
-    varconstfunction               shift and go to state 58
-    fact                           shift and go to state 69
+    term                           shift and go to state 60
+    booleanconst                   shift and go to state 63
+    varconst                       shift and go to state 62
+    constants                      shift and go to state 59
+    exp                            shift and go to state 127
+    varconstfunction               shift and go to state 55
+    fact                           shift and go to state 66
 
-state 95
+state 93
 
     (58) addsub -> MINUS .
 
@@ -1791,7 +1769,7 @@ state 95
     FALSE           reduce using rule 58 (addsub -> MINUS .)
 
 
-state 96
+state 94
 
     (53) relop -> DIFFERENT .
 
@@ -1804,7 +1782,7 @@ state 96
     FALSE           reduce using rule 53 (relop -> DIFFERENT .)
 
 
-state 97
+state 95
 
     (48) relop -> EQUALITY .
 
@@ -1817,7 +1795,7 @@ state 97
     FALSE           reduce using rule 48 (relop -> EQUALITY .)
 
 
-state 98
+state 96
 
     (49) relop -> GREATER .
 
@@ -1830,7 +1808,7 @@ state 98
     FALSE           reduce using rule 49 (relop -> GREATER .)
 
 
-state 99
+state 97
 
     (50) relop -> GREATER_EQUAL .
 
@@ -1843,7 +1821,7 @@ state 99
     FALSE           reduce using rule 50 (relop -> GREATER_EQUAL .)
 
 
-state 100
+state 98
 
     (51) relop -> LESS .
 
@@ -1856,18 +1834,18 @@ state 100
     FALSE           reduce using rule 51 (relop -> LESS .)
 
 
-state 101
+state 99
 
     (43) expression2 -> exp expression2optional .
 
     AND             reduce using rule 43 (expression2 -> exp expression2optional .)
     OR              reduce using rule 43 (expression2 -> exp expression2optional .)
+    SEMICOLON       reduce using rule 43 (expression2 -> exp expression2optional .)
     COMMA           reduce using rule 43 (expression2 -> exp expression2optional .)
     C_PARENTHESIS   reduce using rule 43 (expression2 -> exp expression2optional .)
-    SEMICOLON       reduce using rule 43 (expression2 -> exp expression2optional .)
 
 
-state 102
+state 100
 
     (52) relop -> LESS_EQUAL .
 
@@ -1880,7 +1858,7 @@ state 102
     FALSE           reduce using rule 52 (relop -> LESS_EQUAL .)
 
 
-state 103
+state 101
 
     (44) expression2optional -> relop . exp
     (54) exp -> . term exploop
@@ -1897,32 +1875,32 @@ state 103
     (80) booleanconst -> . TRUE
     (81) booleanconst -> . FALSE
 
-    O_PARENTHESIS   shift and go to state 55
-    ID              shift and go to state 61
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    O_PARENTHESIS   shift and go to state 52
+    ID              shift and go to state 58
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    term                           shift and go to state 63
-    booleanconst                   shift and go to state 66
-    varconst                       shift and go to state 65
-    constants                      shift and go to state 62
-    exp                            shift and go to state 130
-    varconstfunction               shift and go to state 58
-    fact                           shift and go to state 69
+    term                           shift and go to state 60
+    booleanconst                   shift and go to state 63
+    varconst                       shift and go to state 62
+    constants                      shift and go to state 59
+    exp                            shift and go to state 128
+    varconstfunction               shift and go to state 55
+    fact                           shift and go to state 66
 
-state 104
+state 102
 
     (84) whileloop -> WHILE O_PARENTHESIS expression C_PARENTHESIS . block
     (12) block -> . O_BRACKET statutesloop functionreturn C_BRACKET
 
     O_BRACKET       shift and go to state 7
 
-    block                          shift and go to state 131
+    block                          shift and go to state 129
 
-state 105
+state 103
 
     (63) divmult -> DIVIDE .
 
@@ -1935,7 +1913,7 @@ state 105
     FALSE           reduce using rule 63 (divmult -> DIVIDE .)
 
 
-state 106
+state 104
 
     (59) term -> fact termloop .
 
@@ -1949,12 +1927,12 @@ state 106
     DIFFERENT       reduce using rule 59 (term -> fact termloop .)
     AND             reduce using rule 59 (term -> fact termloop .)
     OR              reduce using rule 59 (term -> fact termloop .)
+    COMMA           reduce using rule 59 (term -> fact termloop .)
     C_PARENTHESIS   reduce using rule 59 (term -> fact termloop .)
     SEMICOLON       reduce using rule 59 (term -> fact termloop .)
-    COMMA           reduce using rule 59 (term -> fact termloop .)
 
 
-state 107
+state 105
 
     (62) divmult -> MULTIPLY .
 
@@ -1967,7 +1945,7 @@ state 107
     FALSE           reduce using rule 62 (divmult -> MULTIPLY .)
 
 
-state 108
+state 106
 
     (60) termloop -> divmult . term
     (59) term -> . fact termloop
@@ -1983,22 +1961,22 @@ state 108
     (80) booleanconst -> . TRUE
     (81) booleanconst -> . FALSE
 
-    O_PARENTHESIS   shift and go to state 55
-    ID              shift and go to state 61
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    O_PARENTHESIS   shift and go to state 52
+    ID              shift and go to state 58
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    term                           shift and go to state 132
-    booleanconst                   shift and go to state 66
-    varconstfunction               shift and go to state 58
-    varconst                       shift and go to state 65
-    constants                      shift and go to state 62
-    fact                           shift and go to state 69
+    term                           shift and go to state 130
+    booleanconst                   shift and go to state 63
+    varconstfunction               shift and go to state 55
+    varconst                       shift and go to state 62
+    constants                      shift and go to state 59
+    fact                           shift and go to state 66
 
-state 109
+state 107
 
     (64) divmult -> MOD .
 
@@ -2011,21 +1989,21 @@ state 109
     FALSE           reduce using rule 64 (divmult -> MOD .)
 
 
-state 110
+state 108
 
     (24) writting -> PRINT O_PARENTHESIS writtingloop C_PARENTHESIS . SEMICOLON
 
-    SEMICOLON       shift and go to state 133
+    SEMICOLON       shift and go to state 131
 
 
-state 111
+state 109
 
     (25) writtingloop -> expression optionalwritting .
 
     C_PARENTHESIS   reduce using rule 25 (writtingloop -> expression optionalwritting .)
 
 
-state 112
+state 110
 
     (26) optionalwritting -> COMMA . writtingloop
     (25) writtingloop -> . expression optionalwritting
@@ -2045,72 +2023,72 @@ state 112
     (80) booleanconst -> . TRUE
     (81) booleanconst -> . FALSE
 
-    O_PARENTHESIS   shift and go to state 55
-    ID              shift and go to state 61
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    O_PARENTHESIS   shift and go to state 52
+    ID              shift and go to state 58
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    term                           shift and go to state 63
-    booleanconst                   shift and go to state 66
-    varconst                       shift and go to state 65
-    constants                      shift and go to state 62
-    exp                            shift and go to state 67
-    varconstfunction               shift and go to state 58
-    writtingloop                   shift and go to state 134
-    expression2                    shift and go to state 60
-    expression                     shift and go to state 71
-    fact                           shift and go to state 69
+    term                           shift and go to state 60
+    booleanconst                   shift and go to state 63
+    varconst                       shift and go to state 62
+    constants                      shift and go to state 59
+    exp                            shift and go to state 64
+    varconstfunction               shift and go to state 55
+    writtingloop                   shift and go to state 132
+    expression2                    shift and go to state 57
+    expression                     shift and go to state 68
+    fact                           shift and go to state 66
+
+state 111
+
+    (30) normalinit -> type var EQUALS expression . SEMICOLON
+
+    SEMICOLON       shift and go to state 133
+
+
+state 112
+
+    (68) listaccess -> O_S_BRACKET INTCONST . C_S_BRACKET
+
+    C_S_BRACKET     shift and go to state 134
+
 
 state 113
 
-    (23) assignation -> var EQUALS expression SEMICOLON .
+    (23) assignation -> ID EQUALS expression SEMICOLON .
 
-    IF              reduce using rule 23 (assignation -> var EQUALS expression SEMICOLON .)
-    PRINT           reduce using rule 23 (assignation -> var EQUALS expression SEMICOLON .)
-    ID              reduce using rule 23 (assignation -> var EQUALS expression SEMICOLON .)
-    LIST            reduce using rule 23 (assignation -> var EQUALS expression SEMICOLON .)
-    WHILE           reduce using rule 23 (assignation -> var EQUALS expression SEMICOLON .)
-    TIMES           reduce using rule 23 (assignation -> var EQUALS expression SEMICOLON .)
-    BOOL            reduce using rule 23 (assignation -> var EQUALS expression SEMICOLON .)
-    INT             reduce using rule 23 (assignation -> var EQUALS expression SEMICOLON .)
-    FLOAT           reduce using rule 23 (assignation -> var EQUALS expression SEMICOLON .)
-    STRING          reduce using rule 23 (assignation -> var EQUALS expression SEMICOLON .)
-    RETURN          reduce using rule 23 (assignation -> var EQUALS expression SEMICOLON .)
-    C_BRACKET       reduce using rule 23 (assignation -> var EQUALS expression SEMICOLON .)
+    IF              reduce using rule 23 (assignation -> ID EQUALS expression SEMICOLON .)
+    PRINT           reduce using rule 23 (assignation -> ID EQUALS expression SEMICOLON .)
+    ID              reduce using rule 23 (assignation -> ID EQUALS expression SEMICOLON .)
+    LIST            reduce using rule 23 (assignation -> ID EQUALS expression SEMICOLON .)
+    WHILE           reduce using rule 23 (assignation -> ID EQUALS expression SEMICOLON .)
+    TIMES           reduce using rule 23 (assignation -> ID EQUALS expression SEMICOLON .)
+    BOOL            reduce using rule 23 (assignation -> ID EQUALS expression SEMICOLON .)
+    INT             reduce using rule 23 (assignation -> ID EQUALS expression SEMICOLON .)
+    FLOAT           reduce using rule 23 (assignation -> ID EQUALS expression SEMICOLON .)
+    STRING          reduce using rule 23 (assignation -> ID EQUALS expression SEMICOLON .)
+    RETURN          reduce using rule 23 (assignation -> ID EQUALS expression SEMICOLON .)
+    C_BRACKET       reduce using rule 23 (assignation -> ID EQUALS expression SEMICOLON .)
 
 
 state 114
 
-    (30) normalinit -> type var EQUALS expression . SEMICOLON
+    (86) functioncall -> ID O_PARENTHESIS parametersinput C_PARENTHESIS . SEMICOLON
 
     SEMICOLON       shift and go to state 135
 
 
 state 115
 
-    (68) listaccess -> O_S_BRACKET INTCONST C_S_BRACKET .
-
-    EQUALS          reduce using rule 68 (listaccess -> O_S_BRACKET INTCONST C_S_BRACKET .)
-
-
-state 116
-
-    (86) functioncall -> ID O_PARENTHESIS parametersinput C_PARENTHESIS . SEMICOLON
-
-    SEMICOLON       shift and go to state 136
-
-
-state 117
-
     (87) parametersinput -> expression parametersinputloop .
 
     C_PARENTHESIS   reduce using rule 87 (parametersinput -> expression parametersinputloop .)
 
 
-state 118
+state 116
 
     (89) parametersinputloop -> COMMA . expression parametersinputloop
     (40) expression -> . expression2 expressionoptional
@@ -2129,70 +2107,70 @@ state 118
     (80) booleanconst -> . TRUE
     (81) booleanconst -> . FALSE
 
-    O_PARENTHESIS   shift and go to state 55
-    ID              shift and go to state 61
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    O_PARENTHESIS   shift and go to state 52
+    ID              shift and go to state 58
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    term                           shift and go to state 63
-    booleanconst                   shift and go to state 66
-    varconst                       shift and go to state 65
-    constants                      shift and go to state 62
-    exp                            shift and go to state 67
-    varconstfunction               shift and go to state 58
-    expression2                    shift and go to state 60
-    expression                     shift and go to state 137
-    fact                           shift and go to state 69
+    term                           shift and go to state 60
+    booleanconst                   shift and go to state 63
+    varconst                       shift and go to state 62
+    constants                      shift and go to state 59
+    exp                            shift and go to state 64
+    varconstfunction               shift and go to state 55
+    expression2                    shift and go to state 57
+    expression                     shift and go to state 136
+    fact                           shift and go to state 66
 
-state 119
+state 117
 
     (37) condition -> IF O_PARENTHESIS expression C_PARENTHESIS . block else
     (12) block -> . O_BRACKET statutesloop functionreturn C_BRACKET
 
     O_BRACKET       shift and go to state 7
 
-    block                          shift and go to state 138
+    block                          shift and go to state 137
 
-state 120
+state 118
 
     (13) functionreturn -> RETURN expression SEMICOLON .
 
     C_BRACKET       reduce using rule 13 (functionreturn -> RETURN expression SEMICOLON .)
 
 
-state 121
+state 119
 
     (31) listinit -> LIST type var EQUALS . list SEMICOLON
     (32) list -> . O_S_BRACKET listelements C_S_BRACKET
 
-    O_S_BRACKET     shift and go to state 140
+    O_S_BRACKET     shift and go to state 139
 
-    list                           shift and go to state 139
+    list                           shift and go to state 138
 
-state 122
+state 120
 
     (5) function -> FUNCTION functiontype ID O_PARENTHESIS parameters C_PARENTHESIS . block
     (12) block -> . O_BRACKET statutesloop functionreturn C_BRACKET
 
     O_BRACKET       shift and go to state 7
 
-    block                          shift and go to state 141
+    block                          shift and go to state 140
 
-state 123
+state 121
 
     (91) parameters -> type ID . parametersloop
     (93) parametersloop -> . COMMA type ID parametersloop
     (94) parametersloop -> .
 
-    COMMA           shift and go to state 143
+    COMMA           shift and go to state 142
     C_PARENTHESIS   reduce using rule 94 (parametersloop -> .)
 
-    parametersloop                 shift and go to state 142
+    parametersloop                 shift and go to state 141
 
-state 124
+state 122
 
     (85) timesloop -> TIMES O_PARENTHESIS INTCONST C_PARENTHESIS block .
 
@@ -2210,7 +2188,7 @@ state 124
     C_BRACKET       reduce using rule 85 (timesloop -> TIMES O_PARENTHESIS INTCONST C_PARENTHESIS block .)
 
 
-state 125
+state 123
 
     (66) fact -> O_PARENTHESIS expression C_PARENTHESIS .
 
@@ -2227,12 +2205,12 @@ state 125
     DIFFERENT       reduce using rule 66 (fact -> O_PARENTHESIS expression C_PARENTHESIS .)
     AND             reduce using rule 66 (fact -> O_PARENTHESIS expression C_PARENTHESIS .)
     OR              reduce using rule 66 (fact -> O_PARENTHESIS expression C_PARENTHESIS .)
-    COMMA           reduce using rule 66 (fact -> O_PARENTHESIS expression C_PARENTHESIS .)
-    C_PARENTHESIS   reduce using rule 66 (fact -> O_PARENTHESIS expression C_PARENTHESIS .)
     SEMICOLON       reduce using rule 66 (fact -> O_PARENTHESIS expression C_PARENTHESIS .)
+    C_PARENTHESIS   reduce using rule 66 (fact -> O_PARENTHESIS expression C_PARENTHESIS .)
+    COMMA           reduce using rule 66 (fact -> O_PARENTHESIS expression C_PARENTHESIS .)
 
 
-state 126
+state 124
 
     (41) expressionoptional -> logicop expression2 .
 
@@ -2241,21 +2219,21 @@ state 126
     SEMICOLON       reduce using rule 41 (expressionoptional -> logicop expression2 .)
 
 
-state 127
+state 125
 
     (73) functionorlist -> O_S_BRACKET INTCONST . C_S_BRACKET
 
-    C_S_BRACKET     shift and go to state 144
+    C_S_BRACKET     shift and go to state 143
 
 
-state 128
+state 126
 
     (74) functionorlist -> O_PARENTHESIS parametersinput . C_PARENTHESIS
 
-    C_PARENTHESIS   shift and go to state 145
+    C_PARENTHESIS   shift and go to state 144
 
 
-state 129
+state 127
 
     (55) exploop -> addsub exp .
 
@@ -2272,7 +2250,7 @@ state 129
     SEMICOLON       reduce using rule 55 (exploop -> addsub exp .)
 
 
-state 130
+state 128
 
     (44) expression2optional -> relop exp .
 
@@ -2283,7 +2261,7 @@ state 130
     SEMICOLON       reduce using rule 44 (expression2optional -> relop exp .)
 
 
-state 131
+state 129
 
     (84) whileloop -> WHILE O_PARENTHESIS expression C_PARENTHESIS block .
 
@@ -2301,7 +2279,7 @@ state 131
     C_BRACKET       reduce using rule 84 (whileloop -> WHILE O_PARENTHESIS expression C_PARENTHESIS block .)
 
 
-state 132
+state 130
 
     (60) termloop -> divmult term .
 
@@ -2320,7 +2298,7 @@ state 132
     SEMICOLON       reduce using rule 60 (termloop -> divmult term .)
 
 
-state 133
+state 131
 
     (24) writting -> PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON .
 
@@ -2338,14 +2316,14 @@ state 133
     C_BRACKET       reduce using rule 24 (writting -> PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON .)
 
 
-state 134
+state 132
 
     (26) optionalwritting -> COMMA writtingloop .
 
     C_PARENTHESIS   reduce using rule 26 (optionalwritting -> COMMA writtingloop .)
 
 
-state 135
+state 133
 
     (30) normalinit -> type var EQUALS expression SEMICOLON .
 
@@ -2363,7 +2341,14 @@ state 135
     C_BRACKET       reduce using rule 30 (normalinit -> type var EQUALS expression SEMICOLON .)
 
 
-state 136
+state 134
+
+    (68) listaccess -> O_S_BRACKET INTCONST C_S_BRACKET .
+
+    EQUALS          reduce using rule 68 (listaccess -> O_S_BRACKET INTCONST C_S_BRACKET .)
+
+
+state 135
 
     (86) functioncall -> ID O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON .
 
@@ -2381,24 +2366,24 @@ state 136
     C_BRACKET       reduce using rule 86 (functioncall -> ID O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON .)
 
 
-state 137
+state 136
 
     (89) parametersinputloop -> COMMA expression . parametersinputloop
     (89) parametersinputloop -> . COMMA expression parametersinputloop
     (90) parametersinputloop -> .
 
-    COMMA           shift and go to state 118
+    COMMA           shift and go to state 116
     C_PARENTHESIS   reduce using rule 90 (parametersinputloop -> .)
 
-    parametersinputloop            shift and go to state 146
+    parametersinputloop            shift and go to state 145
 
-state 138
+state 137
 
     (37) condition -> IF O_PARENTHESIS expression C_PARENTHESIS block . else
     (38) else -> . ELSE block
     (39) else -> .
 
-    ELSE            shift and go to state 147
+    ELSE            shift and go to state 146
     IF              reduce using rule 39 (else -> .)
     PRINT           reduce using rule 39 (else -> .)
     ID              reduce using rule 39 (else -> .)
@@ -2412,16 +2397,16 @@ state 138
     RETURN          reduce using rule 39 (else -> .)
     C_BRACKET       reduce using rule 39 (else -> .)
 
-    else                           shift and go to state 148
+    else                           shift and go to state 147
 
-state 139
+state 138
 
     (31) listinit -> LIST type var EQUALS list . SEMICOLON
 
-    SEMICOLON       shift and go to state 149
+    SEMICOLON       shift and go to state 148
 
 
-state 140
+state 139
 
     (32) list -> O_S_BRACKET . listelements C_S_BRACKET
     (33) listelements -> . constants optionalconstants
@@ -2434,17 +2419,17 @@ state 140
     (81) booleanconst -> . FALSE
 
     C_S_BRACKET     reduce using rule 34 (listelements -> .)
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    booleanconst                   shift and go to state 66
-    constants                      shift and go to state 151
-    listelements                   shift and go to state 150
+    booleanconst                   shift and go to state 63
+    constants                      shift and go to state 150
+    listelements                   shift and go to state 149
 
-state 141
+state 140
 
     (5) function -> FUNCTION functiontype ID O_PARENTHESIS parameters C_PARENTHESIS block .
 
@@ -2452,14 +2437,14 @@ state 141
     $end            reduce using rule 5 (function -> FUNCTION functiontype ID O_PARENTHESIS parameters C_PARENTHESIS block .)
 
 
-state 142
+state 141
 
     (91) parameters -> type ID parametersloop .
 
     C_PARENTHESIS   reduce using rule 91 (parameters -> type ID parametersloop .)
 
 
-state 143
+state 142
 
     (93) parametersloop -> COMMA . type ID parametersloop
     (8) type -> . BOOL
@@ -2472,9 +2457,9 @@ state 143
     FLOAT           shift and go to state 14
     STRING          shift and go to state 10
 
-    type                           shift and go to state 152
+    type                           shift and go to state 151
 
-state 144
+state 143
 
     (73) functionorlist -> O_S_BRACKET INTCONST C_S_BRACKET .
 
@@ -2496,7 +2481,7 @@ state 144
     SEMICOLON       reduce using rule 73 (functionorlist -> O_S_BRACKET INTCONST C_S_BRACKET .)
 
 
-state 145
+state 144
 
     (74) functionorlist -> O_PARENTHESIS parametersinput C_PARENTHESIS .
 
@@ -2518,23 +2503,23 @@ state 145
     SEMICOLON       reduce using rule 74 (functionorlist -> O_PARENTHESIS parametersinput C_PARENTHESIS .)
 
 
-state 146
+state 145
 
     (89) parametersinputloop -> COMMA expression parametersinputloop .
 
     C_PARENTHESIS   reduce using rule 89 (parametersinputloop -> COMMA expression parametersinputloop .)
 
 
-state 147
+state 146
 
     (38) else -> ELSE . block
     (12) block -> . O_BRACKET statutesloop functionreturn C_BRACKET
 
     O_BRACKET       shift and go to state 7
 
-    block                          shift and go to state 153
+    block                          shift and go to state 152
 
-state 148
+state 147
 
     (37) condition -> IF O_PARENTHESIS expression C_PARENTHESIS block else .
 
@@ -2552,7 +2537,7 @@ state 148
     C_BRACKET       reduce using rule 37 (condition -> IF O_PARENTHESIS expression C_PARENTHESIS block else .)
 
 
-state 149
+state 148
 
     (31) listinit -> LIST type var EQUALS list SEMICOLON .
 
@@ -2570,32 +2555,32 @@ state 149
     C_BRACKET       reduce using rule 31 (listinit -> LIST type var EQUALS list SEMICOLON .)
 
 
-state 150
+state 149
 
     (32) list -> O_S_BRACKET listelements . C_S_BRACKET
 
-    C_S_BRACKET     shift and go to state 154
+    C_S_BRACKET     shift and go to state 153
 
 
-state 151
+state 150
 
     (33) listelements -> constants . optionalconstants
     (35) optionalconstants -> . COMMA constants optionalconstants
     (36) optionalconstants -> .
 
-    COMMA           shift and go to state 156
+    COMMA           shift and go to state 155
     C_S_BRACKET     reduce using rule 36 (optionalconstants -> .)
 
-    optionalconstants              shift and go to state 155
+    optionalconstants              shift and go to state 154
 
-state 152
+state 151
 
     (93) parametersloop -> COMMA type . ID parametersloop
 
-    ID              shift and go to state 157
+    ID              shift and go to state 156
 
 
-state 153
+state 152
 
     (38) else -> ELSE block .
 
@@ -2613,21 +2598,21 @@ state 153
     C_BRACKET       reduce using rule 38 (else -> ELSE block .)
 
 
-state 154
+state 153
 
     (32) list -> O_S_BRACKET listelements C_S_BRACKET .
 
     SEMICOLON       reduce using rule 32 (list -> O_S_BRACKET listelements C_S_BRACKET .)
 
 
-state 155
+state 154
 
     (33) listelements -> constants optionalconstants .
 
     C_S_BRACKET     reduce using rule 33 (listelements -> constants optionalconstants .)
 
 
-state 156
+state 155
 
     (35) optionalconstants -> COMMA . constants optionalconstants
     (76) constants -> . INTCONST
@@ -2637,45 +2622,45 @@ state 156
     (80) booleanconst -> . TRUE
     (81) booleanconst -> . FALSE
 
-    INTCONST        shift and go to state 59
-    FLOATCONST      shift and go to state 54
-    STRINGCONST     shift and go to state 57
-    TRUE            shift and go to state 56
-    FALSE           shift and go to state 64
+    INTCONST        shift and go to state 56
+    FLOATCONST      shift and go to state 51
+    STRINGCONST     shift and go to state 54
+    TRUE            shift and go to state 53
+    FALSE           shift and go to state 61
 
-    booleanconst                   shift and go to state 66
-    constants                      shift and go to state 158
+    booleanconst                   shift and go to state 63
+    constants                      shift and go to state 157
 
-state 157
+state 156
 
     (93) parametersloop -> COMMA type ID . parametersloop
     (93) parametersloop -> . COMMA type ID parametersloop
     (94) parametersloop -> .
 
-    COMMA           shift and go to state 143
+    COMMA           shift and go to state 142
     C_PARENTHESIS   reduce using rule 94 (parametersloop -> .)
 
-    parametersloop                 shift and go to state 159
+    parametersloop                 shift and go to state 158
 
-state 158
+state 157
 
     (35) optionalconstants -> COMMA constants . optionalconstants
     (35) optionalconstants -> . COMMA constants optionalconstants
     (36) optionalconstants -> .
 
-    COMMA           shift and go to state 156
+    COMMA           shift and go to state 155
     C_S_BRACKET     reduce using rule 36 (optionalconstants -> .)
 
-    optionalconstants              shift and go to state 160
+    optionalconstants              shift and go to state 159
 
-state 159
+state 158
 
     (93) parametersloop -> COMMA type ID parametersloop .
 
     C_PARENTHESIS   reduce using rule 93 (parametersloop -> COMMA type ID parametersloop .)
 
 
-state 160
+state 159
 
     (35) optionalconstants -> COMMA constants optionalconstants .
 

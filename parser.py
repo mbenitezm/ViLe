@@ -5,7 +5,7 @@
 
 import ply.yacc as yacc
 import lexer
-from semantics import var_options, fun_options, add_var_to_dict, add_proc_to_dict, var_exists
+from semantics import var_options, fun_options, add_var_to_dict, add_proc_to_dict, var_exists, clear_var_dict, reset_options
 tokens = lexer.tokens
 
 # Regla inicial de programa
@@ -21,15 +21,16 @@ def p_main(p):
 def p_functionloop(p):
   ''' functionloop : function functionloop  
                    |'''
+
 # Regla para definición de funciones
 def p_function(p):
-  ''' function : FUNCTION functiontype ID O_PARENTHESIS parameters C_PARENTHESIS block'''
-  var_options['scope'] = 'function'
+  ''' function : FUNCTION functiontype ID O_PARENTHESIS parameters C_PARENTHESIS block'''  
 
 # Regla que define el tipo de función
 def p_functiontype(p):
   ''' functiontype : VOID
                    | type'''
+  var_options['scope'] = 'function' 
 
 # Regla que contiene los tipos de funciones
 def p_type(p):
@@ -47,11 +48,13 @@ def p_block(p):
 def p_functionreturn(p):
   '''functionreturn : RETURN expression SEMICOLON
                     |'''
+  clear_var_dict()
 
 # Regla del ciclo de estatutos
 def p_statutesloop(p):
   ''' statutesloop : statute statutesloop
                    |'''
+
 # Regla de contiene los tipos de estatutos
 def p_statute(p):
   ''' statute : init
@@ -64,8 +67,6 @@ def p_statute(p):
 # Regla para estatuto de asignación
 def p_assignation(p):
   ''' assignation : var EQUALS expression SEMICOLON'''
-  var_options['initialization'] = False
-
 
 # Regla de estatuto para escritura
 def p_writting(p):
@@ -88,10 +89,12 @@ def p_init(p):
 # Regla de inicialización de variables normales
 def p_normalinit(p):
   ''' normalinit : type var EQUALS expression SEMICOLON'''
+  var_options['initialization'] = True
 
 # Regla de inicialización de variables tipo lista
 def p_listinit(p):
   ''' listinit : LIST type var EQUALS list SEMICOLON'''
+  var_options['initialization'] = True
 
 # Regla de formato de variable tipo listo
 def p_list(p):
@@ -184,6 +187,7 @@ def p_var(p):
       exit(0)
     else:
       add_var_to_dict(var_options['id'], var_options['type'], var_options['scope'])
+  var_options['initialization'] = False
 
 
 # Regla para cuando se accesara una variable de tipo lista
@@ -244,6 +248,12 @@ def p_parametersinputloop(p):
 def p_parameters(p):
   ''' parameters : type ID parametersloop
                  |'''
+  var_options['id'] = p[2]
+  if var_exists(var_options['id'], var_options['scope']):
+    print("The variable ", var_options['id'], "has been used before.")
+    exit(0)
+  else:
+    add_var_to_dict(var_options['id'], var_options['type'], var_options['scope'])
 
 # Regal para el ciclio de ingresar más parametros a uan función
 def p_parametersloop(p):

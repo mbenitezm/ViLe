@@ -1,16 +1,21 @@
 main {
 	int variable = 3;
+	int printAlgo = 1;
+	int ifalgo = x;
 	if (variable > 4){
 		variable = 4;
 	}
 	else {
 		int otravariable = 10;
-		int otravariable = 11;
 	}
-	
+
+
 	while (true) {
 		otravariable = otravariable * 2;
+		otravariable = 5;
 	}
+
+	printAlgo = 5;
 	
 	times (4) {
 		print(2,3);
@@ -22,10 +27,16 @@ main {
 }
 
 def void funcion (int x) {
-	int variable = 5;
+	int avariable = 5; 
+	int prueba = 1;
 	return variable * 2;
 }
 
-def int funcion2 (int y) {
+def int funcion2 (int x) {
+  int algo = 2;
+  int prueba = 2;
+  if (algo > 5) { 
+  	prueba = 4;
+  }
 	return y * 2;
 }
