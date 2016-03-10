@@ -9,6 +9,7 @@ main {
 		int otravariable = 10;
 	}
 
+	printAlgo = 2;
 
 	while (true) {
 		otravariable = otravariable * 2;

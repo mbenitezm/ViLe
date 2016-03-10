@@ -3,7 +3,13 @@ import pprint
 pp = pprint.PrettyPrinter()
 
 ###### Initialize structures ###################################################
-
+types = {
+  'int' : 1,
+  'float' : 2,
+  'string' : 3,
+  'bool' : 4 ,
+  'void' : 5
+}
 proc_dict = {}
 var_dict = {
     'global' : {
@@ -34,7 +40,7 @@ def print_proc_dict():
 
 def add_var_to_dict(var_id, var_type, scope):
     var_dict[scope][var_id] = {
-        'type': var_type
+        'type': types[var_type]
     }
     print_var_dict()
 
