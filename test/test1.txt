@@ -1,7 +1,7 @@
 main {
 	int variable = 3;
-	int printAlgo = 1;
-	int ifalgo = x;
+	float printAlgo = 1;
+	string ifalgo = x;
 	if (variable > 4){
 		variable = 4;
 	}
