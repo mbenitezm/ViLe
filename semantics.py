@@ -43,6 +43,44 @@ def print_funct_dict():
   print "\nFUNCT DICT"
   pp.pprint(funct_dict)
 
+def semantic_dict_constr():
+  return { 
+          'int' : { 
+            'int' : op_constr('int', 'int', 'int', 'int', 'bool', 'bool', 'bool', 'bool', 'bool', 'error', 'error'),
+            'float' : op_constr('float', 'float', 'float', 'float', 'bool', 'bool', 'bool', 'bool', 'bool', 'error', 'error'),
+            'string' : op_error(),
+            'bool' : op_error()
+          },
+          'float' : { 
+            'int' : op_constr('float', 'float', 'float', 'float', 'bool', 'bool', 'bool', 'bool', 'bool', 'error', 'error'),
+            'float' : op_constr('float', 'float', 'float', 'float', 'bool', 'bool', 'bool', 'bool', 'bool', 'error', 'error'),
+            'string' : op_error(),
+            'bool' : op_error()
+          },
+         'string' : { 
+            'int' : op_error(),
+            'float' : op_error(),
+            'string' : op_constr('sring', 'error', 'error', 'error', 'error', 'error', 'error', 'error', 'bool', 'error', 'error'),
+            'bool' : op_error()
+          },
+          'bool' : { 
+            'int' : op_error(),
+            'float' : op_error(),
+            'string' : op_error(),
+            'bool' : op_constr('error', 'error', 'error', 'error', 'error', 'error', 'error', 'error', 'bool', 'bool', 'bool')
+          }
+         }
+
+def op_constr(plus, minus, mult, div, greater_than, greater_eq_than, less_than, less_eq_than, equals, and_o, or_o):
+  return { '+' : plus, '-' : minus, '*' : mult, '/' : div, '>' : greater_than, '>=' : greater_eq_than,
+    '<' : less_than, '<=' : less_eq_than, '==' : equals, 'and' : and_o, 'or' : or_o}
+
+def op_error():
+  return { '+' : 'error', '-' : 'error', '*' : 'error', '/' : 'error', '>' : 'error', '>=' : 'error',
+    '<' : 'error', '<=' : 'error', '==' : 'error', 'and' : 'error', 'or' : 'error'}
+
+semantic_dict = semantic_dict_constr()
+
 def add_var_to_dict(var_id, var_type, scope):
   var_dict[scope][var_id] = {
     'type': types[var_type]
