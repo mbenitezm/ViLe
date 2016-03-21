@@ -21,3 +21,7 @@ Bitácora de cambios
 
 9 de Marzo
 - Tablas de variables.
+
+20 de Marzo
+- Generación de direcciones para variables.
+- Generar cubo semántico
