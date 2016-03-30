@@ -25,3 +25,8 @@ Bitácora de cambios
 20 de Marzo
 - Generación de direcciones para variables.
 - Generar cubo semántico
+
+28 de Marzo
+- Generación de pilas para operadores, operandos y tipos
+- Encontrado error al usar variable declaradas en encabezado de función
+- Pendiente las constantes y manejar error cuando no existe la variable

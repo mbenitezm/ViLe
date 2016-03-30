@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pprint
-from memory import *
+from collections import deque
 pp = pprint.PrettyPrinter()
 
 ###### Initialize structures ###################################################
@@ -33,6 +33,13 @@ funct_options = {
   'type' : 'none',
   'params' : {}
 }
+
+quadruplets = deque([])
+
+operand_stack = []
+operator_stack = []
+types_stack = []
+
 
 # Memory segment int float  bool  string
 global_segment = [0, 2500, 5000, 7500]
@@ -192,6 +199,12 @@ def var_exists(var_id, scope):
       return True
     else:
       return False
+
+def var_exists_expressions(var_id, scope):
+  if var_id in var_dict[scope]:
+    return True
+  else:
+    return False
 
 def clear_var_dict():
   var_dict['function'].clear()

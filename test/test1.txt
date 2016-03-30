@@ -1,7 +1,7 @@
 main {
 	int variable = 3;
 	float printAlgo = 1;
-	string ifalgo = x;
+	string ifalgo = "algo";
 	if (variable > 4){
 		variable = 4;
 	}
@@ -9,10 +9,11 @@ main {
 		int otravariable = 10;
 	}
 
+	int cosas = 1;
 	printAlgo = 2;
 
 	while (true) {
-		otravariable = otravariable * 2;
+		otravariable = (otravariable * 2);
 		otravariable = 5;
 	}
 
@@ -30,7 +31,7 @@ main {
 def void funcion (int x) {
 	int avariable = 5; 
 	int prueba = 1;
-	return variable * 2;
+	return avariable * 2;
 }
 
 def int funcion2 (int y, int otra) {
@@ -39,5 +40,4 @@ def int funcion2 (int y, int otra) {
   if (algo > 5) { 
   	prueba = 4;
   }
-	return y * 2;
 }

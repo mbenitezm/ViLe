@@ -66,7 +66,7 @@ t_C_BRACKET = '\}'
 t_O_S_BRACKET = '\['
 t_C_S_BRACKET = '\]'
 # Expresiones regulares
-t_STRINGCONST = '"-*"'
+t_STRINGCONST = '".*"'
 t_INTCONST = '-?[0-9]+'
 t_FLOATCONST = '-?[0-9]+.+[0-9]+'
 

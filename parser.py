@@ -144,7 +144,7 @@ def p_expression2optional(p):
 def p_logicop(p):
   ''' logicop : AND
               | OR'''
-
+  operator_stack.append(p[1])
 # Reglas de operaciones relacionales
 def p_relop(p):
   ''' relop : EQUALITY
@@ -153,6 +153,7 @@ def p_relop(p):
             | LESS
             | LESS_EQUAL
             | DIFFERENT'''
+  operator_stack.append(p[1])
 
 # Regla para expresión
 def p_exp(p):
@@ -166,6 +167,8 @@ def p_exploop(p):
 def p_addsub(p):
   ''' addsub : SUM
              | MINUS'''
+  operator_stack.append(p[1])
+
 # Regla para terminos
 def p_term(p):
   ''' term : fact termloop'''
@@ -174,17 +177,31 @@ def p_term(p):
 def p_termloop(p):
   ''' termloop : divmult term
                |'''
+
 # Regla que tiene los operadores de multiplicación, división, y residuo
 def p_divmult(p):
   ''' divmult : MULTIPLY
               | DIVIDE
               | MOD'''
+  operator_stack.append(p[1])
+
 # Regla para factores
 def p_fact(p):
   ''' fact : varconst
-           | O_PARENTHESIS expression C_PARENTHESIS'''
+           | O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis'''
+
+def p_add_o_parenthesis(p):
+  ''' add_o_parenthesis :'''
+  operator_stack.append(p[-1])
+
+def p_add_c_parenthesis(p):
+  ''' add_c_parenthesis :'''
+  operator_stack.append(p[-1])
+
 def p_var_assign(p):
   ''' var_assign : ID listaccess'''
+  operand_stack.append(var_dict[var_options['scope']][p[1]]['address'])
+  types_stack.append(var_dict[var_options['scope']][p[1]]['type'])
 
 # Regla para las variables
 def p_var(p):
@@ -195,6 +212,8 @@ def p_var(p):
     exit(0)
   else:
     add_var_to_dict(var_options['id'], var_options['type'], var_options['scope'])
+    operand_stack.append(var_dict[var_options['scope']][p[1]]['address'])
+    types_stack.append(types[var_options['type']])
 
 # Regla para cuando se accesara una variable de tipo lista
 def p_listaccess(p):
@@ -290,5 +309,8 @@ def check(filename):
   f.close()
   if parser.parse(data) == 'Valid':
     print('VALID!')
+    print(operator_stack)
+    print(operand_stack)
+    print(types_stack)
   exit(0);
   
