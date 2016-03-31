@@ -1,16 +1,26 @@
 main {
 	int variable = 3;
-	float printAlgo = 1;
+	float printAlgo = 1.0;
 	string ifalgo = "algo";
 	if (variable > 4){
 		variable = 4;
 	}
 	else {
 		int otravariable = 10;
+		if (5 > 3){
+			print(2);
+		}
 	}
+
+
+	list int arreglo = [1,2,3,4];
 
 	int cosas = 1;
 	printAlgo = 2;
+
+	variable = (5*3 ) / 2 + ((2 + 1 ) / 8);
+ 
+ bool test = true;
 
 	while (true) {
 		otravariable = (otravariable * 2);

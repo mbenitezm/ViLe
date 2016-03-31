@@ -30,3 +30,6 @@ Bitácora de cambios
 - Generación de pilas para operadores, operandos y tipos
 - Encontrado error al usar variable declaradas en encabezado de función
 - Pendiente las constantes y manejar error cuando no existe la variable
+
+29 de Marzo
+- Corregir contador de líeneas.
