@@ -33,3 +33,7 @@ Bitácora de cambios
 
 29 de Marzo
 - Corregir contador de líeneas.
+
+31 de Marzo
+- Se agrego el orden de los parametros en el diccionario de funciones
+- Se cambiaron todos los strings que tienen que ver a tipos a sus respetivos numeros enteros

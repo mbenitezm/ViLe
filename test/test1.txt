@@ -44,7 +44,7 @@ def void funcion (int x) {
 	return avariable * 2;
 }
 
-def int funcion2 (int y, int otra) {
+def int funcion2 (int y, string hey, int otra) {
   int algo = 2;
   int prueba = 2;
   if (algo > 5) { 

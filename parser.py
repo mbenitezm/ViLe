@@ -28,8 +28,11 @@ def p_functionloop(p):
 def p_function(p):
   ''' function : FUNCTION functiontype ID O_PARENTHESIS parameters C_PARENTHESIS block'''
   funct_options['id'] = p[3]
-  add_funct_to_dict(funct_options['id'], funct_options['type'], funct_options['params'])
+  add_funct_to_dict(funct_options['id'], funct_options['type'], funct_options['params'], funct_options['params_order'])
+  funct_options['id'] = None
+  funct_options['type'] = None
   funct_options['params'] = {}
+  funct_options['params_order'] = ''
 
 
 # Regla que define el tipo de función
@@ -49,6 +52,16 @@ def p_type(p):
            | FLOAT
            | STRING'''
   var_options['type'] = p[1]
+
+# Regla que contiene los tipos de los parametros de las funciones para poderlos
+# agregar al orden de parametros
+def p_parametertype(p):
+  ''' parametertype : BOOL
+                    | INT
+                    | FLOAT
+                    | STRING'''
+  var_options['type'] = p[1]
+  funct_options['params_order'] = funct_options['params_order'] + str(types[p[1]])
 
 # Regla del bloque principal del programa
 def p_block(p):
@@ -277,7 +290,7 @@ def p_parameters(p):
                  |'''
 
 def p_parameterinit(p):
-  ''' parameterinit : type ID '''
+  ''' parameterinit : parametertype ID '''
   var_options['id'] = p[2]
   if var_exists(var_options['id'], var_options['scope']):
     print("The variable ", var_options['id'], "has been used before.")
