@@ -12,9 +12,6 @@ main {
 		}
 	}
 
-
-	list int arreglo = [1,2,3,4];
-
 	int cosas = 1;
 	printAlgo = 2;
 

@@ -162,20 +162,36 @@ def realease_temp_memory():
   temp_segment-=1
 ########################Quadruple Generation####################################
 def generate_operations_quadruples():
-  type2 = type_stack.pop()
-  type1 = type_stack.pop()
-  operator = operator.pop()
-  result_type = semantic_dict[type1][type2][operator]
+  type2 = types_stack.pop()
+  type1 = types_stack.pop()
+  operator1 = operator_stack.pop()
+  result_type = semantic_dict[type1][type2][operator1]
   if result_type < 1:
-    print type1, " and ", type2, " are not a valid type combination."
+    print type1, " and ", type2, " are not a valid type combination for ", operator1 
     exit(0)
   else:
     operand2 = operand_stack.pop()
     operand1 = operand_stack.pop()
     result = assign_address('temp', result_type)
-    quadruple = [operator, operand1, operand2, result]
+    quadruple = [operator1, operand1, operand2, result]
     operand_stack.push(result)
-    type_stack.push(result_type)
+    types_stack.push(result_type)
+
+def generate_equals_quadruples():
+  type2 = types_stack.pop()
+  type1 = types_stack.pop()
+  operator1 = operator_stack.pop()
+  result_type = semantic_dict[type1][type2][operator1]
+  if result_type < 1:
+    print type1, " and ", type2, " are not a valid type combination for ", operator1
+    exit(0)
+  else:
+    operand2 = operand_stack.pop()
+    operand1 = operand_stack.pop()
+    quadruple = [operator1, operand2, operand1]
+    operand_stack.push(result)
+    types_stack.push(result_type)
+
 
 ################################################################################
 def print_var_dict():
@@ -295,9 +311,10 @@ def add_constant_to_dict(constant, type):
   if not(constant in var_dict['constants']):
     add_constant_to_dict_aux(constant, type)
     operand_stack.append(var_dict['constants'][constant]['address'])
+    types_stack.append(var_dict['constants'][constant]['type'])
   else:
     operand_stack.append(var_dict['constants'][constant]['address'])
-
+    operand_stack.append(var_dict['constants'][constant]['type'])
 
 def var_exists(var_id, scope):
   if var_id in var_dict[scope]:

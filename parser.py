@@ -111,7 +111,16 @@ def p_init(p):
 
 # Regla de inicialización de variables normales
 def p_normalinit(p):
-  ''' normalinit : type var EQUALS add_equals expression SEMICOLON'''
+  ''' normalinit : type var EQUALS add_equals expression equals_quadruple SEMICOLON'''
+
+def p_equals_quadruple(p):
+  ''' equals_quadruple : '''
+  if len(operator_stack) > 0:
+    while operator_stack[len(operator_stack)-1] == '=':
+      generate_equals_quadruples()
+      if len(operator_stack) == 0:
+        break
+
 
 def p_add_equals(p):
   ''' add_equals :'''
@@ -119,7 +128,7 @@ def p_add_equals(p):
 
 # Regla de inicialización de variables tipo lista
 def p_listinit(p):
-  ''' listinit : LIST type var EQUALS add_equals list SEMICOLON'''
+  ''' listinit : LIST type var EQUALS list SEMICOLON'''
 
 # Regla de formato de variable tipo listo
 def p_list(p):
@@ -166,8 +175,9 @@ def p_logicop(p):
 
 def p_logic_op_quadruple(p):
   '''logic_op_quadruple :'''
-  if operator_stack[len(operand_stack)-1] == 'and' || operator_stack[len(operand_stack)-1] == 'or':
-    generate_operations_quadruples()
+  if len(operator_stack) > 0:
+    if operator_stack[len(operator_stack)-1] == 'and' or operator_stack[len(operator_stack)-1] == 'or':
+      generate_operations_quadruples()
 
 # Reglas de operaciones relacionales
 def p_relop(p):
@@ -181,10 +191,9 @@ def p_relop(p):
 
 def p_relop_quadruple(p):
   '''relop_quadruple :'''
-  if operator_stack[len(operand_stack)-1] == '>' || operator_stack[len(operand_stack)-1] == '<'
-    || operator_stack[len(operand_stack)-1] == '>=' || operator_stack[len(operand_stack)-1] == '<=':
-    || operator_stack[len(operand_stack)-1] == '!=' || operator_stack[len(operand_stack)-1] == '=='
-    generate_operations_quadruples()
+  if len(operator_stack) > 0:
+    if operator_stack[len(operator_stack)-1] == '>' or operator_stack[len(operator_stack)-1] == '<' or operator_stack[len(operator_stack)-1] == '>=' or operator_stack[len(operator_stack)-1] == '<=' or operator_stack[len(operator_stack)-1] == '!=' or operator_stack[len(operator_stack)-1] == '==':
+      generate_operations_quadruples()
 
 # Regla para expresión
 def p_exp(p):
@@ -192,8 +201,9 @@ def p_exp(p):
 
 def p_exp_quadruple(p):
   ''' exp_quadruple :'''
-  if operator_stack[len(operand_stack)-1] == '+' || operator_stack[len(operand_stack)-1] == '-':
-    generate_operations_quadruples()
+  if len(operator_stack) > 0:
+    if operator_stack[len(operator_stack)-1] == '+' or operator_stack[len(operator_stack)-1] == '-':
+      generate_operations_quadruples()
 
 # Regla para ciclo de expresión
 def p_exploop(p):
@@ -210,8 +220,10 @@ def p_term(p):
   ''' term : fact term_quadruple termloop'''
 
 def p_term_quadruple(p):
-  if operator_stack[len(operand_stack)-1] == '*' || operator_stack[len(operand_stack)-1] == '/' || operator_stack[len(operand_stack)-1] == '%:
-    generate_operations_quadruples()
+  ''' term_quadruple : '''
+  if len(operator_stack) > 0:
+    if operator_stack[len(operator_stack)-1] == '*' or operator_stack[len(operator_stack)-1] == '/' or operator_stack[len(operator_stack)-1] == '%':
+      generate_operations_quadruples()
 
 # Regla para ciclo de terminos
 def p_termloop(p):
