@@ -39,7 +39,7 @@ main {
 }
 
 def void funcion (int x) {
-	int avariable = 5; 
+	int avariable = 5 + 5; 
 	int prueba = 1;
 	return avariable * 2;
 }

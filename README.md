@@ -37,3 +37,6 @@ Bitácora de cambios
 31 de Marzo
 - Se agrego el orden de los parametros en el diccionario de funciones
 - Se cambiaron todos los strings que tienen que ver a tipos a sus respetivos numeros enteros
+
+3 de Abril
+- Arreglar contador de líneas para mostrar error

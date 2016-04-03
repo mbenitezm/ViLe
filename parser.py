@@ -89,7 +89,8 @@ def p_statute(p):
 
 # Regla para estatuto de asignación
 def p_assignation(p):
-  ''' assignation : var_assign EQUALS expression SEMICOLON'''
+  ''' assignation : var_assign EQUALS add_equals expression SEMICOLON'''
+
 
 # Regla de estatuto para escritura
 def p_writting(p):
@@ -110,11 +111,15 @@ def p_init(p):
 
 # Regla de inicialización de variables normales
 def p_normalinit(p):
-  ''' normalinit : type var EQUALS expression SEMICOLON'''
+  ''' normalinit : type var EQUALS add_equals expression SEMICOLON'''
+
+def p_add_equals(p):
+  ''' add_equals :'''
+  operator_stack.append(p[-1])
 
 # Regla de inicialización de variables tipo lista
 def p_listinit(p):
-  ''' listinit : LIST type var EQUALS list SEMICOLON'''
+  ''' listinit : LIST type var EQUALS add_equals list SEMICOLON'''
 
 # Regla de formato de variable tipo listo
 def p_list(p):
@@ -143,14 +148,14 @@ def p_expression(p):
   ''' expression : expression2 expressionoptional'''
 
 def p_expressionoptional(p):
-  ''' expressionoptional : logicop expression2
+  ''' expressionoptional : logicop expression2 logic_op_quadruple
                          |'''
 
 def p_expression2(p):
   ''' expression2 : exp expression2optional'''
 
 def p_expression2optional(p):
-  ''' expression2optional : relop exp
+  ''' expression2optional : relop relop_quadruple exp
                           |'''
                           
 # Reglas de operadores lógicos
@@ -158,6 +163,12 @@ def p_logicop(p):
   ''' logicop : AND
               | OR'''
   operator_stack.append(p[1])
+
+def p_logic_op_quadruple(p):
+  '''logic_op_quadruple :'''
+  if operator_stack[len(operand_stack)-1] == 'and' || operator_stack[len(operand_stack)-1] == 'or':
+    generate_operations_quadruples()
+
 # Reglas de operaciones relacionales
 def p_relop(p):
   ''' relop : EQUALITY
@@ -168,9 +179,21 @@ def p_relop(p):
             | DIFFERENT'''
   operator_stack.append(p[1])
 
+def p_relop_quadruple(p):
+  '''relop_quadruple :'''
+  if operator_stack[len(operand_stack)-1] == '>' || operator_stack[len(operand_stack)-1] == '<'
+    || operator_stack[len(operand_stack)-1] == '>=' || operator_stack[len(operand_stack)-1] == '<=':
+    || operator_stack[len(operand_stack)-1] == '!=' || operator_stack[len(operand_stack)-1] == '=='
+    generate_operations_quadruples()
+
 # Regla para expresión
 def p_exp(p):
-  ''' exp : term exploop'''
+  ''' exp : term exp_quadruple exploop'''
+
+def p_exp_quadruple(p):
+  ''' exp_quadruple :'''
+  if operator_stack[len(operand_stack)-1] == '+' || operator_stack[len(operand_stack)-1] == '-':
+    generate_operations_quadruples()
 
 # Regla para ciclo de expresión
 def p_exploop(p):
@@ -184,7 +207,11 @@ def p_addsub(p):
 
 # Regla para terminos
 def p_term(p):
-  ''' term : fact termloop'''
+  ''' term : fact term_quadruple termloop'''
+
+def p_term_quadruple(p):
+  if operator_stack[len(operand_stack)-1] == '*' || operator_stack[len(operand_stack)-1] == '/' || operator_stack[len(operand_stack)-1] == '%:
+    generate_operations_quadruples()
 
 # Regla para ciclo de terminos
 def p_termloop(p):
@@ -213,8 +240,12 @@ def p_add_c_parenthesis(p):
 
 def p_var_assign(p):
   ''' var_assign : ID listaccess'''
-  operand_stack.append(var_dict[var_options['scope']][p[1]]['address'])
-  types_stack.append(var_dict[var_options['scope']][p[1]]['type'])
+  try:
+    operand_stack.append(var_dict[var_options['scope']][p[1]]['address'])
+    types_stack.append(var_dict[var_options['scope']][p[1]]['type'])
+  except:
+    print "Variable", p[1], "doens't exists"
+    exit(0)
 
 # Regla para las variables
 def p_var(p):
@@ -225,8 +256,12 @@ def p_var(p):
     exit(0)
   else:
     add_var_to_dict(var_options['id'], var_options['type'], var_options['scope'])
-    operand_stack.append(var_dict[var_options['scope']][p[1]]['address'])
-    types_stack.append(types[var_options['type']])
+    try: 
+      operand_stack.append(var_dict[var_options['scope']][p[1]]['address'])
+      types_stack.append(types[var_options['type']])
+    except:
+      print "Variable", p[1], "doesn't exists in line .", p.lineno 
+      exit(0)
 
 # Regla para cuando se accesara una variable de tipo lista
 def p_listaccess(p):
@@ -247,15 +282,31 @@ def p_functionorlist(p):
 
 # Regla para constantes
 def p_constants(p):
-  ''' constants : INTCONST
-                | FLOATCONST
-                | STRINGCONST
-                | booleanconst'''
+  ''' constants : INTCONST add_int_constant_to_dict
+                | FLOATCONST add_float_constant_to_dict
+                | STRINGCONST add_string_constant_to_dict
+                | booleanconst '''
 
 #Regla de constante booleana
 def p_booleanconst(p):
-  ''' booleanconst : TRUE
-                   | FALSE'''
+  ''' booleanconst : TRUE add_bool_constant_to_dict
+                   | FALSE add_bool_constant_to_dict'''
+
+def p_add_int_constant_to_dict(p):
+  ''' add_int_constant_to_dict : '''
+  add_constant_to_dict(p[-1], 'int')
+
+def p_add_float_constant_to_dict(p):
+  ''' add_float_constant_to_dict : '''
+  add_constant_to_dict(p[-1], 'float')
+
+def p_add_string_constant_to_dict(p):
+  ''' add_string_constant_to_dict : '''
+  add_constant_to_dict(p[-1], 'string')
+
+def p_add_bool_constant_to_dict(p):
+  ''' add_bool_constant_to_dict : '''
+  add_constant_to_dict(p[-1], 'bool')
 
 # Regla para ciclos
 def p_loop(p):
@@ -309,7 +360,7 @@ def p_error(p):
     if type(p).__name__ == 'NoneType':
       print('Syntax error')
     else:
-      print('Syntax error before', p.value, 'at ', p.lineno - 1)
+      print('Syntax error in ', p.value, ' at line ', p.lineno)
       p.lineno = 0
 
 # Build the parser
@@ -326,4 +377,3 @@ def check(filename):
     print(operand_stack)
     print(types_stack)
   exit(0);
-  

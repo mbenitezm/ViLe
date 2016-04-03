@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+  # -*- coding: utf-8 -*-
 import pprint
 from collections import deque
 pp = pprint.PrettyPrinter()
@@ -20,6 +20,8 @@ var_dict = {
     'main' : {
      },
     'function' : {
+    },
+    'constants' : {
     }
 }
 
@@ -47,6 +49,7 @@ types_stack = []
 main_segment = [0, 2500, 5000, 7500]
 function_segment = [10000, 12500, 15000, 17500]
 temp_segment = [20000, 22500, 25000, 27500]
+const_segment = [30000, 32500, 35000, 37500]
 
 def add_main_memory(var_type):
     if var_type == 'int':
@@ -99,14 +102,82 @@ def add_function_memory(var_type):
       exit(-1)
     else:
       function_segment[3] += 1
+
+def add_temp_memory(var_type):
+  if var_type == 0:
+    if temp_segment[0] > 22499:
+      print('Memory overflow')
+      exit(-1)
+    else: 
+      const_segment[0] += 1
+  elif var_type == 2:
+    if temp_segment[1] > 24999:
+      print('Memory overflow')
+      exit(-1)
+    else:
+      temp_segment[1] += 1
+  elif var_type == 3:
+    if temp_segment[2] > 27499:
+      print('Memory overflow')
+      exit(-1)
+    else:
+      temp_segment[2] += 1
+  elif var_type == 4:
+    if temp_segment[3] > 29999:
+      print('Memory overflow')
+      exit(-1)
+    else:
+      temp_segment[3] += 1
+
+def add_constant_memory(var_type):
+  if var_type == 'int':
+    if const_segment[0] > 32499:
+      print('Memory overflow')
+      exit(-1)
+    else: 
+      const_segment[0] += 1
+  elif var_type == 'float':
+    if const_segment[1] > 34999:
+      print('Memory overflow')
+      exit(-1)
+    else:
+      const_segment[1] += 1
+  elif var_type == 'bool':
+    if const_segment[2] > 37499:
+      print('Memory overflow')
+      exit(-1)
+    else:
+      const_segment[2] += 1
+  elif var_type == 'string':
+    if const_segment[3] > 39999:
+      print('Memory overflow')
+      exit(-1)
+    else:
+      const_segment[3] += 1
     
 def add_temp_memory():
   temp_segment+=1
 
 def realease_temp_memory():
   temp_segment-=1
-################################################################################
+########################Quadruple Generation####################################
+def generate_operations_quadruples():
+  type2 = type_stack.pop()
+  type1 = type_stack.pop()
+  operator = operator.pop()
+  result_type = semantic_dict[type1][type2][operator]
+  if result_type < 1:
+    print type1, " and ", type2, " are not a valid type combination."
+    exit(0)
+  else:
+    operand2 = operand_stack.pop()
+    operand1 = operand_stack.pop()
+    result = assign_address('temp', result_type)
+    quadruple = [operator, operand1, operand2, result]
+    operand_stack.push(result)
+    type_stack.push(result_type)
 
+################################################################################
 def print_var_dict():
   print "\nVAR DICT"
   pp.pprint(var_dict)
@@ -183,8 +254,34 @@ def assign_address(scope, var_type):
     elif var_type == 'string':
       address = function_segment[3]
     add_function_memory(var_type)
+  elif scope == 'constants':
+    if var_type == 'int':
+      address = const_segment[0]
+    elif var_type == 'float':
+      address = const_segment[1]
+    elif var_type == 'bool':
+      address = const_segment[2]
+    elif var_type == 'string':
+      address = const_segment[3]
+    add_constant_memory(var_type)
+  elif scope == 'temps':
+    if var_type == 1:
+      address = temp_segment[0]
+    elif var_type == 2:
+      address = temp_segment[1]
+    elif var_type == 3:
+      address = temp_segment[2]
+    elif var_type == 4:
+      address = temp_segment[3]
+    add_temp_memory(var_type)
   return address
 
+def add_constant_to_dict_aux(constant, type):
+  address = assign_address('constants', type)
+  var_dict['constants'][constant] = {
+    'address' : address,
+    'type' : types[type]
+  }
 
 def add_funct_to_dict(funct_id, funct_type, funct_params, funct_params_order):
   funct_dict[funct_id] = {
@@ -193,6 +290,14 @@ def add_funct_to_dict(funct_id, funct_type, funct_params, funct_params_order):
       'params_order' : funct_params_order
   }
   print_funct_dict()
+
+def add_constant_to_dict(constant, type):
+  if not(constant in var_dict['constants']):
+    add_constant_to_dict_aux(constant, type)
+    operand_stack.append(var_dict['constants'][constant]['address'])
+  else:
+    operand_stack.append(var_dict['constants'][constant]['address'])
+
 
 def var_exists(var_id, scope):
   if var_id in var_dict[scope]:
