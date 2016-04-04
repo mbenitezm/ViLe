@@ -174,8 +174,8 @@ def generate_operations_quadruples():
     operand1 = operand_stack.pop()
     result = assign_address('temp', result_type)
     quadruple = [operator1, operand1, operand2, result]
-    operand_stack.push(result)
-    types_stack.push(result_type)
+    operand_stack.append(result)
+    types_stack.append(result_type)
 
 def generate_equals_quadruples():
   type2 = types_stack.pop()
@@ -188,9 +188,9 @@ def generate_equals_quadruples():
   else:
     operand2 = operand_stack.pop()
     operand1 = operand_stack.pop()
-    quadruple = [operator1, operand2, operand1]
-    operand_stack.push(result)
-    types_stack.push(result_type)
+    quadruple = [operator1, operand2, '',  operand1]
+    operand_stack.append(operand1)
+    types_stack.append(result_type)
 
 
 ################################################################################
@@ -212,21 +212,21 @@ def semantic_dict_constr():
           },
           types['float'] : { 
             types['int'] : op_constr('float', 'float', 'float', 'float', 'bool', 'bool', 'bool', 'bool', 'bool', 'error', 'error', 'float'),
-            types['float'] : op_constr('float', 'float', 'float', 'float', 'bool', 'bool', 'bool', 'bool', 'bool', 'error', 'error', 'error'),
+            types['float'] : op_constr('float', 'float', 'float', 'float', 'bool', 'bool', 'bool', 'bool', 'bool', 'error', 'error', 'float'),
             types['string'] : op_error(),
             types['bool'] : op_error()
           },
          types['string'] : { 
             types['int'] : op_error(),
             types['float'] : op_error(),
-            types['string'] : op_constr('string', 'error', 'error', 'error', 'error', 'error', 'error', 'error', 'bool', 'error', 'error', 'error'),
+            types['string'] : op_constr('string', 'error', 'error', 'error', 'error', 'error', 'error', 'error', 'bool', 'error', 'error', 'string'),
             types['bool'] : op_error()
           },
           types['bool'] : { 
             types['int'] : op_error(),
             types['float'] : op_error(),
             types['string'] : op_error(),
-            types['bool'] : op_constr('error', 'error', 'error', 'error', 'error', 'error', 'error', 'error', 'bool', 'bool', 'bool', 'error')
+            types['bool'] : op_constr('error', 'error', 'error', 'error', 'error', 'error', 'error', 'error', 'bool', 'bool', 'bool', 'bool')
           }
          }
 
