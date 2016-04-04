@@ -248,7 +248,7 @@ def p_add_o_parenthesis(p):
 
 def p_add_c_parenthesis(p):
   ''' add_c_parenthesis :'''
-  operator_stack.append(p[-1])
+  operator_stack.pop()
 
 def p_var_assign(p):
   ''' var_assign : ID listaccess'''
@@ -396,7 +396,7 @@ parser = yacc.yacc(start='program')
 #   exit(0);
 
 def check():
-  f = open('test/cuadruples.txt', 'r')
+  f = open('test/test1.txt', 'r')
   data = f.read()
   f.close()
   if parser.parse(data) == 'Valid':
