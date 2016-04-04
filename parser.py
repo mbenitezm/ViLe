@@ -279,6 +279,7 @@ def p_var(p):
 def p_listaccess(p):
   ''' listaccess : O_S_BRACKET INTCONST C_S_BRACKET
                  |'''
+
 # Regla para variables o constantes
 def p_varconst(p):
   ''' varconst : varconstfunction
@@ -287,10 +288,14 @@ def p_varconst(p):
 def p_varconstfunction(p):
   ''' varconstfunction : ID functionorlist'''
 
+def p_add_to_stack(p):
+  ''' add_to_stack : '''
+  semantics_add_to_stack(p[-1])
+
 def p_functionorlist(p):
   ''' functionorlist : O_S_BRACKET INTCONST C_S_BRACKET
                      | O_PARENTHESIS parametersinput C_PARENTHESIS
-                     |'''
+                     | add_to_stack'''
 
 # Regla para constantes
 def p_constants(p):
@@ -379,8 +384,19 @@ def p_error(p):
 parser = yacc.yacc(start='program')
 
 # Main del parser
-def check(filename):
-  f = open(filename, 'r')
+# def check(filename):
+#   f = open(filename, 'r')
+#   data = f.read()
+#   f.close()
+#   if parser.parse(data) == 'Valid':
+#     print('VALID!')
+#     print(operator_stack)
+#     print(operand_stack)
+#     print(types_stack)
+#   exit(0);
+
+def check():
+  f = open('test/test1.txt', 'r')
   data = f.read()
   f.close()
   if parser.parse(data) == 'Valid':
@@ -389,3 +405,4 @@ def check(filename):
     print(operand_stack)
     print(types_stack)
   exit(0);
+

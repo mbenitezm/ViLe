@@ -192,6 +192,17 @@ def generate_equals_quadruples():
     operand_stack.append(operand1)
     types_stack.append(result_type)
 
+def semantics_add_to_stack(id):
+  if id in var_dict['function']:
+    operand_stack.append(var_dict['function'][id]['address'])
+    types_stack.append(var_dict['function'][id]['type'])
+  elif id in var_dict['main']:
+    operand_stack.append(var_dict['main'][id]['address'])
+    types_stack.append(var_dict['main'][id]['type'])
+  else:
+    print id, " doesn't exists"
+    exit(0)
+  # TODO: AGREGAR QUE JALEN LAS FUNCIONES TAMBIEN
 
 ################################################################################
 def print_var_dict():
@@ -293,6 +304,7 @@ def assign_address(scope, var_type):
   return address
 
 def add_constant_to_dict_aux(constant, type):
+  print constant, type
   address = assign_address('constants', type)
   var_dict['constants'][constant] = {
     'address' : address,
@@ -314,7 +326,7 @@ def add_constant_to_dict(constant, type):
     types_stack.append(var_dict['constants'][constant]['type'])
   else:
     operand_stack.append(var_dict['constants'][constant]['address'])
-    operand_stack.append(var_dict['constants'][constant]['type'])
+    types_stack.append(var_dict['constants'][constant]['type'])
 
 def var_exists(var_id, scope):
   if var_id in var_dict[scope]:
