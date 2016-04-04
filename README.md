@@ -40,3 +40,4 @@ Bitácora de cambios
 
 3 de Abril
 - Arreglar contador de líneas para mostrar error
+- Terminar cuadruplos para operaciones (falta agregar el print y correigr los params)
