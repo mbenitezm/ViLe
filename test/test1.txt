@@ -1,4 +1,5 @@
 main {
+	int otro = 1 + 2 + 3 + 4;
 	int variable = 3;
 	float printAlgo = 1.0;
 	string ifalgo = "algo";

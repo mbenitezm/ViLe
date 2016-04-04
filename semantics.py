@@ -154,9 +154,6 @@ def add_constant_memory(var_type):
       exit(-1)
     else:
       const_segment[3] += 1
-    
-def add_temp_memory():
-  temp_segment+=1
 
 def realease_temp_memory():
   temp_segment-=1
@@ -172,10 +169,12 @@ def generate_operations_quadruples():
   else:
     operand2 = operand_stack.pop()
     operand1 = operand_stack.pop()
-    result = assign_address('temp', result_type)
+    result = assign_address('temps', result_type)
     quadruple = [operator1, operand1, operand2, result]
     operand_stack.append(result)
     types_stack.append(result_type)
+    quadruplets.append(quadruple)
+    print quadruple
 
 def generate_equals_quadruples():
   type2 = types_stack.pop()
@@ -191,6 +190,8 @@ def generate_equals_quadruples():
     quadruple = [operator1, operand2, '',  operand1]
     operand_stack.append(operand1)
     types_stack.append(result_type)
+    quadruplets.append(quadruple)
+    print quadruple
 
 
 ################################################################################
@@ -314,7 +315,7 @@ def add_constant_to_dict(constant, type):
     types_stack.append(var_dict['constants'][constant]['type'])
   else:
     operand_stack.append(var_dict['constants'][constant]['address'])
-    operand_stack.append(var_dict['constants'][constant]['type'])
+    types_stack.append(var_dict['constants'][constant]['type'])
 
 def var_exists(var_id, scope):
   if var_id in var_dict[scope]:
