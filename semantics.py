@@ -188,8 +188,6 @@ def generate_equals_quadruples():
     operand2 = operand_stack.pop()
     operand1 = operand_stack.pop()
     quadruple = [operator1, operand2, '',  operand1]
-    operand_stack.append(operand1)
-    types_stack.append(result_type)
     quadruplets.append(quadruple)
     print quadruple
 
@@ -329,15 +327,6 @@ def add_constant_to_dict(constant, type):
     types_stack.append(var_dict['constants'][constant]['type'])
 
 def var_exists(var_id, scope):
-  if var_id in var_dict[scope]:
-    return True
-  else:
-    if var_id in var_dict['main']:
-      return True
-    else:
-      return False
-
-def var_exists_expressions(var_id, scope):
   if var_id in var_dict[scope]:
     return True
   else:

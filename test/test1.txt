@@ -44,6 +44,7 @@ def void funcion (int x) {
 
 def int funcion2 (int y, string hey, int otra) {
   int algo = 2;
+  int variable = 5;
   int prueba = 2;
   if (algo > 5) { 
   	prueba = 4;
