@@ -41,3 +41,7 @@ Bitácora de cambios
 3 de Abril
 - Arreglar contador de líneas para mostrar error
 - Terminar cuadruplos para operaciones (falta agregar el print y correigr los params)
+
+4 de Abril
+- Arreglar declaración de variables en funciones con mismo nombre en main
+- falta agregar el print y correigr los params, temporales por funcion??
