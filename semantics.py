@@ -104,12 +104,12 @@ def add_function_memory(var_type):
       function_segment[3] += 1
 
 def add_temp_memory(var_type):
-  if var_type == 0:
+  if var_type == 1:
     if temp_segment[0] > 22499:
       print('Memory overflow')
       exit(-1)
     else: 
-      const_segment[0] += 1
+      temp_segment[0] += 1
   elif var_type == 2:
     if temp_segment[1] > 24999:
       print('Memory overflow')
@@ -193,6 +193,17 @@ def generate_equals_quadruples():
     quadruplets.append(quadruple)
     print quadruple
 
+def semantics_add_to_stack(id):
+  if id in var_dict['function']:
+    operand_stack.append(var_dict['function'][id]['address'])
+    types_stack.append(var_dict['function'][id]['type'])
+  elif id in var_dict['main']:
+    operand_stack.append(var_dict['main'][id]['address'])
+    types_stack.append(var_dict['main'][id]['type'])
+  else:
+    print id, " doesn't exists"
+    exit(0)
+  # TODO: AGREGAR QUE JALEN LAS FUNCIONES TAMBIEN
 
 ################################################################################
 def print_var_dict():

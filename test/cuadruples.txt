@@ -1,4 +1,4 @@
 main{
-	int x = 1;
-	x = x + 2;
+	bool x = true;
+	x = 6 + 2 * 3 / 5 - 4 > 4 + 5 / 9;
 }

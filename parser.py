@@ -89,7 +89,7 @@ def p_statute(p):
 
 # Regla para estatuto de asignación
 def p_assignation(p):
-  ''' assignation : var_assign EQUALS add_equals expression SEMICOLON'''
+  ''' assignation : var_assign EQUALS add_equals expression equals_quadruple SEMICOLON'''
 
 
 # Regla de estatuto para escritura
@@ -164,7 +164,7 @@ def p_expression2(p):
   ''' expression2 : exp expression2optional'''
 
 def p_expression2optional(p):
-  ''' expression2optional : relop relop_quadruple exp
+  ''' expression2optional : relop exp relop_quadruple
                           |'''
                           
 # Reglas de operadores lógicos
@@ -279,6 +279,7 @@ def p_var(p):
 def p_listaccess(p):
   ''' listaccess : O_S_BRACKET INTCONST C_S_BRACKET
                  |'''
+
 # Regla para variables o constantes
 def p_varconst(p):
   ''' varconst : varconstfunction
@@ -287,10 +288,14 @@ def p_varconst(p):
 def p_varconstfunction(p):
   ''' varconstfunction : ID functionorlist'''
 
+def p_add_to_stack(p):
+  ''' add_to_stack : '''
+  semantics_add_to_stack(p[-1])
+
 def p_functionorlist(p):
   ''' functionorlist : O_S_BRACKET INTCONST C_S_BRACKET
                      | O_PARENTHESIS parametersinput C_PARENTHESIS
-                     |'''
+                     | add_to_stack'''
 
 # Regla para constantes
 def p_constants(p):
@@ -379,8 +384,19 @@ def p_error(p):
 parser = yacc.yacc(start='program')
 
 # Main del parser
-def check(filename):
-  f = open(filename, 'r')
+# def check(filename):
+#   f = open(filename, 'r')
+#   data = f.read()
+#   f.close()
+#   if parser.parse(data) == 'Valid':
+#     print('VALID!')
+#     print(operator_stack)
+#     print(operand_stack)
+#     print(types_stack)
+#   exit(0);
+
+def check():
+  f = open('test/cuadruples.txt', 'r')
   data = f.read()
   f.close()
   if parser.parse(data) == 'Valid':
@@ -388,4 +404,6 @@ def check(filename):
     print(operator_stack)
     print(operand_stack)
     print(types_stack)
+    print(quadruplets)
   exit(0);
+
