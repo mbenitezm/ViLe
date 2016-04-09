@@ -280,7 +280,7 @@ def p_var_assign(p):
     operand_stack.append(var_dict[var_options['scope']][p[1]]['address'])
     types_stack.append(var_dict[var_options['scope']][p[1]]['type'])
   except:
-    print "Variable", p[1], "doens't exists"
+    print "Variable", p[1], "doesn't exists"
     exit(0)
 
 # Regla para las variables
@@ -432,7 +432,7 @@ parser = yacc.yacc(start='program')
 #   exit(0);
 
 def check():
-  f = open('test/cuadruples.txt', 'r')
+  f = open('test/test1.txt', 'r')
 
   data = f.read()
   f.close()

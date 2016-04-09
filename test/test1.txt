@@ -49,4 +49,5 @@ def int funcion2 (int y, string hey, int otra) {
   if (algo > 5) { 
   	prueba = 4;
   }
+  y = 8;
 }
