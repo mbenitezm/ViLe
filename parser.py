@@ -96,9 +96,21 @@ def p_assignation(p):
 def p_writting(p):
   ''' writting :  PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON'''
 
+def p_start_printing(p):
+  ''' start_printing : '''
+  operator_stack.append('print')
+
+def p_print_quadruple(p):
+  ''' print_quadruple : '''
+  if len(operator_stack) > 0:
+    while operator_stack[len(operator_stack)-1] == 'print':
+      generate_print_quadruples()
+      if len(operator_stack) == 0:
+        break
+
 # Regla para ciclo de lo que puede ir dentro del print
 def p_writtingloop(p):
-  ''' writtingloop : expression optionalwritting'''
+  ''' writtingloop : start_printing expression print_quadruple optionalwritting'''
 
 # Regla para múltiples expresiones en el print
 def p_optionalwritting(p):
@@ -409,6 +421,7 @@ parser = yacc.yacc(start='program')
 
 def check():
   f = open('test/cuadruples.txt', 'r')
+
   data = f.read()
   f.close()
   if parser.parse(data) == 'Valid':

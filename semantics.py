@@ -230,6 +230,13 @@ def generate_condition_end_quadruples():
   quadruplets[jump][2] = len(quadruplets)
   quadruplet_counter[0] += 1
 
+def generate_print_quadruples():
+  temp_type = types_stack.pop()
+  print_operator = operator_stack.pop()
+  print_operand = operand_stack.pop()
+  quadruple = [print_operator, '', '',  print_operand]
+  quadruplets.append(quadruple)
+  print quadruple
 
 def semantics_add_to_stack(id):
   global quadruplet_counter
