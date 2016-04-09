@@ -356,7 +356,19 @@ def p_loop(p):
 
 # Regla para while
 def p_whileloop(p):
-  ''' whileloop : WHILE O_PARENTHESIS expression C_PARENTHESIS block'''
+  ''' whileloop : WHILE start_while O_PARENTHESIS expression C_PARENTHESIS condition_while block end_while'''
+
+def p_start_while(p):
+  '''start_while :'''
+  generate_while_start_quadruples()
+
+def p_condition_while(p):
+  '''condition_while :'''
+  generate_while_condition_quadruples()
+
+def p_end_while(p):
+  '''end_while :'''
+  generate_while_end_quadruples()
 
 # Regla para times
 def p_timesloop(p):

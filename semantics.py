@@ -45,8 +45,6 @@ operator_stack = []
 types_stack = []
 jumps_stack = []
 
-quadruplet_counter = [0]
-
 # Memory segment int float  bool  string
 main_segment = [0, 2500, 5000, 7500]
 function_segment = [10000, 12500, 15000, 17500]
@@ -161,7 +159,6 @@ def realease_temp_memory():
   temp_segment-=1
 ########################Quadruple Generation####################################
 def generate_operations_quadruples():
-  global quadruplet_counter
   type2 = types_stack.pop()
   type1 = types_stack.pop()
   operator1 = operator_stack.pop()
@@ -177,11 +174,9 @@ def generate_operations_quadruples():
     operand_stack.append(result)
     types_stack.append(result_type)
     quadruplets.append(quadruple)
-    quadruplet_counter[0] += 1
     print quadruple
 
 def generate_equals_quadruples():
-  global quadruplet_counter
   type2 = types_stack.pop()
   type1 = types_stack.pop()
   operator1 = operator_stack.pop()
@@ -194,11 +189,9 @@ def generate_equals_quadruples():
     operand1 = operand_stack.pop()
     quadruple = [operator1, operand2, '',  operand1]
     quadruplets.append(quadruple)
-    quadruplet_counter[0] += 1
     print quadruple
 
 def generate_condition_if_quadruples():
-  global quadruplet_counter
   global quadruplets
   type1 = types_stack.pop()
   if type1 != 4:
@@ -208,27 +201,44 @@ def generate_condition_if_quadruples():
     quadruple = ["GOTOF", result, ""]
     quadruplets.append(quadruple)
     jumps_stack.append(len(quadruplets) - 1)
-    quadruplet_counter[0] += 1
     print quadruple
 
 def generate_condition_else_quadruples():
-  global quadruplet_counter
   global quadruplets
   quadruple = ["GOTO", "", ""]
   quadruplets.append(quadruple)
   jump = jumps_stack.pop()
   quadruplets[jump][2] = len(quadruplets)
   jumps_stack.append(len(quadruplets) - 1)
-  quadruplet_counter[0] += 1
   print quadruple
 
 def generate_condition_end_quadruples():
-  global quadruplet_counter
   global quadruplets
   jump = jumps_stack.pop()
-  print jump
   quadruplets[jump][2] = len(quadruplets)
-  quadruplet_counter[0] += 1
+
+def generate_while_start_quadruples():
+  global quadruplets
+  jumps_stack.append(len(quadruplets) - 1)
+
+def generate_while_condition_quadruples():
+  global quadruplets
+  type1 = types_stack.pop()
+  if type1 != 4:
+    print type1, " is not a valid operation in a condition."
+  else:
+    result = operand_stack.pop()
+    quadruple = ["GOTOF", result, ""]
+    quadruplets.append(quadruple)
+    jumps_stack.append(len(quadruplets) - 1)
+    print quadruple
+
+def generate_while_end_quadruples():
+  global quadruplets
+  jump_false = jumps_stack.pop()
+  jump_return = jumps_stack.pop()
+  quadruplets.append(["goto", "", jump_return + 1])
+  quadruplets[jump_false][2] = len(quadruplets)
 
 def generate_print_quadruples():
   temp_type = types_stack.pop()
@@ -239,18 +249,16 @@ def generate_print_quadruples():
   print quadruple
 
 def semantics_add_to_stack(id):
-  global quadruplet_counter
   if id in var_dict['function']:
     operand_stack.append(var_dict['function'][id]['address'])
     types_stack.append(var_dict['function'][id]['type'])
-    quadruplet_counter[0] += 1
   elif id in var_dict['main']:
     operand_stack.append(var_dict['main'][id]['address'])
     types_stack.append(var_dict['main'][id]['type'])
-    quadruplet_counter[0] += 1
   else:
     print id, " doesn't exists"
     exit(0)
+
 
   # TODO: AGREGAR QUE JALEN LAS FUNCIONES TAMBIEN
 
