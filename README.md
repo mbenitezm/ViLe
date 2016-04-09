@@ -45,3 +45,4 @@ Bitácora de cambios
 4 de Abril
 - Arreglar declaración de variables en funciones con mismo nombre en main
 - falta agregar el print y correigr los params, temporales por funcion??
+- falta codigo para operaciones
