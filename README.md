@@ -43,8 +43,8 @@ Bitácora de cambios
 - Terminar cuadruplos para operaciones (falta agregar el print y correigr los params)
 
 4 de Abril
-- falta agregar el print y correigr los params, temporales por funcion??
-- falta "codigo" para operaciones
+* falta agregar el print y correigr los params, temporales por funcion??
+* falta "codigo" para operaciones
 
 9 de Abril
 - Cuadruplos de saltos.

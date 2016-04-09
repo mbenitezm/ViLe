@@ -145,13 +145,25 @@ def p_optionalconstants(p):
 
 # Regla de estatuto de condición
 def p_condition(p):
-  ''' condition : IF O_PARENTHESIS expression C_PARENTHESIS block else'''
+  ''' condition : IF O_PARENTHESIS expression C_PARENTHESIS start_condition block else end_condition'''
 
 # Regla para el else del estatuto de condición
 def p_else(p):
-  ''' else : ELSE block
-           |'''
+  ''' else : ELSE else_condition block
+           | '''
 
+def p_start_condition(p):
+  '''start_condition :'''
+  generate_condition_if_quadruples()
+
+def p_else_condition(p):
+  '''else_condition :'''
+  generate_condition_else_quadruples()
+
+def p_end_condition(p):
+  '''end_condition :'''
+  generate_condition_end_quadruples()
+  
 # Las siguientes 4 reglas son para expresiones
 def p_expression(p):
   ''' expression : expression2 expressionoptional'''
@@ -396,7 +408,7 @@ parser = yacc.yacc(start='program')
 #   exit(0);
 
 def check():
-  f = open('test/test1.txt', 'r')
+  f = open('test/cuadruples.txt', 'r')
   data = f.read()
   f.close()
   if parser.parse(data) == 'Valid':
