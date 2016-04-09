@@ -191,6 +191,14 @@ def generate_equals_quadruples():
     quadruplets.append(quadruple)
     print quadruple
 
+def generate_print_quadruples():
+  temp_type = types_stack.pop()
+  print_operator = operator_stack.pop()
+  print_operand = operand_stack.pop()
+  quadruple = [print_operator, '', '',  print_operand]
+  quadruplets.append(quadruple)
+  print quadruple
+
 def semantics_add_to_stack(id):
   if id in var_dict['function']:
     operand_stack.append(var_dict['function'][id]['address'])
