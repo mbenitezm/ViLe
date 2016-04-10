@@ -53,6 +53,7 @@ operand_stack = []
 operator_stack = []
 types_stack = []
 jumps_stack = []
+times_temp_stack = []
 
 # Memory segment int float  bool  string
 main_segment = [0, 2500, 5000, 7500]
@@ -207,14 +208,14 @@ def generate_condition_if_quadruples():
     print type1, " is not a valid operation in a condition."
   else:
     result = operand_stack.pop()
-    quadruple = ["GOTOF", result, ""]
+    quadruple = ["GOTOF", result, "", ""]
     quadruplets.append(quadruple)
     jumps_stack.append(len(quadruplets) - 1)
     print quadruple
 
 def generate_condition_else_quadruples():
   global quadruplets
-  quadruple = ["GOTO", "", ""]
+  quadruple = ["GOTO", "", "", ""]
   quadruplets.append(quadruple)
   jump = jumps_stack.pop()
   quadruplets[jump][2] = len(quadruplets)
@@ -224,7 +225,7 @@ def generate_condition_else_quadruples():
 def generate_condition_end_quadruples():
   global quadruplets
   jump = jumps_stack.pop()
-  quadruplets[jump][2] = len(quadruplets)
+  quadruplets[jump][3] = len(quadruplets)
 
 def generate_while_start_quadruples():
   global quadruplets
@@ -233,11 +234,11 @@ def generate_while_start_quadruples():
 def generate_while_condition_quadruples():
   global quadruplets
   type1 = types_stack.pop()
-  if type1 != 4:
+  if type1 != types['bool']:
     print type1, " is not a valid operation in a condition."
   else:
     result = operand_stack.pop()
-    quadruple = ["GOTOF", result, ""]
+    quadruple = ["GOTOF", result, "", ""]
     quadruplets.append(quadruple)
     jumps_stack.append(len(quadruplets) - 1)
     print quadruple
@@ -246,8 +247,52 @@ def generate_while_end_quadruples():
   global quadruplets
   jump_false = jumps_stack.pop()
   jump_return = jumps_stack.pop()
-  quadruplets.append(["goto", "", jump_return + 1])
-  quadruplets[jump_false][2] = len(quadruplets)
+  quadruplets.append(["GOTO", "", "", jump_return + 1])
+  quadruplets[jump_false][3] = len(quadruplets)
+
+def generate_times_start_quadruples():
+  global quadruplets
+  int_type = types_stack.pop()
+  if int_type != types['int']:
+    print "Times loop just accepts integer numbers"
+    exit(0)
+  times_temp_aux = temp_segment[0]
+  temp_segment[0] += 1
+  times_temp_stack.append(times_temp_aux)
+  int_value = operand_stack.pop()
+  types_stack.append(int_type)
+  types_stack.append(int_type)
+  operand_stack.append(times_temp_aux)
+  operand_stack.append(int_value)
+  operator_stack.append('=')
+  generate_equals_quadruples()
+  operand_stack.append(times_temp_aux)
+  types_stack.append(int_type)
+  add_constant_to_dict(0, 'int')
+  operator_stack.append('>')
+  jumps_stack.append(len(quadruplets))
+  generate_operations_quadruples()
+  bool_type = types_stack.pop()
+  result = operand_stack.pop()
+  quadruple = ["GOTOF", result, "", ""]
+  quadruplets.append(quadruple)
+  print quadruple
+
+def generate_times_end_quadruples():
+  global quadruplets
+  jump_return = jumps_stack.pop()
+  times_temp_aux = times_temp_stack.pop()
+  operand_stack.append(times_temp_aux)
+  types_stack.append(types['int'])
+  operand_stack.append(times_temp_aux)
+  types_stack.append(types['int'])
+  add_constant_to_dict(1, 'int')
+  operator_stack.append('-')
+  generate_operations_quadruples()
+  operator_stack.append('=')
+  generate_equals_quadruples()
+  quadruplets.append(["GOTO", "", "", jump_return])
+  quadruplets[jump_return + 1][3] = len(quadruplets)
 
 def generate_print_quadruples():
   temp_type = types_stack.pop()

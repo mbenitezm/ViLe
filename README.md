@@ -46,5 +46,6 @@ Bitácora de cambios
 correccion de parametros en funciones
 
 9 de Abril
-- Cuadruplos de saltos.
+- Cuadruplos de saltos. (times, ifs, whiles)
+- validacion de valores de retorno de funciones
 * falta "codigo" para operaciones

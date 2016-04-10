@@ -86,7 +86,8 @@ def p_functionreturn(p):
 
 def p_function_end(p):
   '''function_end : '''
-  check_function_return();
+  if types[funct_options['type']] != types['void']:
+    check_function_return();
   clear_var_dict()
 
 # Regla del ciclo de estatutos
@@ -390,7 +391,15 @@ def p_end_while(p):
 
 # Regla para times
 def p_timesloop(p):
-  ''' timesloop : TIMES O_PARENTHESIS INTCONST C_PARENTHESIS block'''
+  ''' timesloop : TIMES O_PARENTHESIS expression C_PARENTHESIS start_times block end_times'''
+
+def p_start_times(p):
+  '''start_times :'''
+  generate_times_start_quadruples()
+
+def p_end_times(p):
+  '''end_times :'''
+  generate_times_end_quadruples()
 
 # Regla de llamada de función
 def p_functioncall(p):
@@ -450,7 +459,7 @@ parser = yacc.yacc(start='program')
 #   exit(0);
 
 def check():
-  f = open('test/print.txt', 'r')
+  f = open('test/test1.txt', 'r')
 
   data = f.read()
   f.close()
