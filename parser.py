@@ -26,8 +26,7 @@ def p_functionloop(p):
 
 # Regla para definición de funciones
 def p_function(p):
-  ''' function : FUNCTION functiontype ID O_PARENTHESIS parameters C_PARENTHESIS block'''
-  funct_options['id'] = p[3]
+  ''' function : FUNCTION function_head function_end'''
   add_funct_to_dict(funct_options['id'], funct_options['type'], funct_options['params'], funct_options['params_order'])
   funct_options['id'] = None
   funct_options['type'] = None
@@ -36,16 +35,25 @@ def p_function(p):
 
 
 # Regla que define el tipo de función
-def p_functiontype(p):
-  ''' functiontype : VOID
-                   | BOOL
-                   | INT
-                   | FLOAT
-                   | STRING'''
+def p_function_head(p):
+  ''' function_head : VOID function_def
+                   | BOOL function_with_return_def
+                   | INT function_with_return_def
+                   | FLOAT function_with_return_def
+                   | STRING function_with_return_def'''
   var_options['scope'] = 'function'
   funct_options['type'] = p[1]
 
-# Regla que contiene los tipos de funciones
+# Regla que define una funcion
+def p_function_with_return_def(p):
+  ''' function_with_return_def : ID O_PARENTHESIS parameters C_PARENTHESIS functionblock'''
+  funct_options['id'] = p[1]
+
+def p_function_def(p):
+  ''' function_def : ID O_PARENTHESIS parameters C_PARENTHESIS block'''
+  funct_options['id'] = p[1]
+
+# Regla que contiene los tipos de variables
 def p_type(p):
   ''' type : BOOL
            | INT
@@ -65,12 +73,20 @@ def p_parametertype(p):
 
 # Regla del bloque principal del programa
 def p_block(p):
-  ''' block : O_BRACKET statutesloop functionreturn C_BRACKET'''
+  ''' block : O_BRACKET statutesloop C_BRACKET'''
+
+# Regla del bloque de las funciones
+def p_functionblock(p):
+  ''' functionblock : O_BRACKET statutesloop functionreturn C_BRACKET'''
 
 # Regla para que pueda haber un return en una función
 def p_functionreturn(p):
-  '''functionreturn : RETURN expression SEMICOLON
-                    |'''
+  '''functionreturn : RETURN O_BRACKET expression C_BRACKET SEMICOLON
+                    | RETURN expression SEMICOLON'''
+
+def p_function_end(p):
+  '''function_end : '''
+  check_function_return();
   clear_var_dict()
 
 # Regla del ciclo de estatutos
@@ -275,13 +291,15 @@ def p_add_c_parenthesis(p):
   operator_stack.pop()
 
 def p_var_assign(p):
-  ''' var_assign : ID listaccess'''
-  try:
-    operand_stack.append(var_dict[var_options['scope']][p[1]]['address'])
-    types_stack.append(var_dict[var_options['scope']][p[1]]['type'])
-  except:
-    print "Variable", p[1], "doesn't exists"
-    exit(0)
+  ''' var_assign : ID add_to_stack listaccess'''
+  # try:
+  #   print_var_dict()
+  #   print(var_options['scope'])
+  #   operand_stack.append(var_dict[var_options['scope']][p[1]]['address'])
+  #   types_stack.append(var_dict[var_options['scope']][p[1]]['type'])
+  # except:
+  #   print "Variable", p[1], "doesn't exists"
+  #   exit(0)
 
 # Regla para las variables
 def p_var(p):
@@ -432,7 +450,7 @@ parser = yacc.yacc(start='program')
 #   exit(0);
 
 def check():
-  f = open('test/test1.txt', 'r')
+  f = open('test/print.txt', 'r')
 
   data = f.read()
   f.close()

@@ -16,6 +16,15 @@ types = {
   'error': -1
 }
 
+types_translations = {
+  1 : 'int',
+  2 : 'float',
+  3 : 'string',
+  4 : 'bool',
+  5 : 'void',
+  -1 : 'error'
+}
+
 var_dict = {
     'main' : {
      },
@@ -250,12 +259,15 @@ def generate_print_quadruples():
 
 def semantics_add_to_stack(id):
   if id in var_dict['function']:
+    # print_var_dict()
     operand_stack.append(var_dict['function'][id]['address'])
     types_stack.append(var_dict['function'][id]['type'])
   elif id in var_dict['main']:
+    # print_var_dict()
     operand_stack.append(var_dict['main'][id]['address'])
     types_stack.append(var_dict['main'][id]['type'])
   else:
+    print_var_dict()
     print id, " doesn't exists"
     exit(0)
 
@@ -316,7 +328,7 @@ def add_var_to_dict(var_id, var_type, scope):
     'type': types[var_type],
     'address' : address
   }
-  print_var_dict()
+  # print_var_dict()
 
 def assign_address(scope, var_type):
   if scope == 'main':
@@ -374,7 +386,7 @@ def add_funct_to_dict(funct_id, funct_type, funct_params, funct_params_order):
       'params' : funct_params,
       'params_order' : funct_params_order
   }
-  print_funct_dict()
+  # print_funct_dict()
 
 def add_constant_to_dict(constant, type):
   if not(constant in var_dict['constants']):
@@ -411,3 +423,12 @@ def clean_funct_options():
     'params' : {},
     'params_order' : ''
   }
+
+######################### FUNCTIONS METHODS ####################################
+
+def check_function_return():
+  return_type = types_stack.pop()
+  if return_type != types[funct_options['type']]:
+    print('Return type of the function ' + funct_options['id'] + ' is not correct')
+    print('It returns ' + types_translations[return_type] + ' and it should be ' + funct_options['type'])
+    exit(0)
