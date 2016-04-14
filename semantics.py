@@ -43,9 +43,16 @@ var_options = {
 funct_options = {
   'id' : None,
   'type' : None,
-  'params' : {},
+  'params' : [],
   'params_order' : ''
 }
+
+function_check = {
+  'id' : None,
+  'params_order' : '',
+  'current_param' : 0
+}
+
 
 quadruplets = deque([])
 
@@ -54,6 +61,8 @@ operator_stack = []
 types_stack = []
 jumps_stack = []
 times_temp_stack = []
+
+function_params_order = ''
 
 # Memory segment int float  bool  string
 main_segment = [0, 2500, 5000, 7500]
@@ -168,6 +177,15 @@ def add_constant_memory(var_type):
 def realease_temp_memory():
   temp_segment-=1
 ########################Quadruple Generation####################################
+def generate_main_goto():
+  global quadruplets
+  quadruple = ["GOTO", "", "", ""]
+  quadruplets.append(quadruple)
+
+def fill_main_goto():
+  global quadruplets
+  quadruplets[0][3] = len(quadruplets)
+
 def generate_operations_quadruples():
   type2 = types_stack.pop()
   type1 = types_stack.pop()
@@ -241,7 +259,7 @@ def generate_while_condition_quadruples():
     quadruple = ["GOTOF", result, "", ""]
     quadruplets.append(quadruple)
     jumps_stack.append(len(quadruplets) - 1)
-    print quadruple
+    print quadruple 
 
 def generate_while_end_quadruples():
   global quadruplets
@@ -316,6 +334,27 @@ def semantics_add_to_stack(id):
     print id, " doesn't exists"
     exit(0)
 
+def generate_parameter_quadruple():
+  global quadruplets
+  type1 = types_stack.pop()
+  result = operand_stack.pop()
+  current_param = funct_dict[function_check['id']]['params'][function_check['current_param']][0]
+  function_check['current_param'] = function_check['current_param'] + 1
+  quadruple = ["PARAM", result, "", current_param]
+  quadruplets.append(quadruple)
+  print quadruple
+
+def generate_era(function_id):
+  global quadruplets
+  quadruple = ["ERA", "", "", function_id]
+  quadruplets.append(quadruple)
+  print quadruple
+
+def generate_gosub():
+  global quadruplets
+  quadruple = ["GOSUB", "", "", function_check['id']]
+  quadruplets.append(quadruple)
+  print quadruple
 
   # TODO: AGREGAR QUE JALEN LAS FUNCIONES TAMBIEN
 
@@ -465,7 +504,7 @@ def clean_funct_options():
   funct_options = {
     'id' : None,
     'type' : None,
-    'params' : {},
+    'params' : [],
     'params_order' : ''
   }
 
@@ -476,4 +515,22 @@ def check_function_return():
   if return_type != types[funct_options['type']]:
     print('Return type of the function ' + funct_options['id'] + ' is not correct')
     print('It returns ' + types_translations[return_type] + ' and it should be ' + funct_options['type'])
+    exit(0)
+
+def check_function_exists(function_name):
+  if not(function_name in funct_dict):
+    print('The function "' + function_name + '" is not a function')
+    exit(0)
+  else:
+    function_check['id'] = function_name
+    function_check['params_order'] = ''
+    function_check['current_param'] = 0
+
+def push_type_to_function_options():
+  current_type = types_stack[len(types_stack) - 1]
+  function_check['params_order'] = function_check['params_order'] + str(current_type)
+
+def check_params_order():
+  if function_check['params_order'] != funct_dict[function_check['id']]['params_order']:
+    print('The params in ' + function_check['id'] + ' are wrong')
     exit(0)

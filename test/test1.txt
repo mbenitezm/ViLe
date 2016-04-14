@@ -1,53 +1,15 @@
-main {
-	int otro = 1 + 2 + 3 + 4;
-	int variable = 3;
-	float printAlgo = 1.0;
-	string ifalgo = "algo";
-	if (variable > 4){
-		variable = 4;
-	}
-	else {
-		int otravariable = 10;
-		if (5 > 3){
-			print(2);
-		}
-	}
-
-	int cosas = 1;
-	printAlgo = 2;
-
-	variable = (5*3 ) / 2 + ((2 + 1 ) / 8);
- 
- bool test = true;
-
-	while (true) {
-		otravariable = (otravariable * 2);
-		otravariable = 5;
-	}
-
-	printAlgo = 5;
-	
-	times (4) {
-		print(2,3);
-	}
-	funcion(2);
-
-	variable = funciones2(2);
-	
-}
-
 def void funcion (int x) {
-	int avariable = 5 + 5; 
-	int prueba = 1;
+	int avariable = 5 + x; 
+	print(avariable);
 }
 
-def int funcion2 (int y, string hey, int otra) {
-  int algo = 2;
-  int variable = 5;
-  int prueba = 2;
-  if (algo > 5) { 
-  	prueba = 4;
-  }
-  y = 8;
-  return hey;
+def int funcion2 (int y, int otra) {
+  return(y + otra);
+}
+
+
+main {
+	int x = 3;
+	string y = funcion2(4+3, 3);
+	funcion(2);
 }

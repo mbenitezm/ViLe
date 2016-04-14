@@ -10,8 +10,16 @@ tokens = lexer.tokens
 
 # Regla inicial de programa
 def p_program(p):
-  '''program : main functionloop'''
+  '''program : generate_main_goto functionloop fill_main_goto main'''
   p[0] = "Valid"
+
+def p_generate_main_goto(p):
+  ''' generate_main_goto : '''
+  generate_main_goto()
+
+def p_fill_main_goto(p):
+  ''' fill_main_goto : '''
+  fill_main_goto()
 
 # Regla del bloque de main
 def p_main(p):
@@ -30,7 +38,7 @@ def p_function(p):
   add_funct_to_dict(funct_options['id'], funct_options['type'], funct_options['params'], funct_options['params_order'])
   funct_options['id'] = None
   funct_options['type'] = None
-  funct_options['params'] = {}
+  funct_options['params'] = []
   funct_options['params_order'] = ''
 
 
@@ -46,7 +54,7 @@ def p_function_head(p):
 
 # Regla que define una funcion
 def p_function_with_return_def(p):
-  ''' function_with_return_def : ID O_PARENTHESIS parameters C_PARENTHESIS functionblock'''
+  ''' function_with_return_def : ID O_PARENTHESIS parameters C_PARENTHESIS functionblock '''
   funct_options['id'] = p[1]
 
 def p_function_def(p):
@@ -337,7 +345,7 @@ def p_add_to_stack(p):
 
 def p_functionorlist(p):
   ''' functionorlist : O_S_BRACKET INTCONST C_S_BRACKET
-                     | O_PARENTHESIS parametersinput C_PARENTHESIS
+                     | check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub
                      | add_to_stack'''
 
 # Regla para constantes
@@ -403,17 +411,38 @@ def p_end_times(p):
 
 # Regla de llamada de función
 def p_functioncall(p):
-  ''' functioncall : ID O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON'''
+  ''' functioncall : ID check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub'''
+
+def p_check_function_exists(p):
+  ''' check_function_exists : '''
+  check_function_exists(p[-1])
+  generate_era(p[-1])
+
+def p_generate_gosub(p):
+  ''' generate_gosub : '''
+  generate_gosub()
 
 # Regla para parametros de la función en input
 def p_parametersinput(p):
-  ''' parametersinput : expression parametersinputloop
+  ''' parametersinput : expression push_type_to_function_options generate_parameter_quadruple parametersinputloop check_params_order
                       |'''
 
 # Regla para ciclo de ingresar parametros a una función en input
 def p_parametersinputloop(p):
-  ''' parametersinputloop : COMMA expression parametersinputloop
+  ''' parametersinputloop : COMMA expression push_type_to_function_options generate_parameter_quadruple parametersinputloop
                          |'''
+
+def p_push_type_to_function_options(p):
+  ''' push_type_to_function_options : '''
+  push_type_to_function_options()
+
+def p_check_params_order(p):
+  ''' check_params_order : '''
+  check_params_order()
+
+def p_generate_parameter_quadruple(p):
+  ''' generate_parameter_quadruple : '''
+  generate_parameter_quadruple()
 
 # Regla para parametros de una función
 def p_parameters(p):
@@ -428,7 +457,7 @@ def p_parameterinit(p):
     exit(0)
   else:
     add_var_to_dict(var_options['id'], var_options['type'], var_options['scope'])
-    funct_options['params'][var_options['id']] = types[var_options['type']]
+    funct_options['params'].append([var_options['id'], types[var_options['type']]])
 
 # Regal para el ciclio de ingresar más parametros a uan función
 def p_parametersloop(p):
@@ -465,9 +494,6 @@ def check():
   f.close()
   if parser.parse(data) == 'Valid':
     print('VALID!')
-    print(operator_stack)
-    print(operand_stack)
-    print(types_stack)
     print(quadruplets)
   exit(0);
 
