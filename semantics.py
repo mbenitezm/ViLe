@@ -16,6 +16,15 @@ types = {
   'error': -1
 }
 
+types_translations = {
+  1 : 'int',
+  2 : 'float',
+  3 : 'string',
+  4 : 'bool',
+  5 : 'void',
+  -1 : 'error'
+}
+
 var_dict = {
     'main' : {
      },
@@ -46,6 +55,7 @@ operand_stack = []
 operator_stack = []
 types_stack = []
 jumps_stack = []
+times_temp_stack = []
 
 # Memory segment int float  bool  string
 main_segment = [0, 2500, 5000, 7500]
@@ -200,14 +210,14 @@ def generate_condition_if_quadruples():
     print type1, " is not a valid operation in a condition."
   else:
     result = operand_stack.pop()
-    quadruple = ["GOTOF", result, ""]
+    quadruple = ["GOTOF", result, "", ""]
     quadruplets.append(quadruple)
     jumps_stack.append(len(quadruplets) - 1)
     print quadruple
 
 def generate_condition_else_quadruples():
   global quadruplets
-  quadruple = ["GOTO", "", ""]
+  quadruple = ["GOTO", "", "", ""]
   quadruplets.append(quadruple)
   jump = jumps_stack.pop()
   quadruplets[jump][2] = len(quadruplets)
@@ -217,7 +227,7 @@ def generate_condition_else_quadruples():
 def generate_condition_end_quadruples():
   global quadruplets
   jump = jumps_stack.pop()
-  quadruplets[jump][2] = len(quadruplets)
+  quadruplets[jump][3] = len(quadruplets)
 
 def generate_while_start_quadruples():
   global quadruplets
@@ -226,11 +236,11 @@ def generate_while_start_quadruples():
 def generate_while_condition_quadruples():
   global quadruplets
   type1 = types_stack.pop()
-  if type1 != 4:
+  if type1 != types['bool']:
     print type1, " is not a valid operation in a condition."
   else:
     result = operand_stack.pop()
-    quadruple = ["GOTOF", result, ""]
+    quadruple = ["GOTOF", result, "", ""]
     quadruplets.append(quadruple)
     jumps_stack.append(len(quadruplets) - 1)
     print quadruple
@@ -239,8 +249,52 @@ def generate_while_end_quadruples():
   global quadruplets
   jump_false = jumps_stack.pop()
   jump_return = jumps_stack.pop()
-  quadruplets.append(["goto", "", jump_return + 1])
-  quadruplets[jump_false][2] = len(quadruplets)
+  quadruplets.append(["GOTO", "", "", jump_return + 1])
+  quadruplets[jump_false][3] = len(quadruplets)
+
+def generate_times_start_quadruples():
+  global quadruplets
+  int_type = types_stack.pop()
+  if int_type != types['int']:
+    print "Times loop just accepts integer numbers"
+    exit(0)
+  times_temp_aux = temp_segment[0]
+  temp_segment[0] += 1
+  times_temp_stack.append(times_temp_aux)
+  int_value = operand_stack.pop()
+  types_stack.append(int_type)
+  types_stack.append(int_type)
+  operand_stack.append(times_temp_aux)
+  operand_stack.append(int_value)
+  operator_stack.append('=')
+  generate_equals_quadruples()
+  operand_stack.append(times_temp_aux)
+  types_stack.append(int_type)
+  add_constant_to_dict(0, 'int')
+  operator_stack.append('>')
+  jumps_stack.append(len(quadruplets))
+  generate_operations_quadruples()
+  bool_type = types_stack.pop()
+  result = operand_stack.pop()
+  quadruple = ["GOTOF", result, "", ""]
+  quadruplets.append(quadruple)
+  print quadruple
+
+def generate_times_end_quadruples():
+  global quadruplets
+  jump_return = jumps_stack.pop()
+  times_temp_aux = times_temp_stack.pop()
+  operand_stack.append(times_temp_aux)
+  types_stack.append(types['int'])
+  operand_stack.append(times_temp_aux)
+  types_stack.append(types['int'])
+  add_constant_to_dict(1, 'int')
+  operator_stack.append('-')
+  generate_operations_quadruples()
+  operator_stack.append('=')
+  generate_equals_quadruples()
+  quadruplets.append(["GOTO", "", "", jump_return])
+  quadruplets[jump_return + 1][3] = len(quadruplets)
 
 def generate_print_quadruples():
   temp_type = types_stack.pop()
@@ -252,12 +306,15 @@ def generate_print_quadruples():
 
 def semantics_add_to_stack(id):
   if id in var_dict['function']:
+    # print_var_dict()
     operand_stack.append(var_dict['function'][id]['address'])
     types_stack.append(var_dict['function'][id]['type'])
   elif id in var_dict['main']:
+    # print_var_dict()
     operand_stack.append(var_dict['main'][id]['address'])
     types_stack.append(var_dict['main'][id]['type'])
   else:
+    print_var_dict()
     print id, " doesn't exists"
     exit(0)
 
@@ -318,7 +375,7 @@ def add_var_to_dict(var_id, var_type, scope):
     'type': types[var_type],
     'address' : address
   }
-  print_var_dict()
+  # print_var_dict()
 
 def assign_address(scope, var_type):
   if scope == 'main':
@@ -380,7 +437,7 @@ def add_funct_to_dict(funct_id, funct_type, funct_params, funct_params_order):
       'params' : funct_params,
       'params_order' : funct_params_order
   }
-  print_funct_dict()
+  # print_funct_dict()
 
 def add_constant_to_dict(constant, type):
   if not(constant in var_dict['constants']):
@@ -417,3 +474,12 @@ def clean_funct_options():
     'params' : {},
     'params_order' : ''
   }
+
+######################### FUNCTIONS METHODS ####################################
+
+def check_function_return():
+  return_type = types_stack.pop()
+  if return_type != types[funct_options['type']]:
+    print('Return type of the function ' + funct_options['id'] + ' is not correct')
+    print('It returns ' + types_translations[return_type] + ' and it should be ' + funct_options['type'])
+    exit(0)

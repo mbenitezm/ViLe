@@ -1,0 +1,9 @@
+main{
+	int x = 0;
+	times(x+5){
+		print("hey", 3);
+		times(3){
+			print("hey");
+		}
+	}
+}
