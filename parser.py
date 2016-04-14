@@ -459,7 +459,7 @@ parser = yacc.yacc(start='program')
 #   exit(0);
 
 def check():
-  f = open('test/test1.txt', 'r')
+  f = open('test/cuadruples.txt', 'r')
 
   data = f.read()
   f.close()
