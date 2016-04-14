@@ -22,6 +22,8 @@ var_dict = {
     'function' : {
     },
     'constants' : {
+    },
+    'inverse_constants' : {
     }
 }
 
@@ -365,6 +367,10 @@ def add_constant_to_dict_aux(constant, type):
   address = assign_address('constants', type)
   var_dict['constants'][constant] = {
     'address' : address,
+    'type' : types[type]
+  }
+  var_dict['inverse_constants'][address] = {
+    'value' : constant, 
     'type' : types[type]
   }
 
