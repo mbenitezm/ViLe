@@ -33,6 +33,8 @@ var_dict = {
     'function' : {
     },
     'constants' : {
+    },
+    'inverse_constants' : {
     }
 }
 
@@ -225,7 +227,7 @@ def generate_operations_quadruples():
   operator1 = operator_stack.pop()
   result_type = semantic_dict[type1][type2][operator1]
   if result_type < 1:
-    print type1, " and ", type2, " are not a valid type combination for ", operator1 
+    print types_translations[type1], " and ", types_translations[type2], " are not a valid type combination for ", operator1 
     exit(0)
   else:
     operand2 = operand_stack.pop()
@@ -243,7 +245,7 @@ def generate_equals_quadruples():
   operator1 = operator_stack.pop()
   result_type = semantic_dict[type1][type2][operator1]
   if result_type < 1:
-    print type1, " and ", type2, " are not a valid type combination for ", operator1
+    print types_translations[type1], " and ", types_translations[type2], " are not a valid type combination for ", operator1
     exit(0)
   else:
     operand2 = operand_stack.pop()
@@ -507,6 +509,10 @@ def add_constant_to_dict_aux(constant, type):
   address = assign_address('constants', type)
   var_dict['constants'][constant] = {
     'address' : address,
+    'type' : types[type]
+  }
+  var_dict['inverse_constants'][address] = {
+    'value' : constant, 
     'type' : types[type]
   }
 
