@@ -26,6 +26,8 @@ types_translations = {
 }
 
 var_dict = {
+    'global' : {
+    },
     'main' : {
      },
     'function' : {
@@ -53,6 +55,10 @@ function_check = {
   'current_param' : 0
 }
 
+current_function = {
+  'id' : None,
+  'type' : None
+}
 
 quadruplets = deque([])
 
@@ -69,6 +75,7 @@ main_segment = [0, 2500, 5000, 7500]
 function_segment = [10000, 12500, 15000, 17500]
 temp_segment = [20000, 22500, 25000, 27500]
 const_segment = [30000, 32500, 35000, 37500]
+global_segment = [40000, 42500, 45000, 47500]
 
 def add_main_memory(var_type):
     if var_type == 'int':
@@ -173,6 +180,32 @@ def add_constant_memory(var_type):
       exit(-1)
     else:
       const_segment[3] += 1
+
+def add_global_memory(var_type):
+  if var_type == 'int':
+    if global_segment[0] > 42499:
+      print('Memory overflow')
+      exit(-1)
+    else: 
+      global_segment[0] += 1
+  elif var_type == 'float':
+    if global_segment[1] > 44999:
+      print('Memory overflow')
+      exit(-1)
+    else:
+      global_segment[1] += 1
+  elif var_type == 'bool':
+    if global_segment[2] > 47499:
+      print('Memory overflow')
+      exit(-1)
+    else:
+      global_segment[2] += 1
+  elif var_type == 'string':
+    if global_segment[3] > 49999:
+      print('Memory overflow')
+      exit(-1)
+    else:
+      global_segment[3] += 1
 
 def realease_temp_memory():
   temp_segment-=1
@@ -355,6 +388,9 @@ def generate_gosub():
   quadruple = ["GOSUB", "", "", function_check['id']]
   quadruplets.append(quadruple)
   print quadruple
+  if funct_dict[function_check['id']]['type'] != 5:
+    types_stack.append(var_dict['global'][function_check['id']]['type'])
+    operand_stack.append(var_dict['global'][function_check['id']]['address'])
 
   # TODO: AGREGAR QUE JALEN LAS FUNCIONES TAMBIEN
 
@@ -455,6 +491,16 @@ def assign_address(scope, var_type):
     elif var_type == 4:
       address = temp_segment[3]
     add_temp_memory(var_type)
+  elif scope == 'global':
+    if var_type == 'int':
+      address = global_segment[0]
+    elif var_type == 'float':
+      address = global_segment[1]
+    elif var_type == 'bool':
+      address = global_segment[2]
+    elif var_type == 'string':
+      address = global_segment[3]
+    add_global_memory(var_type)
   return address
 
 def add_constant_to_dict_aux(constant, type):
@@ -512,10 +558,13 @@ def clean_funct_options():
 
 def check_function_return():
   return_type = types_stack.pop()
-  if return_type != types[funct_options['type']]:
-    print('Return type of the function ' + funct_options['id'] + ' is not correct')
-    print('It returns ' + types_translations[return_type] + ' and it should be ' + funct_options['type'])
+  if return_type != var_dict['global'][current_function['id']]['type']:
+    print('Return type of the function ' + current_function['id'] + ' is not correct')
+    print('It returns ' + types_translations[return_type] + ' and it should be ' + types_translations[var_dict['global'][current_function['id']]['type']])
     exit(0)
+  types_stack.append(return_type)
+  current_function['id'] = None
+  current_function['type'] = None
 
 def check_function_exists(function_name):
   if not(function_name in funct_dict):
@@ -534,3 +583,13 @@ def check_params_order():
   if function_check['params_order'] != funct_dict[function_check['id']]['params_order']:
     print('The params in ' + function_check['id'] + ' are wrong')
     exit(0)
+
+def add_function_to_global_variables(function_id, function_type):
+  current_function['id'] = function_id
+  current_function['type'] = function_type
+  add_var_to_dict(function_id, function_type, 'global')
+
+def add_function_var_to_stack():
+  types_stack.append(var_dict['global'][current_function['id']]['type'])
+  operand_stack.append(var_dict['global'][current_function['id']]['address'])
+  operator_stack.append('=')

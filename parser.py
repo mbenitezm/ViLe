@@ -54,8 +54,12 @@ def p_function_head(p):
 
 # Regla que define una funcion
 def p_function_with_return_def(p):
-  ''' function_with_return_def : ID O_PARENTHESIS parameters C_PARENTHESIS functionblock '''
+  ''' function_with_return_def : ID add_function_to_global_variables O_PARENTHESIS parameters C_PARENTHESIS functionblock '''
   funct_options['id'] = p[1]
+
+def p_add_function_to_global_variables(p):
+  ''' add_function_to_global_variables : '''
+  add_function_to_global_variables(p[-1], p[-2])
 
 def p_function_def(p):
   ''' function_def : ID O_PARENTHESIS parameters C_PARENTHESIS block'''
@@ -89,13 +93,17 @@ def p_functionblock(p):
 
 # Regla para que pueda haber un return en una función
 def p_functionreturn(p):
-  '''functionreturn : RETURN O_BRACKET expression C_BRACKET SEMICOLON
-                    | RETURN expression SEMICOLON'''
+  '''functionreturn : RETURN add_function_var_to_stack O_BRACKET expression C_BRACKET SEMICOLON
+                    | RETURN add_function_var_to_stack expression SEMICOLON'''
+  check_function_return()
+  generate_equals_quadruples()
+
+def p_add_function_var_to_stack(p):
+  ''' add_function_var_to_stack : '''
+  add_function_var_to_stack()
 
 def p_function_end(p):
   '''function_end : '''
-  if types[funct_options['type']] != types['void']:
-    check_function_return();
   clear_var_dict()
 
 # Regla del ciclo de estatutos
@@ -489,7 +497,6 @@ parser = yacc.yacc(start='program')
 
 def check():
   f = open('test/test1.txt', 'r')
-
   data = f.read()
   f.close()
   if parser.parse(data) == 'Valid':

@@ -4,12 +4,12 @@ def void funcion (int x) {
 }
 
 def int funcion2 (int y, int otra) {
+	x = 3;
   return(y + otra);
 }
 
 
 main {
-	int x = 3;
-	string y = funcion2(4+3, 3);
 	funcion(2);
+	int y = funcion2(4+3, 3);
 }
