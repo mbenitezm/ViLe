@@ -8,8 +8,17 @@ def int funcion2 (int y, int otra) {
   return(y + otra);
 }
 
+def bool func (int y){
+	return(y < 3); 
+}
+
 
 main {
 	funcion(2);
 	int y = funcion2(4+3, 3);
+	if (func(2)){
+		print(funcion2(4, 7));
+	} else {
+		print(funcion2(y, y));
+	}
 }
