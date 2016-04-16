@@ -4,7 +4,7 @@ def void funcion (int x) {
 }
 
 def int funcion2 (int y, int otra) {
-	x = 3;
+	int x = 3;
   return(y + otra);
 }
 

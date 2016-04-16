@@ -23,8 +23,12 @@ def p_fill_main_goto(p):
 
 # Regla del bloque de main
 def p_main(p):
-  '''main : MAIN block'''
+  '''main : MAIN start_main block'''
   add_main_to_dict()
+
+def p_start_main(p):
+  ''' start_main : '''
+  start_main()
 
 
 # Regla de loop de funciones

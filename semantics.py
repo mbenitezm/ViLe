@@ -40,7 +40,7 @@ var_dict = {
 
 var_options = {
   'id' : None,
-  'scope' : 'main',
+  'scope' : 'function',
   'type' : None,
 }
 
@@ -243,6 +243,9 @@ def generate_main_goto():
   global quadruplets
   quadruple = ["GOTO", "", "", ""]
   quadruplets.append(quadruple)
+
+def start_main():
+  var_options['scope'] = 'main'
 
 def fill_main_goto():
   global quadruplets
