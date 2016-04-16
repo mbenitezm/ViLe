@@ -48,4 +48,9 @@ correccion de parametros en funciones
 9 de Abril
 - Cuadruplos de saltos. (times, ifs, whiles)
 - validacion de valores de retorno de funciones
-* falta "codigo" para operaciones
+
+15 de Abril
+- Cuadruplos de funciones
+- Correcciones a memoria virtual de la semántica.
+
+

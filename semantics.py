@@ -78,6 +78,7 @@ function_segment = [10000, 12500, 15000, 17500]
 temp_segment = [20000, 22500, 25000, 27500]
 const_segment = [30000, 32500, 35000, 37500]
 global_segment = [40000, 42500, 45000, 47500]
+fun_temp_segment = [50000, 52500, 55000, 57500]
 
 def add_main_memory(var_type):
     if var_type == 'int':
@@ -157,6 +158,32 @@ def add_temp_memory(var_type):
     else:
       temp_segment[3] += 1
 
+def add_fun_temp_memory(var_type):
+  if var_type == 1:
+    if fun_temp_segment[0] > 52499:
+      print('Memory overflow')
+      exit(-1)
+    else: 
+      fun_temp_segment[0] += 1
+  elif var_type == 2:
+    if fun_temp_segment[1] > 54999:
+      print('Memory overflow')
+      exit(-1)
+    else:
+      fun_temp_segment[1] += 1
+  elif var_type == 3:
+    if fun_temp_segment[2] > 57499:
+      print('Memory overflow')
+      exit(-1)
+    else:
+      fun_temp_segment[2] += 1
+  elif var_type == 4:
+    if fun_temp_segment[3] > 59999:
+      print('Memory overflow')
+      exit(-1)
+    else:
+      fun_temp_segment[3] += 1
+
 def add_constant_memory(var_type):
   if var_type == 'int':
     if const_segment[0] > 32499:
@@ -209,8 +236,8 @@ def add_global_memory(var_type):
     else:
       global_segment[3] += 1
 
-def realease_temp_memory():
-  temp_segment-=1
+def release_fun_temp_memory():
+  fun_temp_segment = [50000, 52500, 55000, 57500]
 ########################Quadruple Generation####################################
 def generate_main_goto():
   global quadruplets
@@ -221,7 +248,7 @@ def fill_main_goto():
   global quadruplets
   quadruplets[0][3] = len(quadruplets)
 
-def generate_operations_quadruples():
+def generate_operations_quadruples(scope):
   type2 = types_stack.pop()
   type1 = types_stack.pop()
   operator1 = operator_stack.pop()
@@ -232,7 +259,10 @@ def generate_operations_quadruples():
   else:
     operand2 = operand_stack.pop()
     operand1 = operand_stack.pop()
-    result = assign_address('temps', result_type)
+    if scope == 'main':
+      result = assign_address('temps', result_type)
+    else:
+      result = assign_address('function_temps', result_type)
     quadruple = [operator1, operand1, operand2, result]
     operand_stack.append(result)
     types_stack.append(result_type)
@@ -493,6 +523,16 @@ def assign_address(scope, var_type):
     elif var_type == 4:
       address = temp_segment[3]
     add_temp_memory(var_type)
+  elif scope == 'function_temps':
+    if var_type == 1:
+      address = fun_temp_segment[0]
+    elif var_type == 2:
+      address = fun_temp_segment[1]
+    elif var_type == 3:
+      address = fun_temp_segment[2]
+    elif var_type == 4:
+      address = fun_temp_segment[3]
+    add_fun_temp_memory(var_type)
   elif scope == 'global':
     if var_type == 'int':
       address = global_segment[0]

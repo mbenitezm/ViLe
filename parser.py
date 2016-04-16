@@ -105,6 +105,7 @@ def p_add_function_var_to_stack(p):
 def p_function_end(p):
   '''function_end : '''
   clear_var_dict()
+  release_fun_temp_memory()
 
 # Regla del ciclo de estatutos
 def p_statutesloop(p):
@@ -234,7 +235,7 @@ def p_logic_op_quadruple(p):
   '''logic_op_quadruple :'''
   if len(operator_stack) > 0:
     if operator_stack[len(operator_stack)-1] == 'and' or operator_stack[len(operator_stack)-1] == 'or':
-      generate_operations_quadruples()
+      generate_operations_quadruples(var_options['scope'])
 
 # Reglas de operaciones relacionales
 def p_relop(p):
@@ -250,7 +251,7 @@ def p_relop_quadruple(p):
   '''relop_quadruple :'''
   if len(operator_stack) > 0:
     if operator_stack[len(operator_stack)-1] == '>' or operator_stack[len(operator_stack)-1] == '<' or operator_stack[len(operator_stack)-1] == '>=' or operator_stack[len(operator_stack)-1] == '<=' or operator_stack[len(operator_stack)-1] == '!=' or operator_stack[len(operator_stack)-1] == '==':
-      generate_operations_quadruples()
+      generate_operations_quadruples(var_options['scope'])
 
 # Regla para expresión
 def p_exp(p):
@@ -260,7 +261,7 @@ def p_exp_quadruple(p):
   ''' exp_quadruple :'''
   if len(operator_stack) > 0:
     if operator_stack[len(operator_stack)-1] == '+' or operator_stack[len(operator_stack)-1] == '-':
-      generate_operations_quadruples()
+      generate_operations_quadruples(var_options['scope'])
 
 # Regla para ciclo de expresión
 def p_exploop(p):
@@ -280,7 +281,7 @@ def p_term_quadruple(p):
   ''' term_quadruple : '''
   if len(operator_stack) > 0:
     if operator_stack[len(operator_stack)-1] == '*' or operator_stack[len(operator_stack)-1] == '/' or operator_stack[len(operator_stack)-1] == '%':
-      generate_operations_quadruples()
+      generate_operations_quadruples(var_options['scope'])
 
 # Regla para ciclo de terminos
 def p_termloop(p):
