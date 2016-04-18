@@ -46,6 +46,7 @@ var_options = {
 
 funct_options = {
   'id' : None,
+  'start': None,
   'type' : None,
   'params' : [],
   'params_order' : ''
@@ -435,7 +436,15 @@ def generate_gosub():
     types_stack.append(var_dict['global'][function_check['id']]['type'])
     operand_stack.append(var_dict['global'][function_check['id']]['address'])
 
-  # TODO: AGREGAR QUE JALEN LAS FUNCIONES TAMBIEN
+def create_function_end_quadruple():
+  global quadruplets
+  quadruple = ["ENDFUNCTION", "", "", ""]
+  quadruplets.append(quadruple)
+  print quadruple
+
+def get_current_quadruple():
+  global quadruplets
+  return len(quadruplets)
 
 ################################################################################
 def print_var_dict():
@@ -567,11 +576,12 @@ def add_constant_to_dict_aux(constant, type):
     'type' : types[type]
   }
 
-def add_funct_to_dict(funct_id, funct_type, funct_params, funct_params_order):
+def add_funct_to_dict(funct_id, funct_type, funct_params, funct_params_order, funct_start):
   funct_dict[funct_id] = {
-      'type' : types[funct_type],
-      'params' : funct_params,
-      'params_order' : funct_params_order
+    'start' : funct_start,
+    'type' : types[funct_type],
+    'params' : funct_params,
+    'params_order' : funct_params_order
   }
   # print_funct_dict()
 
@@ -601,7 +611,7 @@ def reset_options():
   }
 
 def add_main_to_dict():
-  add_funct_to_dict('main', 'void', {}, '')
+  add_funct_to_dict('main', 'void', {}, '', get_current_quadruple())
 
 def clean_funct_options():
   funct_options = {

@@ -24,11 +24,11 @@ def p_fill_main_goto(p):
 # Regla del bloque de main
 def p_main(p):
   '''main : MAIN start_main block'''
-  add_main_to_dict()
 
 def p_start_main(p):
   ''' start_main : '''
   start_main()
+  add_main_to_dict()
 
 
 # Regla de loop de funciones
@@ -39,8 +39,9 @@ def p_functionloop(p):
 # Regla para definición de funciones
 def p_function(p):
   ''' function : FUNCTION function_head function_end'''
-  add_funct_to_dict(funct_options['id'], funct_options['type'], funct_options['params'], funct_options['params_order'])
+  add_funct_to_dict(funct_options['id'], funct_options['type'], funct_options['params'], funct_options['params_order'], funct_options['start'])
   funct_options['id'] = None
+  funct_options['start'] = None
   funct_options['type'] = None
   funct_options['params'] = []
   funct_options['params_order'] = ''
@@ -58,7 +59,7 @@ def p_function_head(p):
 
 # Regla que define una funcion
 def p_function_with_return_def(p):
-  ''' function_with_return_def : ID add_function_to_global_variables O_PARENTHESIS parameters C_PARENTHESIS functionblock '''
+  ''' function_with_return_def : ID add_function_to_global_variables check_current_quadruple O_PARENTHESIS parameters C_PARENTHESIS functionblock '''
   funct_options['id'] = p[1]
 
 def p_add_function_to_global_variables(p):
@@ -66,8 +67,12 @@ def p_add_function_to_global_variables(p):
   add_function_to_global_variables(p[-1], p[-2])
 
 def p_function_def(p):
-  ''' function_def : ID O_PARENTHESIS parameters C_PARENTHESIS block'''
+  ''' function_def : ID check_current_quadruple O_PARENTHESIS parameters C_PARENTHESIS block'''
   funct_options['id'] = p[1]
+
+def p_check_current_quadruple(p):
+  '''check_current_quadruple : '''
+  funct_options['start'] = get_current_quadruple()
 
 # Regla que contiene los tipos de variables
 def p_type(p):
@@ -108,6 +113,7 @@ def p_add_function_var_to_stack(p):
 
 def p_function_end(p):
   '''function_end : '''
+  create_function_end_quadruple()
   clear_var_dict()
   release_fun_temp_memory()
 
@@ -506,6 +512,7 @@ def check():
   f.close()
   if parser.parse(data) == 'Valid':
     print('VALID!')
+    print_funct_dict()
     print(quadruplets)
   exit(0);
 
