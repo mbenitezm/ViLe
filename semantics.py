@@ -275,7 +275,7 @@ def generate_operations_quadruples(scope):
       result = assign_address('temps', result_type)
     else:
       result = assign_address('function_temps', result_type)
-    quadruple = [operator1, operand1, operand2, result]
+    quadruple = [operator1, operand1, type1, operand2, type2, result, result_type]
     operand_stack.append(result)
     types_stack.append(result_type)
     quadruplets.append(quadruple)
@@ -292,7 +292,7 @@ def generate_equals_quadruples():
   else:
     operand2 = operand_stack.pop()
     operand1 = operand_stack.pop()
-    quadruple = [operator1, operand2, '',  operand1]
+    quadruple = [operator1, operand2, type2, '',  operand1, type1]
     quadruplets.append(quadruple)
     print quadruple
 
@@ -303,7 +303,7 @@ def generate_condition_if_quadruples():
     print type1, " is not a valid operation in a condition."
   else:
     result = operand_stack.pop()
-    quadruple = ["GOTOF", result, "", ""]
+    quadruple = ["GOTOF", result, type1, "", ""]
     quadruplets.append(quadruple)
     jumps_stack.append(len(quadruplets) - 1)
     print quadruple
@@ -333,7 +333,7 @@ def generate_while_condition_quadruples():
     print type1, " is not a valid operation in a condition."
   else:
     result = operand_stack.pop()
-    quadruple = ["GOTOF", result, "", ""]
+    quadruple = ["GOTOF", result, type1, "", ""]
     quadruplets.append(quadruple)
     jumps_stack.append(len(quadruplets) - 1)
     print quadruple 
@@ -369,7 +369,7 @@ def generate_times_start_quadruples():
   generate_operations_quadruples()
   bool_type = types_stack.pop()
   result = operand_stack.pop()
-  quadruple = ["GOTOF", result, "", ""]
+  quadruple = ["GOTOF", result, bool_type, "", ""]
   quadruplets.append(quadruple)
   print quadruple
 
@@ -393,7 +393,7 @@ def generate_print_quadruples():
   temp_type = types_stack.pop()
   print_operator = operator_stack.pop()
   print_operand = operand_stack.pop()
-  quadruple = [print_operator, '', '',  print_operand]
+  quadruple = [print_operator, '', '',  print_operand, temp_type]
   quadruplets.append(quadruple)
   print quadruple
 
@@ -417,7 +417,7 @@ def generate_parameter_quadruple():
   result = operand_stack.pop()
   current_param = funct_dict[function_check['id']]['params'][function_check['current_param']][2]
   function_check['current_param'] = function_check['current_param'] + 1
-  quadruple = ["PARAM", result, "", current_param]
+  quadruple = ["PARAM", result, type1, "", current_param]
   quadruplets.append(quadruple)
   print quadruple
 
