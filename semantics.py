@@ -49,7 +49,8 @@ funct_options = {
   'start': None,
   'type' : None,
   'params' : [],
-  'params_order' : ''
+  'params_order' : '',
+  'memory_needed' : {}
 }
 
 function_check = {
@@ -255,6 +256,7 @@ def generate_main_goto():
 
 def start_main():
   var_options['scope'] = 'main'
+  funct_options['start'] = get_current_quadruple()
 
 def fill_main_goto():
   global quadruplets
@@ -415,6 +417,9 @@ def generate_parameter_quadruple():
   global quadruplets
   type1 = types_stack.pop()
   result = operand_stack.pop()
+  if function_check['current_param'] > (len(funct_dict[function_check['id']]['params']) - 1):
+    print('The params in ' + function_check['id'] + ' are wrong')
+    exit(0)
   current_param = funct_dict[function_check['id']]['params'][function_check['current_param']][2]
   function_check['current_param'] = function_check['current_param'] + 1
   quadruple = ["PARAM", result, type1, "", current_param]
@@ -576,12 +581,13 @@ def add_constant_to_dict_aux(constant, type):
     'type' : types[type]
   }
 
-def add_funct_to_dict(funct_id, funct_type, funct_params, funct_params_order, funct_start):
+def add_funct_to_dict(funct_id, funct_type, funct_params, funct_params_order, funct_start, funct_memory_needed):
   funct_dict[funct_id] = {
     'start' : funct_start,
     'type' : types[funct_type],
     'params' : funct_params,
-    'params_order' : funct_params_order
+    'params_order' : funct_params_order,
+    'memory_needed' : funct_memory_needed
   }
   # print_funct_dict()
 
@@ -611,7 +617,9 @@ def reset_options():
   }
 
 def add_main_to_dict():
-  add_funct_to_dict('main', 'void', {}, '', get_current_quadruple())
+  memory_needed = variable_counts(main_segment[0], main_segment[1] - 2500, main_segment[2] - 5000, main_segment[3] - 7500,
+                                  temp_segment[0] - 20000, temp_segment[1] - 22500, temp_segment[2] - 25000, temp_segment[3] - 27500)
+  add_funct_to_dict('main', 'void', {}, '', funct_options['start'], memory_needed)
 
 def clean_funct_options():
   funct_options = {
@@ -620,6 +628,10 @@ def clean_funct_options():
     'params' : [],
     'params_order' : ''
   }
+
+def variable_counts(int_q, float_q, string_q, bool_q, temp_int_q, temp_float_q, temp_string_q, temp_bool_q):
+  return { 'int' : int_q, 'float' : float_q, 'string' : string_q, 'bool' : bool_q, 
+           'temp_int' : temp_int_q, 'temp_float' : temp_float_q, 'temp_string' : temp_string_q, 'temp_bool' : temp_bool_q,}
 
 ######################### FUNCTIONS METHODS ####################################
 
@@ -660,3 +672,7 @@ def add_function_var_to_stack():
   types_stack.append(var_dict['global'][current_function['id']]['type'])
   operand_stack.append(var_dict['global'][current_function['id']]['address'])
   operator_stack.append('=')
+
+def get_memory_needed_for_function():
+  return variable_counts(function_segment[0] - 10000, function_segment[1] - 12500, function_segment[2] - 15000, function_segment[3] - 17500,
+                         fun_temp_segment[0] - 50000, fun_temp_segment[1] - 52500, fun_temp_segment[2] - 55000, fun_temp_segment[3] - 57500)

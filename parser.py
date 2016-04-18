@@ -24,12 +24,11 @@ def p_fill_main_goto(p):
 # Regla del bloque de main
 def p_main(p):
   '''main : MAIN start_main block'''
+  add_main_to_dict()
 
 def p_start_main(p):
   ''' start_main : '''
   start_main()
-  add_main_to_dict()
-
 
 # Regla de loop de funciones
 def p_functionloop(p):
@@ -39,12 +38,13 @@ def p_functionloop(p):
 # Regla para definición de funciones
 def p_function(p):
   ''' function : FUNCTION function_head function_end'''
-  add_funct_to_dict(funct_options['id'], funct_options['type'], funct_options['params'], funct_options['params_order'], funct_options['start'])
+  add_funct_to_dict(funct_options['id'], funct_options['type'], funct_options['params'], funct_options['params_order'], funct_options['start'], get_memory_needed_for_function())
   funct_options['id'] = None
   funct_options['start'] = None
   funct_options['type'] = None
   funct_options['params'] = []
   funct_options['params_order'] = ''
+  release_fun_temp_memory()
 
 
 # Regla que define el tipo de función
@@ -115,7 +115,6 @@ def p_function_end(p):
   '''function_end : '''
   create_function_end_quadruple()
   clear_var_dict()
-  release_fun_temp_memory()
 
 # Regla del ciclo de estatutos
 def p_statutesloop(p):
