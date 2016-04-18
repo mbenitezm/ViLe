@@ -414,7 +414,7 @@ def generate_parameter_quadruple():
   global quadruplets
   type1 = types_stack.pop()
   result = operand_stack.pop()
-  current_param = funct_dict[function_check['id']]['params'][function_check['current_param']][0]
+  current_param = funct_dict[function_check['id']]['params'][function_check['current_param']][2]
   function_check['current_param'] = function_check['current_param'] + 1
   quadruple = ["PARAM", result, "", current_param]
   quadruplets.append(quadruple)

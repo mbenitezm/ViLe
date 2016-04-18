@@ -470,7 +470,7 @@ def p_parameterinit(p):
     exit(0)
   else:
     add_var_to_dict(var_options['id'], var_options['type'], var_options['scope'])
-    funct_options['params'].append([var_options['id'], types[var_options['type']]])
+    funct_options['params'].append([var_options['id'], types[var_options['type']], var_dict['function'][var_options['id']]['address']])
 
 # Regal para el ciclio de ingresar más parametros a uan función
 def p_parametersloop(p):
