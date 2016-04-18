@@ -38,41 +38,55 @@ def p_functionloop(p):
 # Regla para definición de funciones
 def p_function(p):
   ''' function : FUNCTION function_head function_end'''
-  add_funct_to_dict(funct_options['id'], funct_options['type'], funct_options['params'], funct_options['params_order'], funct_options['start'], get_memory_needed_for_function())
+  update_funct_memory(funct_options['id'], get_memory_needed_for_function())
   funct_options['id'] = None
   funct_options['start'] = None
   funct_options['type'] = None
   funct_options['params'] = []
   funct_options['params_order'] = ''
+  current_function['id'] = None
+  current_function['type'] = None
+  current_function['return'] = False
   release_fun_temp_memory()
+
+def p_add_function_init_to_dict(p):
+  '''add_function_init_to_dict : '''
+  add_funct_to_dict(funct_options['id'], funct_options['type'], funct_options['params'], funct_options['params_order'], funct_options['start'], get_memory_needed_for_function())
 
 
 # Regla que define el tipo de función
 def p_function_head(p):
-  ''' function_head : VOID function_def
-                   | BOOL function_with_return_def
-                   | INT function_with_return_def
-                   | FLOAT function_with_return_def
-                   | STRING function_with_return_def'''
+  ''' function_head : VOID add_function_type_to_options function_def
+                   | BOOL add_function_type_to_options function_with_return_def
+                   | INT add_function_type_to_options function_with_return_def
+                   | FLOAT add_function_type_to_options function_with_return_def
+                   | STRING add_function_type_to_options function_with_return_def'''
   var_options['scope'] = 'function'
-  funct_options['type'] = p[1]
+
+def p_add_function_type_to_options(p):
+  '''add_function_type_to_options : '''
+  funct_options['type'] = p[-1]
 
 # Regla que define una funcion
 def p_function_with_return_def(p):
-  ''' function_with_return_def : ID add_function_to_global_variables check_current_quadruple O_PARENTHESIS parameters C_PARENTHESIS functionblock '''
-  funct_options['id'] = p[1]
+  ''' function_with_return_def : ID add_function_id_to_options add_function_to_global_variables check_current_quadruple O_PARENTHESIS parameters C_PARENTHESIS add_function_init_to_dict functionblock '''
+  validate_function_return()
 
 def p_add_function_to_global_variables(p):
   ''' add_function_to_global_variables : '''
-  add_function_to_global_variables(p[-1], p[-2])
+  add_function_to_global_variables(funct_options['id'], funct_options['type'])
 
 def p_function_def(p):
-  ''' function_def : ID check_current_quadruple O_PARENTHESIS parameters C_PARENTHESIS block'''
-  funct_options['id'] = p[1]
+  ''' function_def : ID add_function_id_to_options check_current_quadruple O_PARENTHESIS parameters C_PARENTHESIS add_function_init_to_dict block'''
+  create_function_return_quadruple()
 
 def p_check_current_quadruple(p):
   '''check_current_quadruple : '''
   funct_options['start'] = get_current_quadruple()
+
+def p_add_function_id_to_options(p):
+  '''add_function_id_to_options : '''
+  funct_options['id'] = p[-1]
 
 # Regla que contiene los tipos de variables
 def p_type(p):
@@ -98,7 +112,7 @@ def p_block(p):
 
 # Regla del bloque de las funciones
 def p_functionblock(p):
-  ''' functionblock : O_BRACKET statutesloop functionreturn C_BRACKET'''
+  ''' functionblock : O_BRACKET functionstatutesloop C_BRACKET'''
 
 # Regla para que pueda haber un return en una función
 def p_functionreturn(p):
@@ -106,6 +120,7 @@ def p_functionreturn(p):
                     | RETURN add_function_var_to_stack expression SEMICOLON'''
   check_function_return()
   generate_equals_quadruples()
+  create_function_return_quadruple()
 
 def p_add_function_var_to_stack(p):
   ''' add_function_var_to_stack : '''
@@ -121,6 +136,11 @@ def p_statutesloop(p):
   ''' statutesloop : statute statutesloop
                    |'''
 
+def p_functionstatutesloopp(p):
+  ''' functionstatutesloop : functionstatute functionstatutesloop
+                           | functionreturn
+                           |''' 
+
 # Regla de contiene los tipos de estatutos
 def p_statute(p):
   ''' statute : init
@@ -130,14 +150,26 @@ def p_statute(p):
               | assignation
               | functioncall'''
 
+def p_functionstatute(p):
+  ''' functionstatute : init
+                      | functioncondition
+                      | writting
+                      | functionloops
+                      | assignation
+                      | functioncall'''
+
 # Regla para estatuto de asignación
 def p_assignation(p):
   ''' assignation : var_assign EQUALS add_equals expression equals_quadruple SEMICOLON'''
+  if var_options['scope'] == 'function':
+    last_return(False)
 
 
 # Regla de estatuto para escritura
 def p_writting(p):
   ''' writting :  PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON'''
+  if var_options['scope'] == 'function':
+    last_return(False)
 
 def p_start_printing(p):
   ''' start_printing : '''
@@ -163,6 +195,8 @@ def p_optionalwritting(p):
 def p_init(p):
   ''' init : listinit
            | normalinit'''
+  if var_options['scope'] == 'function':
+    last_return(False)
 
 # Regla de inicialización de variables normales
 def p_normalinit(p):
@@ -202,10 +236,18 @@ def p_optionalconstants(p):
 def p_condition(p):
   ''' condition : IF O_PARENTHESIS expression C_PARENTHESIS start_condition block else end_condition'''
 
+def p_functioncondition(p):
+  ''' functioncondition : IF O_PARENTHESIS expression C_PARENTHESIS start_condition functionblock functionelse end_condition'''
+
 # Regla para el else del estatuto de condición
 def p_else(p):
   ''' else : ELSE else_condition block
            | '''
+
+def p_functionelse(p):
+  ''' functionelse : ELSE else_condition functionblock
+                   | '''
+
 
 def p_start_condition(p):
   '''start_condition :'''
@@ -399,9 +441,16 @@ def p_loop(p):
   ''' loop : whileloop
            | timesloop'''
 
+def p_functionloops(p):
+  ''' functionloops : functionwhileloop
+                   | functiontimesloop'''
+
 # Regla para while
 def p_whileloop(p):
   ''' whileloop : WHILE start_while O_PARENTHESIS expression C_PARENTHESIS condition_while block end_while'''
+
+def p_functionwhileloop(p):
+  ''' functionwhileloop : WHILE start_while O_PARENTHESIS expression C_PARENTHESIS condition_while functionblock end_while'''
 
 def p_start_while(p):
   '''start_while :'''
@@ -419,6 +468,10 @@ def p_end_while(p):
 def p_timesloop(p):
   ''' timesloop : TIMES O_PARENTHESIS expression C_PARENTHESIS start_times block end_times'''
 
+# Regla para times
+def p_functiontimesloop(p):
+  ''' functiontimesloop : TIMES O_PARENTHESIS expression C_PARENTHESIS start_times functionblock end_times'''
+
 def p_start_times(p):
   '''start_times :'''
   generate_times_start_quadruples()
@@ -430,6 +483,8 @@ def p_end_times(p):
 # Regla de llamada de función
 def p_functioncall(p):
   ''' functioncall : ID check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub'''
+  if var_options['scope'] == 'function':
+    last_return(False)
 
 def p_check_function_exists(p):
   ''' check_function_exists : '''
@@ -486,9 +541,11 @@ def p_parametersloop(p):
 def p_error(p):
     if type(p).__name__ == 'NoneType':
       print('Syntax error')
+      exit(0)
     else:
       print('Syntax error in ', p.value, ' at line ', p.lineno)
       p.lineno = 0
+      exit(0)
 
 # Build the parser
 parser = yacc.yacc(start='program')
@@ -511,7 +568,6 @@ def check():
   f.close()
   if parser.parse(data) == 'Valid':
     print('VALID!')
-    print_funct_dict()
     print(quadruplets)
   exit(0);
 

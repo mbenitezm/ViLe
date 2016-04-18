@@ -9,13 +9,15 @@ def int funcion2 (int y, int otra) {
 }
 
 def bool func (int y){
-	return(y < 3); 
+	if (y > 2){
+		return(true);
+	}
 }
 
 
 main {
 	funcion(2);
-	int y = funcion2(4+3, 3);
+	int y = funcion2(4+3, 4);
 	if (func(2)){
 		print(funcion2(4, 7));
 	} else {
