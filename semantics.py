@@ -237,7 +237,15 @@ def add_global_memory(var_type):
       global_segment[3] += 1
 
 def release_fun_temp_memory():
-  fun_temp_segment = [50000, 52500, 55000, 57500]
+  fun_temp_segment[0] = 50000
+  fun_temp_segment[1] = 52500
+  fun_temp_segment[2] = 55000
+  fun_temp_segment[3] = 57500
+  function_segment[0] = 10000
+  function_segment[1] = 12500
+  function_segment[2] = 15000
+  function_segment[3] = 17500
+
 ########################Quadruple Generation####################################
 def generate_main_goto():
   global quadruplets
