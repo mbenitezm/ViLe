@@ -61,7 +61,8 @@ function_check = {
 
 current_function = {
   'id' : None,
-  'type' : None
+  'type' : None,
+  'return' : False
 }
 
 quadruplets = deque([])
@@ -368,7 +369,7 @@ def generate_times_start_quadruples():
   add_constant_to_dict(0, 'int')
   operator_stack.append('>')
   jumps_stack.append(len(quadruplets))
-  generate_operations_quadruples()
+  generate_operations_quadruples(var_options['scope'])
   bool_type = types_stack.pop()
   result = operand_stack.pop()
   quadruple = ["GOTOF", result, bool_type, "", ""]
@@ -385,7 +386,7 @@ def generate_times_end_quadruples():
   types_stack.append(types['int'])
   add_constant_to_dict(1, 'int')
   operator_stack.append('-')
-  generate_operations_quadruples()
+  generate_operations_quadruples(var_options['scope'])
   operator_stack.append('=')
   generate_equals_quadruples()
   quadruplets.append(["GOTO", "", "", jump_return])
@@ -409,7 +410,6 @@ def semantics_add_to_stack(id):
     operand_stack.append(var_dict['main'][id]['address'])
     types_stack.append(var_dict['main'][id]['type'])
   else:
-    print_var_dict()
     print id, " doesn't exists"
     exit(0)
 
@@ -444,6 +444,12 @@ def generate_gosub():
 def create_function_end_quadruple():
   global quadruplets
   quadruple = ["ENDFUNCTION", "", "", ""]
+  quadruplets.append(quadruple)
+  print quadruple
+
+def create_function_return_quadruple():
+  global quadruplets
+  quadruple = ["RETURN", "", "", ""]
   quadruplets.append(quadruple)
   print quadruple
 
@@ -589,7 +595,6 @@ def add_funct_to_dict(funct_id, funct_type, funct_params, funct_params_order, fu
     'params_order' : funct_params_order,
     'memory_needed' : funct_memory_needed
   }
-  # print_funct_dict()
 
 def add_constant_to_dict(constant, type):
   if not(constant in var_dict['constants']):
@@ -642,8 +647,16 @@ def check_function_return():
     print('It returns ' + types_translations[return_type] + ' and it should be ' + types_translations[var_dict['global'][current_function['id']]['type']])
     exit(0)
   types_stack.append(return_type)
-  current_function['id'] = None
-  current_function['type'] = None
+  current_function['return'] = True
+  last_return(True)
+
+def validate_function_return():
+  if not (current_function['return']):
+    print('Function must have at least one return')
+    exit(0)
+  if not (current_function['last_return']):
+    print("There is a case when the function doesn't end with a return")
+    exit(0)
 
 def check_function_exists(function_name):
   if not(function_name in funct_dict):
@@ -676,3 +689,9 @@ def add_function_var_to_stack():
 def get_memory_needed_for_function():
   return variable_counts(function_segment[0] - 10000, function_segment[1] - 12500, function_segment[2] - 15000, function_segment[3] - 17500,
                          fun_temp_segment[0] - 50000, fun_temp_segment[1] - 52500, fun_temp_segment[2] - 55000, fun_temp_segment[3] - 57500)
+
+def update_funct_memory(function_id, function_memory_needed):
+  funct_dict[function_id]['memory_needed'] = function_memory_needed
+
+def last_return(value):
+  current_function['last_return'] = value
