@@ -3,7 +3,8 @@ from numpy import *
 class Memory:
   def __init__(self, name, memory_needed):
     function_name = name
-    main_segment = numpy.empty((memory_needed['int'], dtype=int))
+    main_segment = numpy.empty(memory_needed['int'], dtype=int)
+    
 
   def assign_real_address(self, type, virtual_address):
 
