@@ -568,6 +568,7 @@ def check():
   f.close()
   if parser.parse(data) == 'Valid':
     print('VALID!')
-    print(quadruplets)
+    print_quadruplets()
+    print_funct_dict()
   exit(0);
 

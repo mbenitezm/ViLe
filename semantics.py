@@ -466,6 +466,11 @@ def print_funct_dict():
   print "\nFUNCT DICT"
   pp.pprint(funct_dict)
 
+def print_quadruplets():
+  print "\nQuadrupletsf"
+  global quadruplets
+  pp.pprint(quadruplets)
+
 def semantic_dict_constr():
   return { 
           types['int'] : { 
@@ -634,7 +639,7 @@ def clean_funct_options():
     'params_order' : ''
   }
 
-def variable_counts(int_q, float_q, string_q, bool_q, temp_int_q, temp_float_q, temp_string_q, temp_bool_q):
+def variable_counts(int_q, float_q, bool_q, string_q, temp_int_q, temp_float_q, temp_string_q, temp_bool_q):
   return { 'int' : int_q, 'float' : float_q, 'string' : string_q, 'bool' : bool_q, 
            'temp_int' : temp_int_q, 'temp_float' : temp_float_q, 'temp_string' : temp_string_q, 'temp_bool' : temp_bool_q,}
 
