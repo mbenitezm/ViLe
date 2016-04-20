@@ -572,6 +572,9 @@ def check():
   data = f.read()
   f.close()
   if parser.parse(data) == 'Valid':
+    print('VALID!')
+    print_quadruplets()
+    print_funct_dict()
     print quadruplets
     solve()
   exit(0);

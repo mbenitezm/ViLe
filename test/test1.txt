@@ -17,6 +17,7 @@ def bool func (int y){
 
 main {
 	funcion(2);
+	bool booleana = true;
 	int y = funcion2(4+3, 4);
 	if (func(2)){
 		print(funcion2(4, 7));
