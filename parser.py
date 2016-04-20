@@ -6,12 +6,17 @@
 import ply.yacc as yacc
 import lexer
 from semantics import *
+from vm import *
 tokens = lexer.tokens
 
 # Regla inicial de programa
 def p_program(p):
-  '''program : generate_main_goto functionloop fill_main_goto main'''
+  '''program : generate_main_goto functionloop fill_main_goto main generate_end_all'''
   p[0] = "Valid"
+
+def p_generate_end_all(p):
+  '''generate_end_all :'''
+  generate_end_all_quadruple()
 
 def p_generate_main_goto(p):
   ''' generate_main_goto : '''
@@ -563,11 +568,11 @@ parser = yacc.yacc(start='program')
 #   exit(0);
 
 def check():
-  f = open('test/test1.txt', 'r')
+  f = open('test/vm_test.txt', 'r')
   data = f.read()
   f.close()
   if parser.parse(data) == 'Valid':
-    print('VALID!')
-    print(quadruplets)
+    print quadruplets
+    solve()
   exit(0);
 
