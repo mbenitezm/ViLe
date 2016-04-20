@@ -60,3 +60,4 @@ correccion de parametros en funciones
 20 de Abril
 - Ifs 
 - Areglar mayores iguales y asi
+- Ciclos

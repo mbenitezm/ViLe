@@ -575,7 +575,7 @@ def check():
     print('VALID!')
     #print_quadruplets()
     #print_funct_dict()
-    #print quadruplets
+    print quadruplets
     solve()
   exit(0);
 

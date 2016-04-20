@@ -86,7 +86,7 @@ def solve():
       type3 = quadruplet[6]
       operand1 = alive_memory.get_value_from_real_address(type1, op1)
       operand2 = alive_memory.get_value_from_real_address(type2, op2)
-      result = op2 > op1
+      result = operand1 > operand2
       alive_memory.assign_to_real_address(type3, res, result)
       current_quadruple += 1
 
@@ -99,7 +99,7 @@ def solve():
       type3 = quadruplet[6]
       operand1 = alive_memory.get_value_from_real_address(type1, op1)
       operand2 = alive_memory.get_value_from_real_address(type2, op2)
-      result = op2 < op1
+      result = operand1 < operand2
       alive_memory.assign_to_real_address(type3, res, result)
       current_quadruple += 1
 
@@ -112,7 +112,7 @@ def solve():
       type3 = quadruplet[6]
       operand1 = alive_memory.get_value_from_real_address(type1, op1)
       operand2 = alive_memory.get_value_from_real_address(type2, op2)
-      result = op2 >= op1
+      result = operand1 >= operand2
       alive_memory.assign_to_real_address(type3, res, result)
       current_quadruple += 1
 
@@ -125,7 +125,7 @@ def solve():
       type3 = quadruplet[6]
       operand1 = alive_memory.get_value_from_real_address(type1, op1)
       operand2 = alive_memory.get_value_from_real_address(type2, op2)
-      result = op2 <= op1
+      result = operand1 <= operand2
       alive_memory.assign_to_real_address(type3, res, result)
       current_quadruple += 1
 
@@ -138,7 +138,7 @@ def solve():
       type3 = quadruplet[6]
       operand1 = alive_memory.get_value_from_real_address(type1, op1)
       operand2 = alive_memory.get_value_from_real_address(type2, op2)
-      result = op2 == op1
+      result = operand1 == operand2
       alive_memory.assign_to_real_address(type3, res, result)
       current_quadruple += 1
 
@@ -152,7 +152,7 @@ def solve():
       type3 = quadruplet[6]
       operand1 = alive_memory.get_value_from_real_address(type1, op1)
       operand2 = alive_memory.get_value_from_real_address(type2, op2)
-      result = op2 != op1
+      result = operand1 != operand2
       alive_memory.assign_to_real_address(type3, res, result)
       current_quadruple += 1
 
