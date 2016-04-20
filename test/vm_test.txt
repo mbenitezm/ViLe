@@ -1,6 +1,10 @@
 main {
-  int x = (20 + 2) / 2;
-  int y = 5 * x;
-  int z = x + y;
-  print(z);
+  bool m = false;
+  bool n = true;
+  float x = 20.5 / 2 * 3;
+  int y = 9 + 2;
+  int r = 1;
+  float z = x + y;
+  string a = "algo";
+  print(r > y);
 }

@@ -274,6 +274,7 @@ def generate_operations_quadruples(scope):
   else:
     operand2 = operand_stack.pop()
     operand1 = operand_stack.pop()
+    print result_type
     if scope == 'main':
       result = assign_address('temps', result_type)
     else:
@@ -589,6 +590,12 @@ def add_constant_to_dict_aux(constant, type):
     'address' : address,
     'type' : types[type]
   }
+  if(types[type] == 1):
+    constant = int(constant)
+  elif(types[type] == 2):
+    constant = float(constant)
+  elif(types[type] == 4):
+    constant = bool(constant)
   var_dict['inverse_constants'][address] = {
     'value' : constant, 
     'type' : types[type]

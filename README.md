@@ -53,4 +53,6 @@ correccion de parametros en funciones
 - Cuadruplos de funciones
 - Correcciones a memoria virtual de la semántica.
 
-
+19 de Abril
+- Mapeo de memoria
+- Operaciones aritméticas
