@@ -274,7 +274,6 @@ def generate_operations_quadruples(scope):
   else:
     operand2 = operand_stack.pop()
     operand1 = operand_stack.pop()
-    print result_type
     if scope == 'main':
       result = assign_address('temps', result_type)
     else:
@@ -317,7 +316,7 @@ def generate_condition_else_quadruples():
   quadruple = ["GOTO", "", "", ""]
   quadruplets.append(quadruple)
   jump = jumps_stack.pop()
-  quadruplets[jump][2] = len(quadruplets)
+  quadruplets[jump][3] = len(quadruplets)
   jumps_stack.append(len(quadruplets) - 1)
   print quadruple
 
@@ -562,9 +561,9 @@ def assign_address(scope, var_type):
       address = temp_segment[0]
     elif var_type == 2:
       address = temp_segment[1]
-    elif var_type == 3:
-      address = temp_segment[2]
     elif var_type == 4:
+      address = temp_segment[2]
+    elif var_type == 3:
       address = temp_segment[3]
     add_temp_memory(var_type)
   elif scope == 'function_temps':
@@ -572,9 +571,9 @@ def assign_address(scope, var_type):
       address = fun_temp_segment[0]
     elif var_type == 2:
       address = fun_temp_segment[1]
-    elif var_type == 3:
-      address = fun_temp_segment[2]
     elif var_type == 4:
+      address = fun_temp_segment[2]
+    elif var_type == 3:
       address = fun_temp_segment[3]
     add_fun_temp_memory(var_type)
   elif scope == 'global':

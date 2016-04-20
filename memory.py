@@ -68,11 +68,11 @@ class Memory:
     if type == 1:
       return 0
     elif type == 2:
-      return 250
+      return 2500
     elif type == 3:
-      return 750
+      return 7500
     elif type == 4:
-      return 500
+      return 5000
 
   # Esta función regresa el bloque de memoria al que pertenece la variable
   def get_corresponding_memory(self, scope, type):

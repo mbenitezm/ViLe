@@ -3,8 +3,13 @@ main {
   bool n = true;
   float x = 20.5 / 2 * 3;
   int y = 9 + 2;
-  int r = 1;
-  float z = x + y;
   string a = "algo";
-  print(r > y);
+
+  int r = 1;
+  int z = 2;
+  if(r >= z) {
+    print("true");
+  } else {
+    print("false");
+  }
 }

@@ -86,8 +86,73 @@ def solve():
       type3 = quadruplet[6]
       operand1 = alive_memory.get_value_from_real_address(type1, op1)
       operand2 = alive_memory.get_value_from_real_address(type2, op2)
-      result = op1 > op2
-      print type3, res, result
+      result = op2 > op1
+      alive_memory.assign_to_real_address(type3, res, result)
+      current_quadruple += 1
+
+    elif quadruplet[0] == '<':
+      op1 = quadruplet[1]
+      type1 = quadruplet[2]
+      op2 = quadruplet[3]
+      type2 = quadruplet[4]
+      res = quadruplet[5]
+      type3 = quadruplet[6]
+      operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      operand2 = alive_memory.get_value_from_real_address(type2, op2)
+      result = op2 < op1
+      alive_memory.assign_to_real_address(type3, res, result)
+      current_quadruple += 1
+
+    elif quadruplet[0] == '>=':
+      op1 = quadruplet[1]
+      type1 = quadruplet[2]
+      op2 = quadruplet[3]
+      type2 = quadruplet[4]
+      res = quadruplet[5]
+      type3 = quadruplet[6]
+      operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      operand2 = alive_memory.get_value_from_real_address(type2, op2)
+      result = op2 >= op1
+      alive_memory.assign_to_real_address(type3, res, result)
+      current_quadruple += 1
+
+    elif quadruplet[0] == '<=':
+      op1 = quadruplet[1]
+      type1 = quadruplet[2]
+      op2 = quadruplet[3]
+      type2 = quadruplet[4]
+      res = quadruplet[5]
+      type3 = quadruplet[6]
+      operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      operand2 = alive_memory.get_value_from_real_address(type2, op2)
+      result = op2 <= op1
+      alive_memory.assign_to_real_address(type3, res, result)
+      current_quadruple += 1
+
+    elif quadruplet[0] == '==':
+      op1 = quadruplet[1]
+      type1 = quadruplet[2]
+      op2 = quadruplet[3]
+      type2 = quadruplet[4]
+      res = quadruplet[5]
+      type3 = quadruplet[6]
+      operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      operand2 = alive_memory.get_value_from_real_address(type2, op2)
+      result = op2 == op1
+      alive_memory.assign_to_real_address(type3, res, result)
+      current_quadruple += 1
+
+    # Agregar a cubo
+    elif quadruplet[0] == '!=':
+      op1 = quadruplet[1]
+      type1 = quadruplet[2]
+      op2 = quadruplet[3]
+      type2 = quadruplet[4]
+      res = quadruplet[5]
+      type3 = quadruplet[6]
+      operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      operand2 = alive_memory.get_value_from_real_address(type2, op2)
+      result = op2 != op1
       alive_memory.assign_to_real_address(type3, res, result)
       current_quadruple += 1
 
@@ -103,6 +168,13 @@ def solve():
     elif quadruplet[0] == 'GOTO':
       current_quadruple = quadruplet[3]
 
+    elif quadruplet[0] == 'GOTOF':
+      result = alive_memory.get_value_from_real_address(4, quadruplet[1])
+      jump_to = quadruplet[3]
+      if result == False:
+        current_quadruple = jump_to
+      else:
+        current_quadruple += 1
     elif quadruplet[0] == 'print':
       op1 = quadruplet[3]
       type1 = quadruplet[4]

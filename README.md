@@ -56,3 +56,7 @@ correccion de parametros en funciones
 19 de Abril
 - Mapeo de memoria
 - Operaciones aritméticas
+
+20 de Abril
+- Ifs 
+- Areglar mayores iguales y asi
