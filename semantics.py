@@ -457,6 +457,13 @@ def get_current_quadruple():
   global quadruplets
   return len(quadruplets)
 
+def generate_end_all_quadruple():
+  global quadruplets
+  quadruple = ["ENDALL"]
+  quadruplets.append(quadruple)
+  print quadruple
+
+
 ################################################################################
 def print_var_dict():
   print "\nVAR DICT"
