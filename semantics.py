@@ -5,6 +5,8 @@ pp = pprint.PrettyPrinter()
 
 ###### Initialize structures ###################################################
 
+global_dict = {'global_memory_needed' : None }
+
 funct_dict = {}
 
 types = {
@@ -42,6 +44,8 @@ var_options = {
   'id' : None,
   'scope' : 'function',
   'type' : None,
+  'list' : False,
+  'size' : None
 }
 
 funct_options = {
@@ -63,6 +67,10 @@ current_function = {
   'id' : None,
   'type' : None,
   'return' : False
+}
+
+list_options = {
+  'start_address' : None
 }
 
 quadruplets = deque([])
@@ -463,6 +471,19 @@ def generate_end_all_quadruple():
   quadruplets.append(quadruple)
   print quadruple
 
+def generate_list_assignation_quadruple():
+  type2 = types_stack.pop()
+  operand2 = operand_stack.pop()
+  type1 = types[var_options['type']]
+  address = assign_address(var_options['scope'], var_options['type'])
+  operand1 = address
+  types_stack.append(type1)
+  types_stack.append(type2)
+  operand_stack.append(operand1)
+  operand_stack.append(operand2)
+  operator_stack.append('=')
+  generate_equals_quadruples()
+
 
 ################################################################################
 def print_var_dict():
@@ -474,9 +495,13 @@ def print_funct_dict():
   pp.pprint(funct_dict)
 
 def print_quadruplets():
-  print "\nQuadrupletsf"
+  print "\nQuadruplets"
   global quadruplets
   pp.pprint(quadruplets)
+
+def print_global_dict():
+  print "\GLOBAL DICT"
+  pp.pprint(global_dict)
 
 def semantic_dict_constr():
   return { 
@@ -518,14 +543,100 @@ def op_error():
 
 semantic_dict = semantic_dict_constr()
 
-def add_var_to_dict(var_id, var_type, scope):
+def add_var_to_dict(var_id, var_type, var_list, var_size, scope):
   address = assign_address(scope, var_type)
 
   var_dict[scope][var_id] = {
     'type': types[var_type],
-    'address' : address
+    'address' : address,
+    'list' : var_list,
+    'size' : var_size
   }
+  clean_var_options(scope)
   # print_var_dict()
+
+def add_list_to_dict(var_id, var_type, var_list, var_size, scope):
+  address = list_options['start_address']
+  var_dict[scope][var_id] = {
+    'type': types[var_type],
+    'address' : address,
+    'list' : var_list,
+    'size' : var_size
+  }
+  clean_var_options(scope)
+  clean_list_options()
+  # print_var_dict()
+
+def clean_var_options(scope):
+  var_options = {
+    'id' : None,
+    'scope' : scope,
+    'type' : None,
+    'list' : False,
+    'size' : None
+  }
+
+def clean_list_options():
+  list_options = {
+    'start_address' : None
+  }
+
+def get_current_memory(scope, var_type):
+  if scope == 'main':
+    if var_type == 'int':
+      address = main_segment[0]
+    elif var_type == 'float':
+      address = main_segment[1]
+    elif var_type == 'bool':
+      address = main_segment[2]
+    elif var_type == 'string':
+      address = main_segment[3]
+  elif scope == 'function':
+    if var_type == 'int':
+      address = function_segment[0]
+    elif var_type == 'float':
+      address = function_segment[1]
+    elif var_type == 'bool':
+      address = function_segment[2]
+    elif var_type == 'string':
+      address = function_segment[3]
+  elif scope == 'constants':
+    if var_type == 'int':
+      address = const_segment[0]
+    elif var_type == 'float':
+      address = const_segment[1]
+    elif var_type == 'bool':
+      address = const_segment[2]
+    elif var_type == 'string':
+      address = const_segment[3]
+  elif scope == 'temps':
+    if var_type == 1:
+      address = temp_segment[0]
+    elif var_type == 2:
+      address = temp_segment[1]
+    elif var_type == 4:
+      address = temp_segment[2]
+    elif var_type == 3:
+      address = temp_segment[3]
+  elif scope == 'function_temps':
+    if var_type == 1:
+      address = fun_temp_segment[0]
+    elif var_type == 2:
+      address = fun_temp_segment[1]
+    elif var_type == 4:
+      address = fun_temp_segment[2]
+    elif var_type == 3:
+      address = fun_temp_segment[3]
+  elif scope == 'global':
+    if var_type == 'int':
+      address = global_segment[0]
+    elif var_type == 'float':
+      address = global_segment[1]
+    elif var_type == 'bool':
+      address = global_segment[2]
+    elif var_type == 'string':
+      address = global_segment[3]
+  return address
 
 def assign_address(scope, var_type):
   if scope == 'main':
@@ -589,6 +700,7 @@ def assign_address(scope, var_type):
       address = global_segment[3]
     add_global_memory(var_type)
   return address
+
 
 def add_constant_to_dict_aux(constant, type):
   address = assign_address('constants', type)
@@ -699,12 +811,17 @@ def check_params_order():
 def add_function_to_global_variables(function_id, function_type):
   current_function['id'] = function_id
   current_function['type'] = function_type
-  add_var_to_dict(function_id, function_type, 'global')
+  add_var_to_dict(function_id, function_type, False, None , 'global')
 
 def add_function_var_to_stack():
   types_stack.append(var_dict['global'][current_function['id']]['type'])
   operand_stack.append(var_dict['global'][current_function['id']]['address'])
   operator_stack.append('=')
+
+def get_global_memory_needed():
+  global_dict['global_memory_needed'] = variable_counts(global_segment[0] - 40000, global_segment[1] - 42500, 
+                                                       global_segment[2] - 45000, global_segment[3] - 47500,
+                                                       0, 0, 0, 0)
 
 def get_memory_needed_for_function():
   return variable_counts(function_segment[0] - 10000, function_segment[1] - 12500, function_segment[2] - 15000, function_segment[3] - 17500,

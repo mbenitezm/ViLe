@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Analizador sintáctico de ViLe
 # Marcel Benítez Martínez 1139855
-# Abraham Rodríguez
+# Abraham Rodríguez 1195653
 
 import ply.yacc as yacc
 import lexer
@@ -11,8 +11,12 @@ tokens = lexer.tokens
 
 # Regla inicial de programa
 def p_program(p):
-  '''program : generate_main_goto functionloop fill_main_goto main generate_end_all'''
+  '''program : generate_main_goto functionloop fill_main_goto main generate_end_all global_memory_needed'''
   p[0] = "Valid"
+
+def p_global_memory_needed(p):
+  '''global_memory_needed : '''
+  get_global_memory_needed()
 
 def p_generate_end_all(p):
   '''generate_end_all :'''
@@ -222,20 +226,39 @@ def p_add_equals(p):
 
 # Regla de inicialización de variables tipo lista
 def p_listinit(p):
-  ''' listinit : LIST type var EQUALS list SEMICOLON'''
+  ''' listinit : LIST type ID EQUALS start_list list SEMICOLON'''
+  var_options['id'] = p[3]
+  if var_exists(var_options['id'], var_options['scope']):
+    print("The variable ", var_options['id'], "has been used before.")
+    exit(0)
+  else:
+    add_list_to_dict(var_options['id'], var_options['type'], var_options['list'], var_options['size'], var_options['scope'])
 
 # Regla de formato de variable tipo listo
 def p_list(p):
   ''' list : O_S_BRACKET listelements C_S_BRACKET'''
 
+def p_start_list(p):
+  ''' start_list : '''
+  list_options['start_address'] = get_current_memory(var_options['scope'], var_options['type'])
+  var_options['list'] = True
+  var_options['size'] = 0
+
 # Regla de inicialización de los elementos de una lista
 def p_listelements(p):
-  ''' listelements : constants optionalconstants 
+  ''' listelements : expression generate_list_assignation optionallist
                    |'''
+
 # Regla de inicialización de más elementos de una lista
-def p_optionalconstants(p):
-  ''' optionalconstants : COMMA constants optionalconstants
-                        |'''
+def p_optionallist(p):
+  ''' optionallist : COMMA expression generate_list_assignation optionallist
+                   |'''
+
+def p_generate_list_assignation(p):
+  ''' generate_list_assignation : '''
+  generate_list_assignation_quadruple()
+  var_options['size'] = var_options['size'] + 1
+
 
 # Regla de estatuto de condición
 def p_condition(p):
@@ -383,7 +406,7 @@ def p_var(p):
     print("The variable ", var_options['id'], "has been used before.")
     exit(0)
   else:
-    add_var_to_dict(var_options['id'], var_options['type'], var_options['scope'])
+    add_var_to_dict(var_options['id'], var_options['type'], var_options['list'], var_options['size'], var_options['scope'])
     try: 
       operand_stack.append(var_dict[var_options['scope']][p[1]]['address'])
       types_stack.append(types[var_options['type']])
@@ -534,7 +557,7 @@ def p_parameterinit(p):
     print("The variable ", var_options['id'], "has been used before.")
     exit(0)
   else:
-    add_var_to_dict(var_options['id'], var_options['type'], var_options['scope'])
+    add_var_to_dict(var_options['id'], var_options['type'], var_options['list'], var_options['size'], var_options['scope'])
     funct_options['params'].append([var_options['id'], types[var_options['type']], var_dict['function'][var_options['id']]['address']])
 
 # Regal para el ciclio de ingresar más parametros a uan función
@@ -568,15 +591,14 @@ parser = yacc.yacc(start='program')
 #   exit(0);
 
 def check():
-  f = open('test/vm_test.txt', 'r')
+  f = open('test/test1.txt', 'r')
   data = f.read()
   f.close()
   if parser.parse(data) == 'Valid':
     print('VALID!')
     #print_quadruplets()
     #print_funct_dict()
-    print quadruplets
-    print semantic_dict
-    solve()
+    #print_var_dict()
+    print_global_dict()
+    # solve()
   exit(0);
-

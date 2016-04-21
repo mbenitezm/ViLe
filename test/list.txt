@@ -1,0 +1,4 @@
+main{
+	int y = 4;
+	list int x = [3+2, 4+5, y];
+}
