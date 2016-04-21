@@ -576,6 +576,7 @@ def check():
     #print_quadruplets()
     #print_funct_dict()
     print quadruplets
+    print semantic_dict
     solve()
   exit(0);
 
