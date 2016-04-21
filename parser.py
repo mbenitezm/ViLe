@@ -604,7 +604,7 @@ def check():
   f.close()
   if parser.parse(data) == 'Valid':
     print('VALID!')
-    # print_quadruplets()
+    print_quadruplets()
     # print_funct_dict()
     # print_var_dict()
     # print_global_dict()

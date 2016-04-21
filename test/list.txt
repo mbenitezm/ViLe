@@ -1,6 +1,3 @@
-def int funcion (int x){
-	return x * 2;
-}
 main{
 	int y = 4;
 	list string x = ["hey", "que", "pedo"];
