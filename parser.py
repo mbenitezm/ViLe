@@ -6,7 +6,7 @@
 import ply.yacc as yacc
 import lexer
 from semantics import *
-from vm import *
+# from vm import *
 tokens = lexer.tokens
 
 # Regla inicial de programa
@@ -388,7 +388,7 @@ def p_add_c_parenthesis(p):
   operator_stack.pop()
 
 def p_var_assign(p):
-  ''' var_assign : ID add_to_stack listaccess'''
+  ''' var_assign : ID listaccess'''
   # try:
   #   print_var_dict()
   #   print(var_options['scope'])
@@ -400,7 +400,7 @@ def p_var_assign(p):
 
 # Regla para las variables
 def p_var(p):
-  ''' var : ID listaccess'''
+  ''' var : ID'''
   var_options['id'] = p[1]
   if var_exists(var_options['id'], var_options['scope']):
     print("The variable ", var_options['id'], "has been used before.")
@@ -416,8 +416,12 @@ def p_var(p):
 
 # Regla para cuando se accesara una variable de tipo lista
 def p_listaccess(p):
-  ''' listaccess : O_S_BRACKET INTCONST C_S_BRACKET
-                 |'''
+  ''' listaccess : add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack
+                 | add_to_stack'''
+
+def p_add_list_index_to_stack(p):
+  ''' add_list_index_to_stack : '''
+  add_list_index_to_stack()
 
 # Regla para variables o constantes
 def p_varconst(p):
@@ -432,9 +436,13 @@ def p_add_to_stack(p):
   semantics_add_to_stack(p[-1])
 
 def p_functionorlist(p):
-  ''' functionorlist : O_S_BRACKET INTCONST C_S_BRACKET
+  ''' functionorlist : add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack
                      | check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub
                      | add_to_stack'''
+
+def p_add_list_variable(p):
+  ''' add_list_variable : '''
+  add_list_variable(p[-1])
 
 # Regla para constantes
 def p_constants(p):
@@ -591,14 +599,14 @@ parser = yacc.yacc(start='program')
 #   exit(0);
 
 def check():
-  f = open('test/test1.txt', 'r')
+  f = open('test/list.txt', 'r')
   data = f.read()
   f.close()
   if parser.parse(data) == 'Valid':
     print('VALID!')
-    #print_quadruplets()
-    #print_funct_dict()
-    #print_var_dict()
-    print_global_dict()
+    # print_quadruplets()
+    # print_funct_dict()
+    # print_var_dict()
+    # print_global_dict()
     # solve()
   exit(0);

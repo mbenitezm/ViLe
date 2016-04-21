@@ -70,7 +70,8 @@ current_function = {
 }
 
 list_options = {
-  'start_address' : None
+  'start_address' : None,
+  'id' : None
 }
 
 quadruplets = deque([])
@@ -271,7 +272,7 @@ def fill_main_goto():
   global quadruplets
   quadruplets[0][3] = len(quadruplets)
 
-def generate_operations_quadruples(scope):
+def generate_operations_quadruples(scope, memory_pointer = None):
   type2 = types_stack.pop()
   type1 = types_stack.pop()
   operator1 = operator_stack.pop()
@@ -287,8 +288,12 @@ def generate_operations_quadruples(scope):
     else:
       result = assign_address('function_temps', result_type)
     quadruple = [operator1, operand1, type1, operand2, type2, result, result_type]
-    operand_stack.append(result)
-    types_stack.append(result_type)
+    if memory_pointer != None:
+      operand_stack.append(-result)
+      types_stack.append(memory_pointer)
+    else:
+      operand_stack.append(result)
+      types_stack.append(result_type)
     quadruplets.append(quadruple)
     print quadruple
 
@@ -410,13 +415,19 @@ def generate_print_quadruples():
 
 def semantics_add_to_stack(id):
   if id in var_dict['function']:
-    # print_var_dict()
-    operand_stack.append(var_dict['function'][id]['address'])
-    types_stack.append(var_dict['function'][id]['type'])
+    if var_dict['function'][id]['list']:
+      print('You must give an index if you are trying to access a list')
+      exit(0)
+    else:
+      operand_stack.append(var_dict['function'][id]['address'])
+      types_stack.append(var_dict['function'][id]['type'])
   elif id in var_dict['main']:
-    # print_var_dict()
-    operand_stack.append(var_dict['main'][id]['address'])
-    types_stack.append(var_dict['main'][id]['type'])
+    if var_dict['main'][id]['list']:
+      print('You must give an index if you are trying to access a list')
+      exit(0)
+    else:
+      operand_stack.append(var_dict['main'][id]['address'])
+      types_stack.append(var_dict['main'][id]['type'])
   else:
     print id, " doesn't exists"
     exit(0)
@@ -484,6 +495,28 @@ def generate_list_assignation_quadruple():
   operator_stack.append('=')
   generate_equals_quadruples()
 
+def generate_ver_quadruple(var_id):
+  global quadruplets
+  if var_id in var_dict[var_options['scope']]:
+    if var_dict[var_options['scope']][var_id]['list']:
+      operand = operand_stack[len(operand_stack) -1]
+      operand_type = types_stack[len(types_stack) -1]
+      if operand_type != types['int']:
+        print("Error in "+ var_id + ": To access a list element, you must provide an integer")
+        exit(0)
+      if not('0' in var_dict['constants']):
+        add_constant_to_dict_aux('0', 'int')
+      if not(str(var_dict[var_options['scope']][var_id]['size'] - 1 ) in var_dict['constants']):
+        add_constant_to_dict_aux(str(var_dict[var_options['scope']][var_id]['size'] - 1), 'int')
+      quadruple = ["VER", operand, var_dict['constants']['0']['address'], var_dict['constants'][str(var_dict[var_options['scope']][var_id]['size'] - 1)]['address']]
+      quadruplets.append(quadruple)
+      print quadruple
+    else:
+      print("Error in "+ var_id + ": This variable is not a list")
+      exit(0)
+  else:
+    print("Error in "+ var_id + ": This list doesn't exists")
+    exit(0)
 
 ################################################################################
 def print_var_dict():
@@ -835,3 +868,21 @@ def update_funct_memory(function_id, function_memory_needed):
 
 def last_return(value):
   current_function['last_return'] = value
+
+############################# LISTS METHODS ####################################
+
+def add_list_variable(var_id):
+  list_options['id'] = var_id
+
+def add_list_index_to_stack():
+  generate_ver_quadruple(list_options['id'])
+  generate_list_index(list_options['id'])
+  clean_list_options()
+
+def generate_list_index(var_id):
+  operator_stack.append('+')
+  if not(str(var_dict[var_options['scope']][var_id]['address']) in var_dict['constants']):
+    add_constant_to_dict_aux(str(var_dict[var_options['scope']][var_id]['address']), 'int')
+  operand_stack.append(var_dict['constants'][str(var_dict[var_options['scope']][var_id]['address'])]['address'])
+  types_stack.append(types['int'])
+  generate_operations_quadruples(var_options['scope'], var_dict[var_options['scope']][var_id]['type'])

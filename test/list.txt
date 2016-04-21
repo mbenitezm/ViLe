@@ -1,4 +1,9 @@
+def int funcion (int x){
+	return x * 2;
+}
 main{
 	int y = 4;
-	list int x = [3+2, 4+5, y];
+	list string x = ["hey", "que", "pedo"];
+	x[4] = "hey";
+	print(x[2]);
 }
