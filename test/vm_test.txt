@@ -27,4 +27,13 @@ main {
   times(6){
     print("timesasd");
   }
+
+  int check1 = 2;
+  int check2 = 3;
+
+  if(true and false){
+    print("algo");
+  } else{
+    print("otro algo");
+  }
 }
