@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from semantics import *
+from vm import *
 # Clase que maneja el mapeo de memoria del lenguaje.
 class Memory:
   # Se inicializa una instancia de la clase memoria. Se le asigna el nombre de

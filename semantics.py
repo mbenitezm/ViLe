@@ -430,7 +430,7 @@ def generate_parameter_quadruple():
     exit(0)
   current_param = funct_dict[function_check['id']]['params'][function_check['current_param']][2]
   function_check['current_param'] = function_check['current_param'] + 1
-  quadruple = ["PARAM", result, type1, "", current_param]
+  quadruple = ["PARAM", result, type1, "", current_param, type1]
   quadruplets.append(quadruple)
   print quadruple
 
@@ -713,7 +713,10 @@ def add_constant_to_dict_aux(constant, type):
   elif(types[type] == 2):
     constant = float(constant)
   elif(types[type] == 4):
-    constant = bool(constant)
+    if constant == "true":
+      constant = True;
+    elif constant == "false":
+      constant = False;
   var_dict['inverse_constants'][address] = {
     'value' : constant, 
     'type' : types[type]
