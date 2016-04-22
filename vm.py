@@ -363,11 +363,19 @@ def solve():
       if is_global(op1):
         result = global_memory.get_value_from_real_address(type1, op1)
       else:
-        result = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          result = alive_memory.get_value_from_real_address(type1, -op1)
+          result = alive_memory.get_value_from_real_address(type1, result)
+        else:
+          result = alive_memory.get_value_from_real_address(type1, op1)
       if is_global(res):
         global_memory.assign_to_real_address(type3, res, result)
       else:
-        alive_memory.assign_to_real_address(type3, res, result)
+        if res < 0:
+          real_res = alive_memory.get_value_from_real_address(type3, -res)
+          alive_memory.assign_to_real_address(type3, real_res, result)
+        else:
+          alive_memory.assign_to_real_address(type3, res, result)
       current_quadruple += 1
 
     elif quadruplet[0] == 'GOTO':
@@ -414,6 +422,12 @@ def solve():
       waking_memory.assign_to_real_address(type3, res, result)
       current_quadruple += 1
 
+    elif quadruplet[0] == 'VER':
+      if (quadruplet[1] < quadruplet[2] and quadruplet[1] > quadruplet[3]):
+        print "List index out of rage"
+        exit(0)
+      current_quadruple += 1
+
     elif quadruplet[0] == 'print':
       op1 = quadruplet[3]
       type1 = quadruplet[4]
@@ -421,7 +435,11 @@ def solve():
       if is_global(op1):
         result = global_memory.get_value_from_real_address(type1, op1)
       else:
-        result = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          result = alive_memory.get_value_from_real_address(type1, -op1)
+          result = alive_memory.get_value_from_real_address(type1, result)
+        else: 
+          result = alive_memory.get_value_from_real_address(type1, op1)
 
       print result
       current_quadruple += 1
