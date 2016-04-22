@@ -7,8 +7,8 @@ from math import *
 # Función de la memoria virtual encargada de resolver los cuádruplos generados
 def solve():
   current_quadruple = 0
+  global_memory = Memory('global', global_dict['global_memory_needed'])
   alive_memory = Memory('main', funct_dict['main']['memory_needed'])
-  alive_memory = Memory('global', funct_dict['main']['memory_needed'])
   waking_memory = None
   memory_stack = []
   returns_stack = []
@@ -22,10 +22,23 @@ def solve():
       type2 = quadruplet[4]
       res = quadruplet[5]
       type3 = quadruplet[6]
-      op1 = alive_memory.get_value_from_real_address(type1, op1)
-      op2 = alive_memory.get_value_from_real_address(type2, op2)
-      result = op1 + op2
-      alive_memory.assign_to_real_address(type3, res, result)
+
+      if is_global(op1):
+        operand1 = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      if is_global(op2):
+        operand2 = global_memory.get_value_from_real_address(type2, op2)
+      else:
+        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
+      result = operand1 + operand2
+      
+      if is_global(res):
+        global_memory.assign_to_real_address(type3, res, result)
+      else:
+        alive_memory.assign_to_real_address(type3, res, result)
+
       current_quadruple += 1
 
     elif quadruplet[0] == '-':
@@ -35,10 +48,23 @@ def solve():
       type2 = quadruplet[4]
       res = quadruplet[5]
       type3 = quadruplet[6]
-      op1 = alive_memory.get_value_from_real_address(type1, op1)
-      op2 = alive_memory.get_value_from_real_address(type2, op2)
-      result = op1 - op2
-      alive_memory.assign_to_real_address(type3, res, result)
+
+      if is_global(op1):
+        operand1 = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      if is_global(op2):
+        operand2 = global_memory.get_value_from_real_address(type2, op2)
+      else:
+        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
+      result = operand1 - operand2
+      
+      if is_global(res):
+        global_memory.assign_to_real_address(type3, res, result)
+      else:
+        alive_memory.assign_to_real_address(type3, res, result)
+
       current_quadruple += 1
 
     elif quadruplet[0] == '*':
@@ -48,10 +74,22 @@ def solve():
       type2 = quadruplet[4]
       res = quadruplet[5]
       type3 = quadruplet[6]
-      op1 = alive_memory.get_value_from_real_address(type1, op1)
-      op2 = alive_memory.get_value_from_real_address(type2, op2)
-      result = op1 * op2
-      alive_memory.assign_to_real_address(type3, res, result)
+
+      if is_global(op1):
+        operand1 = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      if is_global(op2):
+        operand2 = global_memory.get_value_from_real_address(type2, op2)
+      else:
+        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
+      result = operand1 * operand2
+      
+      if is_global(res):
+        global_memory.assign_to_real_address(type3, res, result)
+      else:
+        alive_memory.assign_to_real_address(type3, res, result)
       current_quadruple += 1
 
     elif quadruplet[0] == '/':
@@ -61,10 +99,23 @@ def solve():
       type2 = quadruplet[4]
       res = quadruplet[5]
       type3 = quadruplet[6]
-      operand1 = alive_memory.get_value_from_real_address(type1, op1)
-      operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
+      if is_global(op1):
+        operand1 = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      if is_global(op2):
+        operand2 = global_memory.get_value_from_real_address(type2, op2)
+      else:
+        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
       result = operand1 / operand2
-      alive_memory.assign_to_real_address(type3, res, result)
+      
+      if is_global(res):
+        global_memory.assign_to_real_address(type3, res, result)
+      else:
+        alive_memory.assign_to_real_address(type3, res, result)
+
       current_quadruple += 1
 
     # Agregar a cubo
@@ -75,10 +126,23 @@ def solve():
       type2 = quadruplet[4]
       res = quadruplet[5]
       type3 = quadruplet[6]
-      operand1 = alive_memory.get_value_from_real_address(type1, op1)
-      operand2 = alive_memory.get_value_from_real_address(type2, op2)
-      result = math.fmod(operand1, operand2)
-      alive_memory.assign_to_real_address(type3, res, result)
+
+      if is_global(op1):
+        operand1 = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      if is_global(op2):
+        operand2 = global_memory.get_value_from_real_address(type2, op2)
+      else:
+        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
+      result = operand1 % operand2
+      
+      if is_global(res):
+        global_memory.assign_to_real_address(type3, res, result)
+      else:
+        alive_memory.assign_to_real_address(type3, res, result)
+
       current_quadruple += 1
 
     elif quadruplet[0] == '>':
@@ -88,10 +152,23 @@ def solve():
       type2 = quadruplet[4]
       res = quadruplet[5]
       type3 = quadruplet[6]
-      operand1 = alive_memory.get_value_from_real_address(type1, op1)
-      operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
+      if is_global(op1):
+        operand1 = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      if is_global(op2):
+        operand2 = global_memory.get_value_from_real_address(type2, op2)
+      else:
+        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
       result = operand1 > operand2
-      alive_memory.assign_to_real_address(type3, res, result)
+      
+      if is_global(res):
+        global_memory.assign_to_real_address(type3, res, result)
+      else:
+        alive_memory.assign_to_real_address(type3, res, result)
+
       current_quadruple += 1
 
     elif quadruplet[0] == '<':
@@ -101,10 +178,23 @@ def solve():
       type2 = quadruplet[4]
       res = quadruplet[5]
       type3 = quadruplet[6]
-      operand1 = alive_memory.get_value_from_real_address(type1, op1)
-      operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
+      if is_global(op1):
+        operand1 = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      if is_global(op2):
+        operand2 = global_memory.get_value_from_real_address(type2, op2)
+      else:
+        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
       result = operand1 < operand2
-      alive_memory.assign_to_real_address(type3, res, result)
+      
+      if is_global(res):
+        global_memory.assign_to_real_address(type3, res, result)
+      else:
+        alive_memory.assign_to_real_address(type3, res, result)
+
       current_quadruple += 1
 
     elif quadruplet[0] == '>=':
@@ -114,10 +204,23 @@ def solve():
       type2 = quadruplet[4]
       res = quadruplet[5]
       type3 = quadruplet[6]
-      operand1 = alive_memory.get_value_from_real_address(type1, op1)
-      operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
+      if is_global(op1):
+        operand1 = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      if is_global(op2):
+        operand2 = global_memory.get_value_from_real_address(type2, op2)
+      else:
+        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
       result = operand1 >= operand2
-      alive_memory.assign_to_real_address(type3, res, result)
+      
+      if is_global(res):
+        global_memory.assign_to_real_address(type3, res, result)
+      else:
+        alive_memory.assign_to_real_address(type3, res, result)
+
       current_quadruple += 1
 
     elif quadruplet[0] == '<=':
@@ -127,10 +230,23 @@ def solve():
       type2 = quadruplet[4]
       res = quadruplet[5]
       type3 = quadruplet[6]
-      operand1 = alive_memory.get_value_from_real_address(type1, op1)
-      operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
+      if is_global(op1):
+        operand1 = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      if is_global(op2):
+        operand2 = global_memory.get_value_from_real_address(type2, op2)
+      else:
+        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
       result = operand1 <= operand2
-      alive_memory.assign_to_real_address(type3, res, result)
+      
+      if is_global(res):
+        global_memory.assign_to_real_address(type3, res, result)
+      else:
+        alive_memory.assign_to_real_address(type3, res, result)
+
       current_quadruple += 1
 
     elif quadruplet[0] == '==':
@@ -140,10 +256,23 @@ def solve():
       type2 = quadruplet[4]
       res = quadruplet[5]
       type3 = quadruplet[6]
-      operand1 = alive_memory.get_value_from_real_address(type1, op1)
-      operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
+      if is_global(op1):
+        operand1 = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      if is_global(op2):
+        operand2 = global_memory.get_value_from_real_address(type2, op2)
+      else:
+        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
       result = operand1 == operand2
-      alive_memory.assign_to_real_address(type3, res, result)
+      
+      if is_global(res):
+        global_memory.assign_to_real_address(type3, res, result)
+      else:
+        alive_memory.assign_to_real_address(type3, res, result)
+
       current_quadruple += 1
 
     elif quadruplet[0] == 'and':
@@ -153,10 +282,23 @@ def solve():
       type2 = quadruplet[4]
       res = quadruplet[5]
       type3 = quadruplet[6]
-      operand1 = alive_memory.get_value_from_real_address(type1, op1)
-      operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
+      if is_global(op1):
+        operand1 = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      if is_global(op2):
+        operand2 = global_memory.get_value_from_real_address(type2, op2)
+      else:
+        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
       result = operand1 and operand2
-      alive_memory.assign_to_real_address(type3, res, result)
+      
+      if is_global(res):
+        global_memory.assign_to_real_address(type3, res, result)
+      else:
+        alive_memory.assign_to_real_address(type3, res, result)
+
       current_quadruple += 1
 
     elif quadruplet[0] == 'or':
@@ -166,10 +308,23 @@ def solve():
       type2 = quadruplet[4]
       res = quadruplet[5]
       type3 = quadruplet[6]
-      operand1 = alive_memory.get_value_from_real_address(type1, op1)
-      operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
+      if is_global(op1):
+        operand1 = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      if is_global(op2):
+        operand2 = global_memory.get_value_from_real_address(type2, op2)
+      else:
+        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
       result = operand1 or operand2
-      alive_memory.assign_to_real_address(type3, res, result)
+      
+      if is_global(res):
+        global_memory.assign_to_real_address(type3, res, result)
+      else:
+        alive_memory.assign_to_real_address(type3, res, result)
+
       current_quadruple += 1
 
     # Agregar a cubo
@@ -180,10 +335,23 @@ def solve():
       type2 = quadruplet[4]
       res = quadruplet[5]
       type3 = quadruplet[6]
-      operand1 = alive_memory.get_value_from_real_address(type1, op1)
-      operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
+      if is_global(op1):
+        operand1 = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+      if is_global(op2):
+        operand2 = global_memory.get_value_from_real_address(type2, op2)
+      else:
+        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+
       result = operand1 != operand2
-      alive_memory.assign_to_real_address(type3, res, result)
+
+      if is_global(res):
+        global_memory.assign_to_real_address(type3, res, result)
+      else:
+        alive_memory.assign_to_real_address(type3, res, result)
+
       current_quadruple += 1
 
     elif quadruplet[0] == '=':
@@ -191,8 +359,15 @@ def solve():
       type1 = quadruplet[2]
       res = quadruplet[4]
       type3 = quadruplet[5]
-      result = alive_memory.get_value_from_real_address(type1, op1)
-      alive_memory.assign_to_real_address(type3, res, result)
+
+      if is_global(op1):
+        result = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        result = alive_memory.get_value_from_real_address(type1, op1)
+      if is_global(res):
+        global_memory.assign_to_real_address(type3, res, result)
+      else:
+        alive_memory.assign_to_real_address(type3, res, result)
       current_quadruple += 1
 
     elif quadruplet[0] == 'GOTO':
@@ -232,14 +407,25 @@ def solve():
       type1 = quadruplet[2]
       res = quadruplet[4]
       type3 = quadruplet[5]
-      result = alive_memory.get_value_from_real_address(type1, op1)
+      if is_global(op1):
+        result = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        result = alive_memory.get_value_from_real_address(type1, op1)
       waking_memory.assign_to_real_address(type3, res, result)
       current_quadruple += 1
-
 
     elif quadruplet[0] == 'print':
       op1 = quadruplet[3]
       type1 = quadruplet[4]
-      result = alive_memory.get_value_from_real_address(type1, op1)
+
+      if is_global(op1):
+        result = global_memory.get_value_from_real_address(type1, op1)
+      else:
+        result = alive_memory.get_value_from_real_address(type1, op1)
+
       print result
       current_quadruple += 1
+
+
+def is_global(virtual_memory):
+  return virtual_memory >= 40000 and virtual_memory < 50000

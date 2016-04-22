@@ -77,7 +77,7 @@ class Memory:
 
   # Esta función regresa el bloque de memoria al que pertenece la variable
   def get_corresponding_memory(self, scope, type):
-    if scope == 'main' or scope == 'function':
+    if scope == 'main' or scope == 'function' or scope == 'global':
       if type == 1:
         return self.integers
       elif type == 2:

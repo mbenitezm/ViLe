@@ -1,0 +1,18 @@
+def int funcion(int i){
+  if (i > 40){
+    print(i);
+    return i;
+  } else {
+    print(i);
+    return funcion (i * 2);
+  }
+}
+
+main {
+	int x = 3;
+
+
+	int i = 1;
+	int y = funcion(i) + 1;
+	print(y);
+}

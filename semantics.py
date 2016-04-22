@@ -437,6 +437,7 @@ def generate_parameter_quadruple():
   type1 = types_stack.pop()
   result = operand_stack.pop()
   if function_check['current_param'] > (len(funct_dict[function_check['id']]['params']) - 1):
+    print function_check
     print('The params in ' + function_check['id'] + ' are wrong')
     exit(0)
   current_param = funct_dict[function_check['id']]['params'][function_check['current_param']][2]

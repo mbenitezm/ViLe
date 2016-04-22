@@ -1,8 +1,23 @@
+def int funcion(int i){
+  if (i > 40){
+    print(i);
+    return i;
+  } else {
+    print(i);
+    return funcion (i * 2);
+  }
+}
+
+def int funcion2(int i){
+  return(i*2);
+
+}
+
 main {
   bool m = false;
   bool n = true;
   float x = 20.5 / 2 * 3;
-  int y = 9 + 2;
+  int y = 9 + 3;
   string a = "algo";
 
   int r = 1;
@@ -36,4 +51,9 @@ main {
   } else{
     print("otro algo");
   }
+
+  int i = 1;
+  print(funcion2(funcion(i)));
+
+  
 }

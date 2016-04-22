@@ -607,6 +607,6 @@ def check():
     print_quadruplets()
     # print_funct_dict()
     # print_var_dict()
-    # print_global_dict()
+    #print_global_dict()
     solve()
   exit(0);
