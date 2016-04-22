@@ -26,16 +26,26 @@ def solve():
       if is_global(op1):
         operand1 = global_memory.get_value_from_real_address(type1, op1)
       else:
-        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          operand1 = alive_memory.get_value_from_real_address(type1, -op1)
+          operand1 = alive_memory.get_value_from_real_address(type1, operand1)
+        else:
+          operand1 = alive_memory.get_value_from_real_address(type1, op1)
+
       if is_global(op2):
         operand2 = global_memory.get_value_from_real_address(type2, op2)
       else:
-        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+        if op2 < 0:
+          operand2 = alive_memory.get_value_from_real_address(type2, -op2)
+          operand2 = alive_memory.get_value_from_real_address(type2, operand2)
+        else:
+          operand2 = alive_memory.get_value_from_real_address(type2, op2)
 
       result = operand1 + operand2
-      
-      if is_global(res):
-        global_memory.assign_to_real_address(type3, res, result)
+
+      if res < 0:
+        real_res = alive_memory.get_value_from_real_address(type3, -res)
+        alive_memory.assign_to_real_address(type3, real_res, result)
       else:
         alive_memory.assign_to_real_address(type3, res, result)
 
@@ -52,16 +62,26 @@ def solve():
       if is_global(op1):
         operand1 = global_memory.get_value_from_real_address(type1, op1)
       else:
-        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          operand1 = alive_memory.get_value_from_real_address(type1, -op1)
+          operand1 = alive_memory.get_value_from_real_address(type1, operand1)
+        else:
+          operand1 = alive_memory.get_value_from_real_address(type1, op1)
+
       if is_global(op2):
         operand2 = global_memory.get_value_from_real_address(type2, op2)
       else:
-        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+        if op2 < 0:
+          operand2 = alive_memory.get_value_from_real_address(type2, -op2)
+          operand2 = alive_memory.get_value_from_real_address(type2, operand2)
+        else:
+          operand2 = alive_memory.get_value_from_real_address(type2, op2)
 
       result = operand1 - operand2
-      
-      if is_global(res):
-        global_memory.assign_to_real_address(type3, res, result)
+
+      if res < 0:
+        real_res = alive_memory.get_value_from_real_address(type3, -res)
+        alive_memory.assign_to_real_address(type3, real_res, result)
       else:
         alive_memory.assign_to_real_address(type3, res, result)
 
@@ -78,18 +98,29 @@ def solve():
       if is_global(op1):
         operand1 = global_memory.get_value_from_real_address(type1, op1)
       else:
-        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          operand1 = alive_memory.get_value_from_real_address(type1, -op1)
+          operand1 = alive_memory.get_value_from_real_address(type1, operand1)
+        else:
+          operand1 = alive_memory.get_value_from_real_address(type1, op1)
+
       if is_global(op2):
         operand2 = global_memory.get_value_from_real_address(type2, op2)
       else:
-        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+        if op2 < 0:
+          operand2 = alive_memory.get_value_from_real_address(type2, -op2)
+          operand2 = alive_memory.get_value_from_real_address(type2, operand2)
+        else:
+          operand2 = alive_memory.get_value_from_real_address(type2, op2)
 
       result = operand1 * operand2
-      
-      if is_global(res):
-        global_memory.assign_to_real_address(type3, res, result)
+
+      if res < 0:
+        real_res = alive_memory.get_value_from_real_address(type3, -res)
+        alive_memory.assign_to_real_address(type3, real_res, result)
       else:
         alive_memory.assign_to_real_address(type3, res, result)
+
       current_quadruple += 1
 
     elif quadruplet[0] == '/':
@@ -103,16 +134,26 @@ def solve():
       if is_global(op1):
         operand1 = global_memory.get_value_from_real_address(type1, op1)
       else:
-        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          operand1 = alive_memory.get_value_from_real_address(type1, -op1)
+          operand1 = alive_memory.get_value_from_real_address(type1, operand1)
+        else:
+          operand1 = alive_memory.get_value_from_real_address(type1, op1)
+
       if is_global(op2):
         operand2 = global_memory.get_value_from_real_address(type2, op2)
       else:
-        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+        if op2 < 0:
+          operand2 = alive_memory.get_value_from_real_address(type2, -op2)
+          operand2 = alive_memory.get_value_from_real_address(type2, operand2)
+        else:
+          operand2 = alive_memory.get_value_from_real_address(type2, op2)
 
       result = operand1 / operand2
-      
-      if is_global(res):
-        global_memory.assign_to_real_address(type3, res, result)
+
+      if res < 0:
+        real_res = alive_memory.get_value_from_real_address(type3, -res)
+        alive_memory.assign_to_real_address(type3, real_res, result)
       else:
         alive_memory.assign_to_real_address(type3, res, result)
 
@@ -130,16 +171,26 @@ def solve():
       if is_global(op1):
         operand1 = global_memory.get_value_from_real_address(type1, op1)
       else:
-        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          operand1 = alive_memory.get_value_from_real_address(type1, -op1)
+          operand1 = alive_memory.get_value_from_real_address(type1, operand1)
+        else:
+          operand1 = alive_memory.get_value_from_real_address(type1, op1)
+
       if is_global(op2):
         operand2 = global_memory.get_value_from_real_address(type2, op2)
       else:
-        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+        if op2 < 0:
+          operand2 = alive_memory.get_value_from_real_address(type2, -op2)
+          operand2 = alive_memory.get_value_from_real_address(type2, operand2)
+        else:
+          operand2 = alive_memory.get_value_from_real_address(type2, op2)
 
       result = operand1 % operand2
-      
-      if is_global(res):
-        global_memory.assign_to_real_address(type3, res, result)
+
+      if res < 0:
+        real_res = alive_memory.get_value_from_real_address(type3, -res)
+        alive_memory.assign_to_real_address(type3, real_res, result)
       else:
         alive_memory.assign_to_real_address(type3, res, result)
 
@@ -156,16 +207,26 @@ def solve():
       if is_global(op1):
         operand1 = global_memory.get_value_from_real_address(type1, op1)
       else:
-        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          operand1 = alive_memory.get_value_from_real_address(type1, -op1)
+          operand1 = alive_memory.get_value_from_real_address(type1, operand1)
+        else:
+          operand1 = alive_memory.get_value_from_real_address(type1, op1)
+
       if is_global(op2):
         operand2 = global_memory.get_value_from_real_address(type2, op2)
       else:
-        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+        if op2 < 0:
+          operand2 = alive_memory.get_value_from_real_address(type2, -op2)
+          operand2 = alive_memory.get_value_from_real_address(type2, operand2)
+        else:
+          operand2 = alive_memory.get_value_from_real_address(type2, op2)
 
       result = operand1 > operand2
-      
-      if is_global(res):
-        global_memory.assign_to_real_address(type3, res, result)
+
+      if res < 0:
+        real_res = alive_memory.get_value_from_real_address(type3, -res)
+        alive_memory.assign_to_real_address(type3, real_res, result)
       else:
         alive_memory.assign_to_real_address(type3, res, result)
 
@@ -182,16 +243,26 @@ def solve():
       if is_global(op1):
         operand1 = global_memory.get_value_from_real_address(type1, op1)
       else:
-        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          operand1 = alive_memory.get_value_from_real_address(type1, -op1)
+          operand1 = alive_memory.get_value_from_real_address(type1, operand1)
+        else:
+          operand1 = alive_memory.get_value_from_real_address(type1, op1)
+
       if is_global(op2):
         operand2 = global_memory.get_value_from_real_address(type2, op2)
       else:
-        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+        if op2 < 0:
+          operand2 = alive_memory.get_value_from_real_address(type2, -op2)
+          operand2 = alive_memory.get_value_from_real_address(type2, operand2)
+        else:
+          operand2 = alive_memory.get_value_from_real_address(type2, op2)
 
       result = operand1 < operand2
-      
-      if is_global(res):
-        global_memory.assign_to_real_address(type3, res, result)
+
+      if res < 0:
+        real_res = alive_memory.get_value_from_real_address(type3, -res)
+        alive_memory.assign_to_real_address(type3, real_res, result)
       else:
         alive_memory.assign_to_real_address(type3, res, result)
 
@@ -208,16 +279,26 @@ def solve():
       if is_global(op1):
         operand1 = global_memory.get_value_from_real_address(type1, op1)
       else:
-        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          operand1 = alive_memory.get_value_from_real_address(type1, -op1)
+          operand1 = alive_memory.get_value_from_real_address(type1, operand1)
+        else:
+          operand1 = alive_memory.get_value_from_real_address(type1, op1)
+
       if is_global(op2):
         operand2 = global_memory.get_value_from_real_address(type2, op2)
       else:
-        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+        if op2 < 0:
+          operand2 = alive_memory.get_value_from_real_address(type2, -op2)
+          operand2 = alive_memory.get_value_from_real_address(type2, operand2)
+        else:
+          operand2 = alive_memory.get_value_from_real_address(type2, op2)
 
       result = operand1 >= operand2
-      
-      if is_global(res):
-        global_memory.assign_to_real_address(type3, res, result)
+
+      if res < 0:
+        real_res = alive_memory.get_value_from_real_address(type3, -res)
+        alive_memory.assign_to_real_address(type3, real_res, result)
       else:
         alive_memory.assign_to_real_address(type3, res, result)
 
@@ -234,16 +315,26 @@ def solve():
       if is_global(op1):
         operand1 = global_memory.get_value_from_real_address(type1, op1)
       else:
-        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          operand1 = alive_memory.get_value_from_real_address(type1, -op1)
+          operand1 = alive_memory.get_value_from_real_address(type1, operand1)
+        else:
+          operand1 = alive_memory.get_value_from_real_address(type1, op1)
+
       if is_global(op2):
         operand2 = global_memory.get_value_from_real_address(type2, op2)
       else:
-        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+        if op2 < 0:
+          operand2 = alive_memory.get_value_from_real_address(type2, -op2)
+          operand2 = alive_memory.get_value_from_real_address(type2, operand2)
+        else:
+          operand2 = alive_memory.get_value_from_real_address(type2, op2)
 
       result = operand1 <= operand2
-      
-      if is_global(res):
-        global_memory.assign_to_real_address(type3, res, result)
+
+      if res < 0:
+        real_res = alive_memory.get_value_from_real_address(type3, -res)
+        alive_memory.assign_to_real_address(type3, real_res, result)
       else:
         alive_memory.assign_to_real_address(type3, res, result)
 
@@ -260,16 +351,26 @@ def solve():
       if is_global(op1):
         operand1 = global_memory.get_value_from_real_address(type1, op1)
       else:
-        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          operand1 = alive_memory.get_value_from_real_address(type1, -op1)
+          operand1 = alive_memory.get_value_from_real_address(type1, operand1)
+        else:
+          operand1 = alive_memory.get_value_from_real_address(type1, op1)
+
       if is_global(op2):
         operand2 = global_memory.get_value_from_real_address(type2, op2)
       else:
-        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+        if op2 < 0:
+          operand2 = alive_memory.get_value_from_real_address(type2, -op2)
+          operand2 = alive_memory.get_value_from_real_address(type2, operand2)
+        else:
+          operand2 = alive_memory.get_value_from_real_address(type2, op2)
 
       result = operand1 == operand2
-      
-      if is_global(res):
-        global_memory.assign_to_real_address(type3, res, result)
+
+      if res < 0:
+        real_res = alive_memory.get_value_from_real_address(type3, -res)
+        alive_memory.assign_to_real_address(type3, real_res, result)
       else:
         alive_memory.assign_to_real_address(type3, res, result)
 
@@ -286,16 +387,26 @@ def solve():
       if is_global(op1):
         operand1 = global_memory.get_value_from_real_address(type1, op1)
       else:
-        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          operand1 = alive_memory.get_value_from_real_address(type1, -op1)
+          operand1 = alive_memory.get_value_from_real_address(type1, operand1)
+        else:
+          operand1 = alive_memory.get_value_from_real_address(type1, op1)
+
       if is_global(op2):
         operand2 = global_memory.get_value_from_real_address(type2, op2)
       else:
-        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+        if op2 < 0:
+          operand2 = alive_memory.get_value_from_real_address(type2, -op2)
+          operand2 = alive_memory.get_value_from_real_address(type2, operand2)
+        else:
+          operand2 = alive_memory.get_value_from_real_address(type2, op2)
 
       result = operand1 and operand2
-      
-      if is_global(res):
-        global_memory.assign_to_real_address(type3, res, result)
+
+      if res < 0:
+        real_res = alive_memory.get_value_from_real_address(type3, -res)
+        alive_memory.assign_to_real_address(type3, real_res, result)
       else:
         alive_memory.assign_to_real_address(type3, res, result)
 
@@ -312,16 +423,26 @@ def solve():
       if is_global(op1):
         operand1 = global_memory.get_value_from_real_address(type1, op1)
       else:
-        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          operand1 = alive_memory.get_value_from_real_address(type1, -op1)
+          operand1 = alive_memory.get_value_from_real_address(type1, operand1)
+        else:
+          operand1 = alive_memory.get_value_from_real_address(type1, op1)
+
       if is_global(op2):
         operand2 = global_memory.get_value_from_real_address(type2, op2)
       else:
-        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+        if op2 < 0:
+          operand2 = alive_memory.get_value_from_real_address(type2, -op2)
+          operand2 = alive_memory.get_value_from_real_address(type2, operand2)
+        else:
+          operand2 = alive_memory.get_value_from_real_address(type2, op2)
 
       result = operand1 or operand2
-      
-      if is_global(res):
-        global_memory.assign_to_real_address(type3, res, result)
+
+      if res < 0:
+        real_res = alive_memory.get_value_from_real_address(type3, -res)
+        alive_memory.assign_to_real_address(type3, real_res, result)
       else:
         alive_memory.assign_to_real_address(type3, res, result)
 
@@ -339,16 +460,26 @@ def solve():
       if is_global(op1):
         operand1 = global_memory.get_value_from_real_address(type1, op1)
       else:
-        operand1 = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          operand1 = alive_memory.get_value_from_real_address(type1, -op1)
+          operand1 = alive_memory.get_value_from_real_address(type1, operand1)
+        else:
+          operand1 = alive_memory.get_value_from_real_address(type1, op1)
+
       if is_global(op2):
         operand2 = global_memory.get_value_from_real_address(type2, op2)
       else:
-        operand2 = alive_memory.get_value_from_real_address(type2, op2)
+        if op2 < 0:
+          operand2 = alive_memory.get_value_from_real_address(type2, -op2)
+          operand2 = alive_memory.get_value_from_real_address(type2, operand2)
+        else:
+          operand2 = alive_memory.get_value_from_real_address(type2, op2)
 
       result = operand1 != operand2
 
-      if is_global(res):
-        global_memory.assign_to_real_address(type3, res, result)
+      if res < 0:
+        real_res = alive_memory.get_value_from_real_address(type3, -res)
+        alive_memory.assign_to_real_address(type3, real_res, result)
       else:
         alive_memory.assign_to_real_address(type3, res, result)
 

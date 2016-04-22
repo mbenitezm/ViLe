@@ -1,0 +1,7 @@
+def void algo(int x){
+	print(x);
+}
+
+main {
+	algo(1);
+}
