@@ -65,10 +65,7 @@ current_function = {
   'return' : False
 }
 
-list_options = {
-  'start_address' : None,
-  'id' : None
-}
+current_list = []
 
 quadruplets = deque([])
 
@@ -588,6 +585,7 @@ def add_var_to_dict(var_id, var_type, var_list, var_size, scope):
   # print_var_dict()
 
 def add_list_to_dict(var_id, var_type, var_list, var_size, scope):
+  list_options = current_list[len(current_list) - 1]
   address = list_options['start_address']
   var_dict[scope][var_id] = {
     'type': types[var_type],
@@ -596,7 +594,7 @@ def add_list_to_dict(var_id, var_type, var_list, var_size, scope):
     'size' : var_size
   }
   clean_var_options(scope)
-  clean_list_options()
+  current_list.pop()
   # print_var_dict()
 
 def clean_var_options(scope):
@@ -608,11 +606,6 @@ def clean_var_options(scope):
     'size' : None
   }
 
-def clean_list_options():
-  list_options = {
-    'start_address' : None,
-    'id' : None
-  }
 
 def get_current_memory(scope, var_type):
   if scope == 'main':
@@ -871,12 +864,13 @@ def last_return(value):
 ############################# LISTS METHODS ####################################
 
 def add_list_variable(var_id):
-  list_options['id'] = var_id
+  current_list.append({'id' : var_id, 'start_address' : None })
 
 def add_list_index_to_stack():
+  list_options = current_list[len(current_list) - 1]
   generate_ver_quadruple(list_options['id'])
   generate_list_index(list_options['id'])
-  clean_list_options()
+  current_list.pop()
 
 def generate_list_index(var_id):
   operator_stack.append('+')

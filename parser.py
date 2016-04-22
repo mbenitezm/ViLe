@@ -242,7 +242,7 @@ def p_list(p):
 
 def p_start_list(p):
   ''' start_list : '''
-  list_options['start_address'] = get_current_memory(var_options['scope'], var_options['type'])
+  current_list.append({'id' : None , 'start_address' : get_current_memory(var_options['scope'], var_options['type'])})
   var_options['list'] = True
   var_options['size'] = 0
 
@@ -601,7 +601,7 @@ parser = yacc.yacc(start='program')
 #   exit(0);
 
 def check():
-  f = open('test/vm_test.txt', 'r')
+  f = open('test/list.txt', 'r')
   data = f.read()
   f.close()
   if parser.parse(data) == 'Valid':
