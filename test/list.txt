@@ -1,6 +1,7 @@
 main{
 	int y = 4;
 	list string x = ["hey", "que", "pedo"];
+	string jose = "jose";
 	x[4] = "hey";
 	print(x[2]);
 }

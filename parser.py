@@ -233,6 +233,8 @@ def p_listinit(p):
     exit(0)
   else:
     add_list_to_dict(var_options['id'], var_options['type'], var_options['list'], var_options['size'], var_options['scope'])
+    var_options['list'] = True
+    var_options['size'] = None
 
 # Regla de formato de variable tipo listo
 def p_list(p):
@@ -605,8 +607,8 @@ def check():
   if parser.parse(data) == 'Valid':
     print('VALID!')
     print_quadruplets()
-    # print_funct_dict()
-    # print_var_dict()
-    # print_global_dict()
+    print_funct_dict()
+    print_var_dict()
+    print_global_dict()
     # solve()
   exit(0);
