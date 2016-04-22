@@ -8,7 +8,8 @@ from math import *
 def solve():
   current_quadruple = 0
   alive_memory = Memory('main', funct_dict['main']['memory_needed'])
-  waking_memory
+  alive_memory = Memory('global', funct_dict['main']['memory_needed'])
+  waking_memory = None
   memory_stack = []
   returns_stack = []
 
@@ -220,12 +221,13 @@ def solve():
       print "You must return something in the function."
       exit(0)
 
-    elif quaruplet[0] == 'ERA':
+    elif quadruplet[0] == 'ERA':
       function_name = quadruplet[3]
       memory_for_function = funct_dict[function_name]['memory_needed']
-      waking_memory = Memory(function_name, funct_dict['main']
+      waking_memory = Memory(function_name, memory_for_function)
+      current_quadruple += 1
  
-    elif quadruplet[0] == 'PARAM'
+    elif quadruplet[0] == 'PARAM':
       op1 = quadruplet[1]
       type1 = quadruplet[2]
       res = quadruplet[4]

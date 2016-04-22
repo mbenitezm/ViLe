@@ -6,7 +6,7 @@
 import ply.yacc as yacc
 import lexer
 from semantics import *
-# from vm import *
+from vm import *
 tokens = lexer.tokens
 
 # Regla inicial de programa
@@ -599,7 +599,7 @@ parser = yacc.yacc(start='program')
 #   exit(0);
 
 def check():
-  f = open('test/list.txt', 'r')
+  f = open('test/vm_test.txt', 'r')
   data = f.read()
   f.close()
   if parser.parse(data) == 'Valid':
@@ -608,5 +608,5 @@ def check():
     # print_funct_dict()
     # print_var_dict()
     # print_global_dict()
-    # solve()
+    solve()
   exit(0);
