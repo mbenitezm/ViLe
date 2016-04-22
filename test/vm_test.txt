@@ -67,9 +67,8 @@ main {
 
   print(arr[2]);
 
-  int i = 10;
-  int result = fibonacci(i);
-  print(result);
+  int i = 10;   
+  print(fibonacci(i));
 
   
 }

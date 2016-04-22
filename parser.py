@@ -439,8 +439,11 @@ def p_add_to_stack(p):
 
 def p_functionorlist(p):
   ''' functionorlist : add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack
-                     | check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub
+                     | add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub add_c_parenthesis
                      | add_to_stack'''
+  # ''' functionorlist : add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack
+  #                    | check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub
+  #                    | add_to_stack'''
 
 def p_add_list_variable(p):
   ''' add_list_variable : '''
@@ -520,14 +523,14 @@ def p_end_times(p):
 
 # Regla de llamada de función
 def p_functioncall(p):
-  ''' functioncall : ID check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub'''
+  ''' functioncall : ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis'''
   if var_options['scope'] == 'function':
     last_return(False)
 
 def p_check_function_exists(p):
   ''' check_function_exists : '''
-  check_function_exists(p[-1])
-  generate_era(p[-1])
+  check_function_exists(p[-2])
+  generate_era(p[-2])
 
 def p_generate_gosub(p):
   ''' generate_gosub : '''
@@ -601,7 +604,7 @@ parser = yacc.yacc(start='program')
 #   exit(0);
 
 def check():
-  f = open('test/list.txt', 'r')
+  f = open('test/vm_test.txt', 'r')
   data = f.read()
   f.close()
   if parser.parse(data) == 'Valid':
