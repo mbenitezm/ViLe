@@ -13,6 +13,14 @@ def int funcion2(int i){
 
 }
 
+def int fibonacci(int n){
+  if (n<2){
+    return n;
+  } else {
+    return fibonacci(n - 1) + fibonacci(n - 2);
+  }
+}
+
 main {
   bool m = false;
   bool n = true;
@@ -52,8 +60,16 @@ main {
     print("otro algo");
   }
 
-  int i = 1;
-  print(funcion2(funcion(i)));
+  int tri = 0;
+
+  list int arr = [8, 2, 3, 4];
+  arr[2] = arr[tri];
+
+  print(arr[2]);
+
+  int i = 10;
+  int result = fibonacci(i);
+  print(result);
 
   
 }
