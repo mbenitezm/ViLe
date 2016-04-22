@@ -233,7 +233,7 @@ def p_listinit(p):
     exit(0)
   else:
     add_list_to_dict(var_options['id'], var_options['type'], var_options['list'], var_options['size'], var_options['scope'])
-    var_options['list'] = True
+    var_options['list'] = False
     var_options['size'] = None
 
 # Regla de formato de variable tipo listo
