@@ -3,7 +3,7 @@ def void funcion (int x) {
 	print(avariable);
 }
 
-def int funcion2 (int y, int otra) {
+def int funcion2 (int y, int otra, string jose, int hey) {
 	int x = 3;
   return(y + otra);
 }
@@ -12,16 +12,17 @@ def bool func (int y){
 	if (y > 2){
 		return(true);
 	}
+	return (y)
 }
 
 
 main {
 	funcion(2);
 	bool booleana = true;
-	int y = funcion2(4+3, 4);
+	int y = funcion2(4+3, 4, "f", 8);
 	if (func(2)){
-		print(funcion2(4, 7));
+		print(funcion2(4, 7, "g", 7));
 	} else {
-		print(funcion2(y, y));
+		print(funcion2(y, y, "f", 0));
 	}
 }

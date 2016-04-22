@@ -612,7 +612,8 @@ def clean_var_options(scope):
 
 def clean_list_options():
   list_options = {
-    'start_address' : None
+    'start_address' : None,
+    'id' : None
   }
 
 def get_current_memory(scope, var_type):
