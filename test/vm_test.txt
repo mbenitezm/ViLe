@@ -65,6 +65,8 @@ main {
   list int arr = [8, 2, 3, 4];
   tri = arr[0] + arr[1];
 
+  print(tri);
+
   print(arr[2]);
 
   int i = 10;   

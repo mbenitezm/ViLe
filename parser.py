@@ -5,6 +5,7 @@
 
 import ply.yacc as yacc
 import lexer
+import sys
 from semantics import *
 from vm import *
 tokens = lexer.tokens
@@ -418,7 +419,7 @@ def p_var(p):
 
 # Regla para cuando se accesara una variable de tipo lista
 def p_listaccess(p):
-  ''' listaccess : add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack
+  ''' listaccess : add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack
                  | add_to_stack'''
 
 def p_add_list_index_to_stack(p):
@@ -438,7 +439,7 @@ def p_add_to_stack(p):
   semantics_add_to_stack(p[-1])
 
 def p_functionorlist(p):
-  ''' functionorlist : add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack
+  ''' functionorlist : add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack
                      | add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub add_c_parenthesis
                      | add_to_stack'''
   # ''' functionorlist : add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack
@@ -616,3 +617,17 @@ def check():
     solve()
 
   exit(0);
+
+if __name__ == '__main__':
+  # Revisa si el archivo se dio como input
+  if (len(sys.argv) > 1):
+    data = sys.argv[1]
+    if parser.parse(data) == 'Valid':
+      print('VALID!')
+      print_quadruplets()
+      # print_funct_dict()
+      # print_var_dict()
+      #print_global_dict()
+      solve()
+  else:
+    print('Param missing')

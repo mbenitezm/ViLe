@@ -120,14 +120,14 @@ Rule 114   add_o_parenthesis -> <empty>
 Rule 115   add_c_parenthesis -> <empty>
 Rule 116   var_assign -> ID listaccess
 Rule 117   var -> ID
-Rule 118   listaccess -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack
+Rule 118   listaccess -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack
 Rule 119   listaccess -> add_to_stack
 Rule 120   add_list_index_to_stack -> <empty>
 Rule 121   varconst -> varconstfunction
 Rule 122   varconst -> constants
 Rule 123   varconstfunction -> ID functionorlist
 Rule 124   add_to_stack -> <empty>
-Rule 125   functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack
+Rule 125   functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack
 Rule 126   functionorlist -> add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub add_c_parenthesis
 Rule 127   functionorlist -> add_to_stack
 Rule 128   add_list_variable -> <empty>
@@ -219,7 +219,7 @@ error                :
 Nonterminals, with rules where they appear
 
 add_bool_constant_to_dict : 133 134
-add_c_parenthesis    : 113 126 152
+add_c_parenthesis    : 113 118 125 126 152
 add_equals           : 54 63
 add_float_constant_to_dict : 130
 add_function_id_to_options : 18 20
@@ -230,7 +230,7 @@ add_function_var_to_stack : 33 34
 add_int_constant_to_dict : 129
 add_list_index_to_stack : 118 125
 add_list_variable    : 118 125
-add_o_parenthesis    : 113 126 152
+add_o_parenthesis    : 113 118 125 126 152
 add_string_constant_to_dict : 131
 add_to_stack         : 119 127
 addsub               : 101
@@ -882,7 +882,7 @@ state 51
     (152) functioncall -> ID . add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis
     (116) var_assign -> ID . listaccess
     (114) add_o_parenthesis -> .
-    (118) listaccess -> . add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack
+    (118) listaccess -> . add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack
     (119) listaccess -> . add_to_stack
     (128) add_list_variable -> .
     (124) add_to_stack -> .
@@ -1206,10 +1206,12 @@ state 72
 
 state 73
 
-    (118) listaccess -> add_list_variable . O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack
+    (118) listaccess -> add_list_variable . add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack
+    (114) add_o_parenthesis -> .
 
-    O_S_BRACKET     shift and go to state 108
+    O_S_BRACKET     reduce using rule 114 (add_o_parenthesis -> .)
 
+    add_o_parenthesis              shift and go to state 108
 
 state 74
 
@@ -1259,7 +1261,6 @@ state 76
 
     (31) block -> O_BRACKET statutesloop C_BRACKET .
 
-    ELSE            reduce using rule 31 (block -> O_BRACKET statutesloop C_BRACKET .)
     IF              reduce using rule 31 (block -> O_BRACKET statutesloop C_BRACKET .)
     PRINT           reduce using rule 31 (block -> O_BRACKET statutesloop C_BRACKET .)
     ID              reduce using rule 31 (block -> O_BRACKET statutesloop C_BRACKET .)
@@ -1272,6 +1273,7 @@ state 76
     STRING          reduce using rule 31 (block -> O_BRACKET statutesloop C_BRACKET .)
     C_BRACKET       reduce using rule 31 (block -> O_BRACKET statutesloop C_BRACKET .)
     $end            reduce using rule 31 (block -> O_BRACKET statutesloop C_BRACKET .)
+    ELSE            reduce using rule 31 (block -> O_BRACKET statutesloop C_BRACKET .)
     FUNCTION        reduce using rule 31 (block -> O_BRACKET statutesloop C_BRACKET .)
     MAIN            reduce using rule 31 (block -> O_BRACKET statutesloop C_BRACKET .)
 
@@ -1551,7 +1553,7 @@ state 93
 state 94
 
     (123) varconstfunction -> ID . functionorlist
-    (125) functionorlist -> . add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack
+    (125) functionorlist -> . add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack
     (126) functionorlist -> . add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub add_c_parenthesis
     (127) functionorlist -> . add_to_stack
     (128) add_list_variable -> .
@@ -1580,9 +1582,9 @@ state 94
     C_BRACKET       reduce using rule 124 (add_to_stack -> .)
 
     add_to_stack                   shift and go to state 133
-    add_o_parenthesis              shift and go to state 136
-    functionorlist                 shift and go to state 134
-    add_list_variable              shift and go to state 135
+    add_o_parenthesis              shift and go to state 134
+    functionorlist                 shift and go to state 135
+    add_list_variable              shift and go to state 136
 
 state 95
 
@@ -1674,11 +1676,11 @@ state 98
     DIFFERENT       reduce using rule 112 (fact -> varconst .)
     AND             reduce using rule 112 (fact -> varconst .)
     OR              reduce using rule 112 (fact -> varconst .)
-    COMMA           reduce using rule 112 (fact -> varconst .)
-    C_S_BRACKET     reduce using rule 112 (fact -> varconst .)
     C_PARENTHESIS   reduce using rule 112 (fact -> varconst .)
-    C_BRACKET       reduce using rule 112 (fact -> varconst .)
+    COMMA           reduce using rule 112 (fact -> varconst .)
     SEMICOLON       reduce using rule 112 (fact -> varconst .)
+    C_S_BRACKET     reduce using rule 112 (fact -> varconst .)
+    C_BRACKET       reduce using rule 112 (fact -> varconst .)
 
 
 state 99
@@ -1699,10 +1701,10 @@ state 99
     AND             reduce using rule 132 (constants -> booleanconst .)
     OR              reduce using rule 132 (constants -> booleanconst .)
     SEMICOLON       reduce using rule 132 (constants -> booleanconst .)
-    C_BRACKET       reduce using rule 132 (constants -> booleanconst .)
     COMMA           reduce using rule 132 (constants -> booleanconst .)
     C_PARENTHESIS   reduce using rule 132 (constants -> booleanconst .)
     C_S_BRACKET     reduce using rule 132 (constants -> booleanconst .)
+    C_BRACKET       reduce using rule 132 (constants -> booleanconst .)
 
 
 state 100
@@ -1880,40 +1882,10 @@ state 107
 
 state 108
 
-    (118) listaccess -> add_list_variable O_S_BRACKET . expression C_S_BRACKET add_list_index_to_stack
-    (83) expression -> . expression2 expressionoptional
-    (86) expression2 -> . exp expression2optional
-    (99) exp -> . term exp_quadruple exploop
-    (105) term -> . fact term_quadruple termloop
-    (112) fact -> . varconst
-    (113) fact -> . O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis
-    (121) varconst -> . varconstfunction
-    (122) varconst -> . constants
-    (123) varconstfunction -> . ID functionorlist
-    (129) constants -> . INTCONST add_int_constant_to_dict
-    (130) constants -> . FLOATCONST add_float_constant_to_dict
-    (131) constants -> . STRINGCONST add_string_constant_to_dict
-    (132) constants -> . booleanconst
-    (133) booleanconst -> . TRUE add_bool_constant_to_dict
-    (134) booleanconst -> . FALSE add_bool_constant_to_dict
+    (118) listaccess -> add_list_variable add_o_parenthesis . O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack
 
-    O_PARENTHESIS   shift and go to state 87
-    ID              shift and go to state 94
-    INTCONST        shift and go to state 92
-    FLOATCONST      shift and go to state 86
-    STRINGCONST     shift and go to state 89
-    TRUE            shift and go to state 88
-    FALSE           shift and go to state 97
+    O_S_BRACKET     shift and go to state 147
 
-    varconstfunction               shift and go to state 90
-    exp                            shift and go to state 91
-    expression2                    shift and go to state 93
-    constants                      shift and go to state 95
-    term                           shift and go to state 96
-    varconst                       shift and go to state 98
-    booleanconst                   shift and go to state 99
-    expression                     shift and go to state 147
-    fact                           shift and go to state 101
 
 state 109
 
@@ -1995,10 +1967,10 @@ state 116
     AND             reduce using rule 130 (constants -> FLOATCONST add_float_constant_to_dict .)
     OR              reduce using rule 130 (constants -> FLOATCONST add_float_constant_to_dict .)
     SEMICOLON       reduce using rule 130 (constants -> FLOATCONST add_float_constant_to_dict .)
-    C_BRACKET       reduce using rule 130 (constants -> FLOATCONST add_float_constant_to_dict .)
     COMMA           reduce using rule 130 (constants -> FLOATCONST add_float_constant_to_dict .)
     C_PARENTHESIS   reduce using rule 130 (constants -> FLOATCONST add_float_constant_to_dict .)
     C_S_BRACKET     reduce using rule 130 (constants -> FLOATCONST add_float_constant_to_dict .)
+    C_BRACKET       reduce using rule 130 (constants -> FLOATCONST add_float_constant_to_dict .)
 
 
 state 117
@@ -2080,10 +2052,10 @@ state 119
     AND             reduce using rule 131 (constants -> STRINGCONST add_string_constant_to_dict .)
     OR              reduce using rule 131 (constants -> STRINGCONST add_string_constant_to_dict .)
     SEMICOLON       reduce using rule 131 (constants -> STRINGCONST add_string_constant_to_dict .)
-    C_BRACKET       reduce using rule 131 (constants -> STRINGCONST add_string_constant_to_dict .)
     COMMA           reduce using rule 131 (constants -> STRINGCONST add_string_constant_to_dict .)
     C_PARENTHESIS   reduce using rule 131 (constants -> STRINGCONST add_string_constant_to_dict .)
     C_S_BRACKET     reduce using rule 131 (constants -> STRINGCONST add_string_constant_to_dict .)
+    C_BRACKET       reduce using rule 131 (constants -> STRINGCONST add_string_constant_to_dict .)
 
 
 state 120
@@ -2157,11 +2129,11 @@ state 125
 
     AND             reduce using rule 86 (expression2 -> exp expression2optional .)
     OR              reduce using rule 86 (expression2 -> exp expression2optional .)
+    C_BRACKET       reduce using rule 86 (expression2 -> exp expression2optional .)
     C_PARENTHESIS   reduce using rule 86 (expression2 -> exp expression2optional .)
-    C_S_BRACKET     reduce using rule 86 (expression2 -> exp expression2optional .)
     COMMA           reduce using rule 86 (expression2 -> exp expression2optional .)
     SEMICOLON       reduce using rule 86 (expression2 -> exp expression2optional .)
-    C_BRACKET       reduce using rule 86 (expression2 -> exp expression2optional .)
+    C_S_BRACKET     reduce using rule 86 (expression2 -> exp expression2optional .)
 
 
 state 126
@@ -2228,10 +2200,10 @@ state 128
     AND             reduce using rule 129 (constants -> INTCONST add_int_constant_to_dict .)
     OR              reduce using rule 129 (constants -> INTCONST add_int_constant_to_dict .)
     SEMICOLON       reduce using rule 129 (constants -> INTCONST add_int_constant_to_dict .)
-    C_BRACKET       reduce using rule 129 (constants -> INTCONST add_int_constant_to_dict .)
     COMMA           reduce using rule 129 (constants -> INTCONST add_int_constant_to_dict .)
     C_PARENTHESIS   reduce using rule 129 (constants -> INTCONST add_int_constant_to_dict .)
     C_S_BRACKET     reduce using rule 129 (constants -> INTCONST add_int_constant_to_dict .)
+    C_BRACKET       reduce using rule 129 (constants -> INTCONST add_int_constant_to_dict .)
 
 
 state 129
@@ -2332,6 +2304,15 @@ state 133
 
 state 134
 
+    (126) functionorlist -> add_o_parenthesis . check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub add_c_parenthesis
+    (153) check_function_exists -> .
+
+    O_PARENTHESIS   reduce using rule 153 (check_function_exists -> .)
+
+    check_function_exists          shift and go to state 156
+
+state 135
+
     (123) varconstfunction -> ID functionorlist .
 
     MULTIPLY        reduce using rule 123 (varconstfunction -> ID functionorlist .)
@@ -2354,21 +2335,14 @@ state 134
     C_BRACKET       reduce using rule 123 (varconstfunction -> ID functionorlist .)
 
 
-state 135
-
-    (125) functionorlist -> add_list_variable . O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack
-
-    O_S_BRACKET     shift and go to state 156
-
-
 state 136
 
-    (126) functionorlist -> add_o_parenthesis . check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub add_c_parenthesis
-    (153) check_function_exists -> .
+    (125) functionorlist -> add_list_variable . add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack
+    (114) add_o_parenthesis -> .
 
-    O_PARENTHESIS   reduce using rule 153 (check_function_exists -> .)
+    O_S_BRACKET     reduce using rule 114 (add_o_parenthesis -> .)
 
-    check_function_exists          shift and go to state 157
+    add_o_parenthesis              shift and go to state 157
 
 state 137
 
@@ -2574,10 +2548,40 @@ state 146
 
 state 147
 
-    (118) listaccess -> add_list_variable O_S_BRACKET expression . C_S_BRACKET add_list_index_to_stack
+    (118) listaccess -> add_list_variable add_o_parenthesis O_S_BRACKET . expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack
+    (83) expression -> . expression2 expressionoptional
+    (86) expression2 -> . exp expression2optional
+    (99) exp -> . term exp_quadruple exploop
+    (105) term -> . fact term_quadruple termloop
+    (112) fact -> . varconst
+    (113) fact -> . O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis
+    (121) varconst -> . varconstfunction
+    (122) varconst -> . constants
+    (123) varconstfunction -> . ID functionorlist
+    (129) constants -> . INTCONST add_int_constant_to_dict
+    (130) constants -> . FLOATCONST add_float_constant_to_dict
+    (131) constants -> . STRINGCONST add_string_constant_to_dict
+    (132) constants -> . booleanconst
+    (133) booleanconst -> . TRUE add_bool_constant_to_dict
+    (134) booleanconst -> . FALSE add_bool_constant_to_dict
 
-    C_S_BRACKET     shift and go to state 175
+    O_PARENTHESIS   shift and go to state 87
+    ID              shift and go to state 94
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 86
+    STRINGCONST     shift and go to state 89
+    TRUE            shift and go to state 88
+    FALSE           shift and go to state 97
 
+    varconstfunction               shift and go to state 90
+    exp                            shift and go to state 91
+    expression2                    shift and go to state 93
+    constants                      shift and go to state 95
+    term                           shift and go to state 96
+    varconst                       shift and go to state 98
+    booleanconst                   shift and go to state 99
+    expression                     shift and go to state 175
+    fact                           shift and go to state 101
 
 state 148
 
@@ -2663,46 +2667,16 @@ state 155
 
 state 156
 
-    (125) functionorlist -> add_list_variable O_S_BRACKET . expression C_S_BRACKET add_list_index_to_stack
-    (83) expression -> . expression2 expressionoptional
-    (86) expression2 -> . exp expression2optional
-    (99) exp -> . term exp_quadruple exploop
-    (105) term -> . fact term_quadruple termloop
-    (112) fact -> . varconst
-    (113) fact -> . O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis
-    (121) varconst -> . varconstfunction
-    (122) varconst -> . constants
-    (123) varconstfunction -> . ID functionorlist
-    (129) constants -> . INTCONST add_int_constant_to_dict
-    (130) constants -> . FLOATCONST add_float_constant_to_dict
-    (131) constants -> . STRINGCONST add_string_constant_to_dict
-    (132) constants -> . booleanconst
-    (133) booleanconst -> . TRUE add_bool_constant_to_dict
-    (134) booleanconst -> . FALSE add_bool_constant_to_dict
+    (126) functionorlist -> add_o_parenthesis check_function_exists . O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub add_c_parenthesis
 
-    O_PARENTHESIS   shift and go to state 87
-    ID              shift and go to state 94
-    INTCONST        shift and go to state 92
-    FLOATCONST      shift and go to state 86
-    STRINGCONST     shift and go to state 89
-    TRUE            shift and go to state 88
-    FALSE           shift and go to state 97
+    O_PARENTHESIS   shift and go to state 184
 
-    varconstfunction               shift and go to state 90
-    exp                            shift and go to state 91
-    expression2                    shift and go to state 93
-    constants                      shift and go to state 95
-    term                           shift and go to state 96
-    varconst                       shift and go to state 98
-    booleanconst                   shift and go to state 99
-    expression                     shift and go to state 184
-    fact                           shift and go to state 101
 
 state 157
 
-    (126) functionorlist -> add_o_parenthesis check_function_exists . O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub add_c_parenthesis
+    (125) functionorlist -> add_list_variable add_o_parenthesis . O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack
 
-    O_PARENTHESIS   shift and go to state 185
+    O_S_BRACKET     shift and go to state 185
 
 
 state 158
@@ -2907,6 +2881,7 @@ state 170
 
     (55) writting -> PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON .
 
+    RETURN          reduce using rule 55 (writting -> PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON .)
     IF              reduce using rule 55 (writting -> PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON .)
     PRINT           reduce using rule 55 (writting -> PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON .)
     ID              reduce using rule 55 (writting -> PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON .)
@@ -2918,7 +2893,6 @@ state 170
     FLOAT           reduce using rule 55 (writting -> PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON .)
     STRING          reduce using rule 55 (writting -> PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON .)
     C_BRACKET       reduce using rule 55 (writting -> PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON .)
-    RETURN          reduce using rule 55 (writting -> PRINT O_PARENTHESIS writtingloop C_PARENTHESIS SEMICOLON .)
 
 
 state 171
@@ -2956,12 +2930,10 @@ state 174
 
 state 175
 
-    (118) listaccess -> add_list_variable O_S_BRACKET expression C_S_BRACKET . add_list_index_to_stack
-    (120) add_list_index_to_stack -> .
+    (118) listaccess -> add_list_variable add_o_parenthesis O_S_BRACKET expression . C_S_BRACKET add_c_parenthesis add_list_index_to_stack
 
-    EQUALS          reduce using rule 120 (add_list_index_to_stack -> .)
+    C_S_BRACKET     shift and go to state 196
 
-    add_list_index_to_stack        shift and go to state 196
 
 state 176
 
@@ -3057,13 +3029,6 @@ state 183
 
 state 184
 
-    (125) functionorlist -> add_list_variable O_S_BRACKET expression . C_S_BRACKET add_list_index_to_stack
-
-    C_S_BRACKET     shift and go to state 203
-
-
-state 185
-
     (126) functionorlist -> add_o_parenthesis check_function_exists O_PARENTHESIS . parametersinput C_PARENTHESIS generate_gosub add_c_parenthesis
     (155) parametersinput -> . expression push_type_to_function_options generate_parameter_quadruple parametersinputloop check_params_order
     (156) parametersinput -> .
@@ -3094,13 +3059,50 @@ state 185
 
     varconstfunction               shift and go to state 90
     exp                            shift and go to state 91
-    parametersinput                shift and go to state 204
+    parametersinput                shift and go to state 203
     expression2                    shift and go to state 93
     constants                      shift and go to state 95
     term                           shift and go to state 96
     varconst                       shift and go to state 98
     booleanconst                   shift and go to state 99
     expression                     shift and go to state 174
+    fact                           shift and go to state 101
+
+state 185
+
+    (125) functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET . expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack
+    (83) expression -> . expression2 expressionoptional
+    (86) expression2 -> . exp expression2optional
+    (99) exp -> . term exp_quadruple exploop
+    (105) term -> . fact term_quadruple termloop
+    (112) fact -> . varconst
+    (113) fact -> . O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis
+    (121) varconst -> . varconstfunction
+    (122) varconst -> . constants
+    (123) varconstfunction -> . ID functionorlist
+    (129) constants -> . INTCONST add_int_constant_to_dict
+    (130) constants -> . FLOATCONST add_float_constant_to_dict
+    (131) constants -> . STRINGCONST add_string_constant_to_dict
+    (132) constants -> . booleanconst
+    (133) booleanconst -> . TRUE add_bool_constant_to_dict
+    (134) booleanconst -> . FALSE add_bool_constant_to_dict
+
+    O_PARENTHESIS   shift and go to state 87
+    ID              shift and go to state 94
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 86
+    STRINGCONST     shift and go to state 89
+    TRUE            shift and go to state 88
+    FALSE           shift and go to state 97
+
+    varconstfunction               shift and go to state 90
+    exp                            shift and go to state 91
+    expression2                    shift and go to state 93
+    constants                      shift and go to state 95
+    term                           shift and go to state 96
+    varconst                       shift and go to state 98
+    booleanconst                   shift and go to state 99
+    expression                     shift and go to state 204
     fact                           shift and go to state 101
 
 state 186
@@ -3199,6 +3201,7 @@ state 192
 
     (54) assignation -> var_assign EQUALS add_equals expression equals_quadruple SEMICOLON .
 
+    RETURN          reduce using rule 54 (assignation -> var_assign EQUALS add_equals expression equals_quadruple SEMICOLON .)
     IF              reduce using rule 54 (assignation -> var_assign EQUALS add_equals expression equals_quadruple SEMICOLON .)
     PRINT           reduce using rule 54 (assignation -> var_assign EQUALS add_equals expression equals_quadruple SEMICOLON .)
     ID              reduce using rule 54 (assignation -> var_assign EQUALS add_equals expression equals_quadruple SEMICOLON .)
@@ -3210,7 +3213,6 @@ state 192
     FLOAT           reduce using rule 54 (assignation -> var_assign EQUALS add_equals expression equals_quadruple SEMICOLON .)
     STRING          reduce using rule 54 (assignation -> var_assign EQUALS add_equals expression equals_quadruple SEMICOLON .)
     C_BRACKET       reduce using rule 54 (assignation -> var_assign EQUALS add_equals expression equals_quadruple SEMICOLON .)
-    RETURN          reduce using rule 54 (assignation -> var_assign EQUALS add_equals expression equals_quadruple SEMICOLON .)
 
 
 state 193
@@ -3239,10 +3241,12 @@ state 195
 
 state 196
 
-    (118) listaccess -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .
+    (118) listaccess -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET . add_c_parenthesis add_list_index_to_stack
+    (115) add_c_parenthesis -> .
 
-    EQUALS          reduce using rule 118 (listaccess -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
+    EQUALS          reduce using rule 115 (add_c_parenthesis -> .)
 
+    add_c_parenthesis              shift and go to state 211
 
 state 197
 
@@ -3250,7 +3254,7 @@ state 197
     (76) else -> . ELSE else_condition block
     (77) else -> .
 
-    ELSE            shift and go to state 211
+    ELSE            shift and go to state 212
     IF              reduce using rule 77 (else -> .)
     PRINT           reduce using rule 77 (else -> .)
     ID              reduce using rule 77 (else -> .)
@@ -3263,13 +3267,13 @@ state 197
     STRING          reduce using rule 77 (else -> .)
     C_BRACKET       reduce using rule 77 (else -> .)
 
-    else                           shift and go to state 212
+    else                           shift and go to state 213
 
 state 198
 
     (66) listinit -> LIST type ID EQUALS start_list list . SEMICOLON
 
-    SEMICOLON       shift and go to state 213
+    SEMICOLON       shift and go to state 214
 
 
 state 199
@@ -3308,9 +3312,9 @@ state 199
     constants                      shift and go to state 95
     term                           shift and go to state 96
     varconst                       shift and go to state 98
-    listelements                   shift and go to state 214
+    listelements                   shift and go to state 215
     booleanconst                   shift and go to state 99
-    expression                     shift and go to state 215
+    expression                     shift and go to state 216
     fact                           shift and go to state 101
 
 state 200
@@ -3346,32 +3350,32 @@ state 200
     (26) type -> . STRING
 
     C_BRACKET       reduce using rule 41 (functionstatutesloop -> .)
-    RETURN          shift and go to state 217
-    IF              shift and go to state 228
+    RETURN          shift and go to state 218
+    IF              shift and go to state 229
     PRINT           shift and go to state 40
     ID              shift and go to state 51
     LIST            shift and go to state 59
-    WHILE           shift and go to state 219
-    TIMES           shift and go to state 216
+    WHILE           shift and go to state 220
+    TIMES           shift and go to state 217
     BOOL            shift and go to state 43
     INT             shift and go to state 57
     FLOAT           shift and go to state 58
     STRING          shift and go to state 47
 
-    functionstatute                shift and go to state 218
-    functiontimesloop              shift and go to state 220
-    functionstatutesloop           shift and go to state 221
-    functionwhileloop              shift and go to state 222
-    init                           shift and go to state 223
+    functionstatute                shift and go to state 219
+    functiontimesloop              shift and go to state 221
+    functionstatutesloop           shift and go to state 222
+    functionwhileloop              shift and go to state 223
+    init                           shift and go to state 224
     var_assign                     shift and go to state 44
     type                           shift and go to state 45
     listinit                       shift and go to state 48
-    functionloops                  shift and go to state 224
-    writting                       shift and go to state 225
-    functionreturn                 shift and go to state 226
-    functioncondition              shift and go to state 227
-    assignation                    shift and go to state 229
-    functioncall                   shift and go to state 230
+    functionloops                  shift and go to state 225
+    writting                       shift and go to state 226
+    functionreturn                 shift and go to state 227
+    functioncondition              shift and go to state 228
+    assignation                    shift and go to state 230
+    functioncall                   shift and go to state 231
     normalinit                     shift and go to state 46
 
 state 201
@@ -3399,44 +3403,25 @@ state 202
     DIFFERENT       reduce using rule 113 (fact -> O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis .)
     AND             reduce using rule 113 (fact -> O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis .)
     OR              reduce using rule 113 (fact -> O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis .)
-    COMMA           reduce using rule 113 (fact -> O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis .)
-    C_S_BRACKET     reduce using rule 113 (fact -> O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis .)
     C_PARENTHESIS   reduce using rule 113 (fact -> O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis .)
-    C_BRACKET       reduce using rule 113 (fact -> O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis .)
+    COMMA           reduce using rule 113 (fact -> O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis .)
     SEMICOLON       reduce using rule 113 (fact -> O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis .)
+    C_S_BRACKET     reduce using rule 113 (fact -> O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis .)
+    C_BRACKET       reduce using rule 113 (fact -> O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis .)
 
 
 state 203
 
-    (125) functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET . add_list_index_to_stack
-    (120) add_list_index_to_stack -> .
-
-    MULTIPLY        reduce using rule 120 (add_list_index_to_stack -> .)
-    DIVIDE          reduce using rule 120 (add_list_index_to_stack -> .)
-    MOD             reduce using rule 120 (add_list_index_to_stack -> .)
-    SUM             reduce using rule 120 (add_list_index_to_stack -> .)
-    MINUS           reduce using rule 120 (add_list_index_to_stack -> .)
-    EQUALITY        reduce using rule 120 (add_list_index_to_stack -> .)
-    GREATER         reduce using rule 120 (add_list_index_to_stack -> .)
-    GREATER_EQUAL   reduce using rule 120 (add_list_index_to_stack -> .)
-    LESS            reduce using rule 120 (add_list_index_to_stack -> .)
-    LESS_EQUAL      reduce using rule 120 (add_list_index_to_stack -> .)
-    DIFFERENT       reduce using rule 120 (add_list_index_to_stack -> .)
-    AND             reduce using rule 120 (add_list_index_to_stack -> .)
-    OR              reduce using rule 120 (add_list_index_to_stack -> .)
-    C_PARENTHESIS   reduce using rule 120 (add_list_index_to_stack -> .)
-    COMMA           reduce using rule 120 (add_list_index_to_stack -> .)
-    SEMICOLON       reduce using rule 120 (add_list_index_to_stack -> .)
-    C_S_BRACKET     reduce using rule 120 (add_list_index_to_stack -> .)
-    C_BRACKET       reduce using rule 120 (add_list_index_to_stack -> .)
-
-    add_list_index_to_stack        shift and go to state 231
-
-state 204
-
     (126) functionorlist -> add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput . C_PARENTHESIS generate_gosub add_c_parenthesis
 
     C_PARENTHESIS   shift and go to state 232
+
+
+state 204
+
+    (125) functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression . C_S_BRACKET add_c_parenthesis add_list_index_to_stack
+
+    C_S_BRACKET     shift and go to state 233
 
 
 state 205
@@ -3473,7 +3458,7 @@ state 206
     STRING          reduce using rule 147 (end_while -> .)
     C_BRACKET       reduce using rule 147 (end_while -> .)
 
-    end_while                      shift and go to state 233
+    end_while                      shift and go to state 234
 
 state 207
 
@@ -3486,7 +3471,6 @@ state 208
 
     (63) normalinit -> type var EQUALS add_equals expression equals_quadruple SEMICOLON .
 
-    RETURN          reduce using rule 63 (normalinit -> type var EQUALS add_equals expression equals_quadruple SEMICOLON .)
     IF              reduce using rule 63 (normalinit -> type var EQUALS add_equals expression equals_quadruple SEMICOLON .)
     PRINT           reduce using rule 63 (normalinit -> type var EQUALS add_equals expression equals_quadruple SEMICOLON .)
     ID              reduce using rule 63 (normalinit -> type var EQUALS add_equals expression equals_quadruple SEMICOLON .)
@@ -3498,6 +3482,7 @@ state 208
     FLOAT           reduce using rule 63 (normalinit -> type var EQUALS add_equals expression equals_quadruple SEMICOLON .)
     STRING          reduce using rule 63 (normalinit -> type var EQUALS add_equals expression equals_quadruple SEMICOLON .)
     C_BRACKET       reduce using rule 63 (normalinit -> type var EQUALS add_equals expression equals_quadruple SEMICOLON .)
+    RETURN          reduce using rule 63 (normalinit -> type var EQUALS add_equals expression equals_quadruple SEMICOLON .)
 
 
 state 209
@@ -3518,7 +3503,7 @@ state 209
     C_BRACKET       reduce using rule 154 (generate_gosub -> .)
     RETURN          reduce using rule 154 (generate_gosub -> .)
 
-    generate_gosub                 shift and go to state 234
+    generate_gosub                 shift and go to state 235
 
 state 210
 
@@ -3526,21 +3511,30 @@ state 210
     (157) parametersinputloop -> . COMMA expression push_type_to_function_options generate_parameter_quadruple parametersinputloop
     (158) parametersinputloop -> .
 
-    COMMA           shift and go to state 236
+    COMMA           shift and go to state 237
     C_PARENTHESIS   reduce using rule 158 (parametersinputloop -> .)
 
-    parametersinputloop            shift and go to state 235
+    parametersinputloop            shift and go to state 236
 
 state 211
+
+    (118) listaccess -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis . add_list_index_to_stack
+    (120) add_list_index_to_stack -> .
+
+    EQUALS          reduce using rule 120 (add_list_index_to_stack -> .)
+
+    add_list_index_to_stack        shift and go to state 238
+
+state 212
 
     (76) else -> ELSE . else_condition block
     (81) else_condition -> .
 
     O_BRACKET       reduce using rule 81 (else_condition -> .)
 
-    else_condition                 shift and go to state 237
+    else_condition                 shift and go to state 239
 
-state 212
+state 213
 
     (74) condition -> IF O_PARENTHESIS expression C_PARENTHESIS start_condition block else . end_condition
     (82) end_condition -> .
@@ -3557,9 +3551,9 @@ state 212
     STRING          reduce using rule 82 (end_condition -> .)
     C_BRACKET       reduce using rule 82 (end_condition -> .)
 
-    end_condition                  shift and go to state 238
+    end_condition                  shift and go to state 240
 
-state 213
+state 214
 
     (66) listinit -> LIST type ID EQUALS start_list list SEMICOLON .
 
@@ -3577,14 +3571,14 @@ state 213
     C_BRACKET       reduce using rule 66 (listinit -> LIST type ID EQUALS start_list list SEMICOLON .)
 
 
-state 214
+state 215
 
     (67) list -> O_S_BRACKET listelements . C_S_BRACKET
 
-    C_S_BRACKET     shift and go to state 239
+    C_S_BRACKET     shift and go to state 241
 
 
-state 215
+state 216
 
     (69) listelements -> expression . generate_list_assignation optionallist
     (73) generate_list_assignation -> .
@@ -3592,16 +3586,16 @@ state 215
     COMMA           reduce using rule 73 (generate_list_assignation -> .)
     C_S_BRACKET     reduce using rule 73 (generate_list_assignation -> .)
 
-    generate_list_assignation      shift and go to state 240
+    generate_list_assignation      shift and go to state 242
 
-state 216
+state 217
 
     (149) functiontimesloop -> TIMES . O_PARENTHESIS expression C_PARENTHESIS start_times functionblock end_times
 
-    O_PARENTHESIS   shift and go to state 241
+    O_PARENTHESIS   shift and go to state 243
 
 
-state 217
+state 218
 
     (33) functionreturn -> RETURN . add_function_var_to_stack O_BRACKET expression C_BRACKET SEMICOLON
     (34) functionreturn -> RETURN . add_function_var_to_stack expression SEMICOLON
@@ -3616,9 +3610,9 @@ state 217
     TRUE            reduce using rule 35 (add_function_var_to_stack -> .)
     FALSE           reduce using rule 35 (add_function_var_to_stack -> .)
 
-    add_function_var_to_stack      shift and go to state 242
+    add_function_var_to_stack      shift and go to state 244
 
-state 218
+state 219
 
     (39) functionstatutesloop -> functionstatute . functionstatutesloop
     (39) functionstatutesloop -> . functionstatute functionstatutesloop
@@ -3651,44 +3645,44 @@ state 218
     (26) type -> . STRING
 
     C_BRACKET       reduce using rule 41 (functionstatutesloop -> .)
-    RETURN          shift and go to state 217
-    IF              shift and go to state 228
+    RETURN          shift and go to state 218
+    IF              shift and go to state 229
     PRINT           shift and go to state 40
     ID              shift and go to state 51
     LIST            shift and go to state 59
-    WHILE           shift and go to state 219
-    TIMES           shift and go to state 216
+    WHILE           shift and go to state 220
+    TIMES           shift and go to state 217
     BOOL            shift and go to state 43
     INT             shift and go to state 57
     FLOAT           shift and go to state 58
     STRING          shift and go to state 47
 
-    functionstatute                shift and go to state 218
-    functiontimesloop              shift and go to state 220
-    functionstatutesloop           shift and go to state 243
-    functionwhileloop              shift and go to state 222
-    init                           shift and go to state 223
+    functionstatute                shift and go to state 219
+    functiontimesloop              shift and go to state 221
+    functionstatutesloop           shift and go to state 245
+    functionwhileloop              shift and go to state 223
+    init                           shift and go to state 224
     var_assign                     shift and go to state 44
     type                           shift and go to state 45
     listinit                       shift and go to state 48
-    functionloops                  shift and go to state 224
-    writting                       shift and go to state 225
-    functionreturn                 shift and go to state 226
-    functioncondition              shift and go to state 227
-    assignation                    shift and go to state 229
-    functioncall                   shift and go to state 230
+    functionloops                  shift and go to state 225
+    writting                       shift and go to state 226
+    functionreturn                 shift and go to state 227
+    functioncondition              shift and go to state 228
+    assignation                    shift and go to state 230
+    functioncall                   shift and go to state 231
     normalinit                     shift and go to state 46
 
-state 219
+state 220
 
     (144) functionwhileloop -> WHILE . start_while O_PARENTHESIS expression C_PARENTHESIS condition_while functionblock end_while
     (145) start_while -> .
 
     O_PARENTHESIS   reduce using rule 145 (start_while -> .)
 
-    start_while                    shift and go to state 244
+    start_while                    shift and go to state 246
 
-state 220
+state 221
 
     (142) functionloops -> functiontimesloop .
 
@@ -3706,14 +3700,14 @@ state 220
     C_BRACKET       reduce using rule 142 (functionloops -> functiontimesloop .)
 
 
-state 221
+state 222
 
     (32) functionblock -> O_BRACKET functionstatutesloop . C_BRACKET
 
-    C_BRACKET       shift and go to state 245
+    C_BRACKET       shift and go to state 247
 
 
-state 222
+state 223
 
     (141) functionloops -> functionwhileloop .
 
@@ -3731,7 +3725,7 @@ state 222
     C_BRACKET       reduce using rule 141 (functionloops -> functionwhileloop .)
 
 
-state 223
+state 224
 
     (48) functionstatute -> init .
 
@@ -3749,7 +3743,7 @@ state 223
     C_BRACKET       reduce using rule 48 (functionstatute -> init .)
 
 
-state 224
+state 225
 
     (51) functionstatute -> functionloops .
 
@@ -3767,7 +3761,7 @@ state 224
     C_BRACKET       reduce using rule 51 (functionstatute -> functionloops .)
 
 
-state 225
+state 226
 
     (50) functionstatute -> writting .
 
@@ -3785,14 +3779,14 @@ state 225
     C_BRACKET       reduce using rule 50 (functionstatute -> writting .)
 
 
-state 226
+state 227
 
     (40) functionstatutesloop -> functionreturn .
 
     C_BRACKET       reduce using rule 40 (functionstatutesloop -> functionreturn .)
 
 
-state 227
+state 228
 
     (49) functionstatute -> functioncondition .
 
@@ -3810,14 +3804,14 @@ state 227
     C_BRACKET       reduce using rule 49 (functionstatute -> functioncondition .)
 
 
-state 228
+state 229
 
     (75) functioncondition -> IF . O_PARENTHESIS expression C_PARENTHESIS start_condition functionblock functionelse end_condition
 
-    O_PARENTHESIS   shift and go to state 246
+    O_PARENTHESIS   shift and go to state 248
 
 
-state 229
+state 230
 
     (52) functionstatute -> assignation .
 
@@ -3835,7 +3829,7 @@ state 229
     C_BRACKET       reduce using rule 52 (functionstatute -> assignation .)
 
 
-state 230
+state 231
 
     (53) functionstatute -> functioncall .
 
@@ -3851,30 +3845,6 @@ state 230
     FLOAT           reduce using rule 53 (functionstatute -> functioncall .)
     STRING          reduce using rule 53 (functionstatute -> functioncall .)
     C_BRACKET       reduce using rule 53 (functionstatute -> functioncall .)
-
-
-state 231
-
-    (125) functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .
-
-    MULTIPLY        reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    DIVIDE          reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    MOD             reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    SUM             reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    MINUS           reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    EQUALITY        reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    GREATER         reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    GREATER_EQUAL   reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    LESS            reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    LESS_EQUAL      reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    DIFFERENT       reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    AND             reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    OR              reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    C_PARENTHESIS   reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    COMMA           reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    SEMICOLON       reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    C_S_BRACKET     reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
-    C_BRACKET       reduce using rule 125 (functionorlist -> add_list_variable O_S_BRACKET expression C_S_BRACKET add_list_index_to_stack .)
 
 
 state 232
@@ -3901,9 +3871,35 @@ state 232
     C_S_BRACKET     reduce using rule 154 (generate_gosub -> .)
     C_BRACKET       reduce using rule 154 (generate_gosub -> .)
 
-    generate_gosub                 shift and go to state 247
+    generate_gosub                 shift and go to state 249
 
 state 233
+
+    (125) functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET . add_c_parenthesis add_list_index_to_stack
+    (115) add_c_parenthesis -> .
+
+    MULTIPLY        reduce using rule 115 (add_c_parenthesis -> .)
+    DIVIDE          reduce using rule 115 (add_c_parenthesis -> .)
+    MOD             reduce using rule 115 (add_c_parenthesis -> .)
+    SUM             reduce using rule 115 (add_c_parenthesis -> .)
+    MINUS           reduce using rule 115 (add_c_parenthesis -> .)
+    EQUALITY        reduce using rule 115 (add_c_parenthesis -> .)
+    GREATER         reduce using rule 115 (add_c_parenthesis -> .)
+    GREATER_EQUAL   reduce using rule 115 (add_c_parenthesis -> .)
+    LESS            reduce using rule 115 (add_c_parenthesis -> .)
+    LESS_EQUAL      reduce using rule 115 (add_c_parenthesis -> .)
+    DIFFERENT       reduce using rule 115 (add_c_parenthesis -> .)
+    AND             reduce using rule 115 (add_c_parenthesis -> .)
+    OR              reduce using rule 115 (add_c_parenthesis -> .)
+    C_PARENTHESIS   reduce using rule 115 (add_c_parenthesis -> .)
+    COMMA           reduce using rule 115 (add_c_parenthesis -> .)
+    SEMICOLON       reduce using rule 115 (add_c_parenthesis -> .)
+    C_S_BRACKET     reduce using rule 115 (add_c_parenthesis -> .)
+    C_BRACKET       reduce using rule 115 (add_c_parenthesis -> .)
+
+    add_c_parenthesis              shift and go to state 250
+
+state 234
 
     (143) whileloop -> WHILE start_while O_PARENTHESIS expression C_PARENTHESIS condition_while block end_while .
 
@@ -3920,7 +3916,7 @@ state 233
     C_BRACKET       reduce using rule 143 (whileloop -> WHILE start_while O_PARENTHESIS expression C_PARENTHESIS condition_while block end_while .)
 
 
-state 234
+state 235
 
     (152) functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub . add_c_parenthesis
     (115) add_c_parenthesis -> .
@@ -3938,18 +3934,18 @@ state 234
     C_BRACKET       reduce using rule 115 (add_c_parenthesis -> .)
     RETURN          reduce using rule 115 (add_c_parenthesis -> .)
 
-    add_c_parenthesis              shift and go to state 248
+    add_c_parenthesis              shift and go to state 251
 
-state 235
+state 236
 
     (155) parametersinput -> expression push_type_to_function_options generate_parameter_quadruple parametersinputloop . check_params_order
     (160) check_params_order -> .
 
     C_PARENTHESIS   reduce using rule 160 (check_params_order -> .)
 
-    check_params_order             shift and go to state 249
+    check_params_order             shift and go to state 252
 
-state 236
+state 237
 
     (157) parametersinputloop -> COMMA . expression push_type_to_function_options generate_parameter_quadruple parametersinputloop
     (83) expression -> . expression2 expressionoptional
@@ -3983,19 +3979,26 @@ state 236
     term                           shift and go to state 96
     varconst                       shift and go to state 98
     booleanconst                   shift and go to state 99
-    expression                     shift and go to state 250
+    expression                     shift and go to state 253
     fact                           shift and go to state 101
 
-state 237
+state 238
+
+    (118) listaccess -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .
+
+    EQUALS          reduce using rule 118 (listaccess -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+
+
+state 239
 
     (76) else -> ELSE else_condition . block
     (31) block -> . O_BRACKET statutesloop C_BRACKET
 
     O_BRACKET       shift and go to state 33
 
-    block                          shift and go to state 251
+    block                          shift and go to state 254
 
-state 238
+state 240
 
     (74) condition -> IF O_PARENTHESIS expression C_PARENTHESIS start_condition block else end_condition .
 
@@ -4012,25 +4015,25 @@ state 238
     C_BRACKET       reduce using rule 74 (condition -> IF O_PARENTHESIS expression C_PARENTHESIS start_condition block else end_condition .)
 
 
-state 239
+state 241
 
     (67) list -> O_S_BRACKET listelements C_S_BRACKET .
 
     SEMICOLON       reduce using rule 67 (list -> O_S_BRACKET listelements C_S_BRACKET .)
 
 
-state 240
+state 242
 
     (69) listelements -> expression generate_list_assignation . optionallist
     (71) optionallist -> . COMMA expression generate_list_assignation optionallist
     (72) optionallist -> .
 
-    COMMA           shift and go to state 253
+    COMMA           shift and go to state 256
     C_S_BRACKET     reduce using rule 72 (optionallist -> .)
 
-    optionallist                   shift and go to state 252
+    optionallist                   shift and go to state 255
 
-state 241
+state 243
 
     (149) functiontimesloop -> TIMES O_PARENTHESIS . expression C_PARENTHESIS start_times functionblock end_times
     (83) expression -> . expression2 expressionoptional
@@ -4064,10 +4067,10 @@ state 241
     term                           shift and go to state 96
     varconst                       shift and go to state 98
     booleanconst                   shift and go to state 99
-    expression                     shift and go to state 254
+    expression                     shift and go to state 257
     fact                           shift and go to state 101
 
-state 242
+state 244
 
     (33) functionreturn -> RETURN add_function_var_to_stack . O_BRACKET expression C_BRACKET SEMICOLON
     (34) functionreturn -> RETURN add_function_var_to_stack . expression SEMICOLON
@@ -4087,7 +4090,7 @@ state 242
     (133) booleanconst -> . TRUE add_bool_constant_to_dict
     (134) booleanconst -> . FALSE add_bool_constant_to_dict
 
-    O_BRACKET       shift and go to state 255
+    O_BRACKET       shift and go to state 258
     O_PARENTHESIS   shift and go to state 87
     ID              shift and go to state 94
     INTCONST        shift and go to state 92
@@ -4103,27 +4106,29 @@ state 242
     term                           shift and go to state 96
     varconst                       shift and go to state 98
     booleanconst                   shift and go to state 99
-    expression                     shift and go to state 256
+    expression                     shift and go to state 259
     fact                           shift and go to state 101
 
-state 243
+state 245
 
     (39) functionstatutesloop -> functionstatute functionstatutesloop .
 
     C_BRACKET       reduce using rule 39 (functionstatutesloop -> functionstatute functionstatutesloop .)
 
 
-state 244
+state 246
 
     (144) functionwhileloop -> WHILE start_while . O_PARENTHESIS expression C_PARENTHESIS condition_while functionblock end_while
 
-    O_PARENTHESIS   shift and go to state 257
+    O_PARENTHESIS   shift and go to state 260
 
 
-state 245
+state 247
 
     (32) functionblock -> O_BRACKET functionstatutesloop C_BRACKET .
 
+    FUNCTION        reduce using rule 32 (functionblock -> O_BRACKET functionstatutesloop C_BRACKET .)
+    MAIN            reduce using rule 32 (functionblock -> O_BRACKET functionstatutesloop C_BRACKET .)
     RETURN          reduce using rule 32 (functionblock -> O_BRACKET functionstatutesloop C_BRACKET .)
     IF              reduce using rule 32 (functionblock -> O_BRACKET functionstatutesloop C_BRACKET .)
     PRINT           reduce using rule 32 (functionblock -> O_BRACKET functionstatutesloop C_BRACKET .)
@@ -4136,136 +4141,12 @@ state 245
     FLOAT           reduce using rule 32 (functionblock -> O_BRACKET functionstatutesloop C_BRACKET .)
     STRING          reduce using rule 32 (functionblock -> O_BRACKET functionstatutesloop C_BRACKET .)
     C_BRACKET       reduce using rule 32 (functionblock -> O_BRACKET functionstatutesloop C_BRACKET .)
-    FUNCTION        reduce using rule 32 (functionblock -> O_BRACKET functionstatutesloop C_BRACKET .)
-    MAIN            reduce using rule 32 (functionblock -> O_BRACKET functionstatutesloop C_BRACKET .)
     ELSE            reduce using rule 32 (functionblock -> O_BRACKET functionstatutesloop C_BRACKET .)
 
 
-state 246
-
-    (75) functioncondition -> IF O_PARENTHESIS . expression C_PARENTHESIS start_condition functionblock functionelse end_condition
-    (83) expression -> . expression2 expressionoptional
-    (86) expression2 -> . exp expression2optional
-    (99) exp -> . term exp_quadruple exploop
-    (105) term -> . fact term_quadruple termloop
-    (112) fact -> . varconst
-    (113) fact -> . O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis
-    (121) varconst -> . varconstfunction
-    (122) varconst -> . constants
-    (123) varconstfunction -> . ID functionorlist
-    (129) constants -> . INTCONST add_int_constant_to_dict
-    (130) constants -> . FLOATCONST add_float_constant_to_dict
-    (131) constants -> . STRINGCONST add_string_constant_to_dict
-    (132) constants -> . booleanconst
-    (133) booleanconst -> . TRUE add_bool_constant_to_dict
-    (134) booleanconst -> . FALSE add_bool_constant_to_dict
-
-    O_PARENTHESIS   shift and go to state 87
-    ID              shift and go to state 94
-    INTCONST        shift and go to state 92
-    FLOATCONST      shift and go to state 86
-    STRINGCONST     shift and go to state 89
-    TRUE            shift and go to state 88
-    FALSE           shift and go to state 97
-
-    varconstfunction               shift and go to state 90
-    exp                            shift and go to state 91
-    expression2                    shift and go to state 93
-    constants                      shift and go to state 95
-    term                           shift and go to state 96
-    varconst                       shift and go to state 98
-    booleanconst                   shift and go to state 99
-    expression                     shift and go to state 258
-    fact                           shift and go to state 101
-
-state 247
-
-    (126) functionorlist -> add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub . add_c_parenthesis
-    (115) add_c_parenthesis -> .
-
-    MULTIPLY        reduce using rule 115 (add_c_parenthesis -> .)
-    DIVIDE          reduce using rule 115 (add_c_parenthesis -> .)
-    MOD             reduce using rule 115 (add_c_parenthesis -> .)
-    SUM             reduce using rule 115 (add_c_parenthesis -> .)
-    MINUS           reduce using rule 115 (add_c_parenthesis -> .)
-    EQUALITY        reduce using rule 115 (add_c_parenthesis -> .)
-    GREATER         reduce using rule 115 (add_c_parenthesis -> .)
-    GREATER_EQUAL   reduce using rule 115 (add_c_parenthesis -> .)
-    LESS            reduce using rule 115 (add_c_parenthesis -> .)
-    LESS_EQUAL      reduce using rule 115 (add_c_parenthesis -> .)
-    DIFFERENT       reduce using rule 115 (add_c_parenthesis -> .)
-    AND             reduce using rule 115 (add_c_parenthesis -> .)
-    OR              reduce using rule 115 (add_c_parenthesis -> .)
-    C_PARENTHESIS   reduce using rule 115 (add_c_parenthesis -> .)
-    COMMA           reduce using rule 115 (add_c_parenthesis -> .)
-    SEMICOLON       reduce using rule 115 (add_c_parenthesis -> .)
-    C_S_BRACKET     reduce using rule 115 (add_c_parenthesis -> .)
-    C_BRACKET       reduce using rule 115 (add_c_parenthesis -> .)
-
-    add_c_parenthesis              shift and go to state 259
-
 state 248
 
-    (152) functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .
-
-    IF              reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
-    PRINT           reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
-    ID              reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
-    LIST            reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
-    WHILE           reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
-    TIMES           reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
-    BOOL            reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
-    INT             reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
-    FLOAT           reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
-    STRING          reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
-    C_BRACKET       reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
-    RETURN          reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
-
-
-state 249
-
-    (155) parametersinput -> expression push_type_to_function_options generate_parameter_quadruple parametersinputloop check_params_order .
-
-    C_PARENTHESIS   reduce using rule 155 (parametersinput -> expression push_type_to_function_options generate_parameter_quadruple parametersinputloop check_params_order .)
-
-
-state 250
-
-    (157) parametersinputloop -> COMMA expression . push_type_to_function_options generate_parameter_quadruple parametersinputloop
-    (159) push_type_to_function_options -> .
-
-    COMMA           reduce using rule 159 (push_type_to_function_options -> .)
-    C_PARENTHESIS   reduce using rule 159 (push_type_to_function_options -> .)
-
-    push_type_to_function_options  shift and go to state 260
-
-state 251
-
-    (76) else -> ELSE else_condition block .
-
-    IF              reduce using rule 76 (else -> ELSE else_condition block .)
-    PRINT           reduce using rule 76 (else -> ELSE else_condition block .)
-    ID              reduce using rule 76 (else -> ELSE else_condition block .)
-    LIST            reduce using rule 76 (else -> ELSE else_condition block .)
-    WHILE           reduce using rule 76 (else -> ELSE else_condition block .)
-    TIMES           reduce using rule 76 (else -> ELSE else_condition block .)
-    BOOL            reduce using rule 76 (else -> ELSE else_condition block .)
-    INT             reduce using rule 76 (else -> ELSE else_condition block .)
-    FLOAT           reduce using rule 76 (else -> ELSE else_condition block .)
-    STRING          reduce using rule 76 (else -> ELSE else_condition block .)
-    C_BRACKET       reduce using rule 76 (else -> ELSE else_condition block .)
-
-
-state 252
-
-    (69) listelements -> expression generate_list_assignation optionallist .
-
-    C_S_BRACKET     reduce using rule 69 (listelements -> expression generate_list_assignation optionallist .)
-
-
-state 253
-
-    (71) optionallist -> COMMA . expression generate_list_assignation optionallist
+    (75) functioncondition -> IF O_PARENTHESIS . expression C_PARENTHESIS start_condition functionblock functionelse end_condition
     (83) expression -> . expression2 expressionoptional
     (86) expression2 -> . exp expression2optional
     (99) exp -> . term exp_quadruple exploop
@@ -4300,60 +4181,120 @@ state 253
     expression                     shift and go to state 261
     fact                           shift and go to state 101
 
+state 249
+
+    (126) functionorlist -> add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub . add_c_parenthesis
+    (115) add_c_parenthesis -> .
+
+    MULTIPLY        reduce using rule 115 (add_c_parenthesis -> .)
+    DIVIDE          reduce using rule 115 (add_c_parenthesis -> .)
+    MOD             reduce using rule 115 (add_c_parenthesis -> .)
+    SUM             reduce using rule 115 (add_c_parenthesis -> .)
+    MINUS           reduce using rule 115 (add_c_parenthesis -> .)
+    EQUALITY        reduce using rule 115 (add_c_parenthesis -> .)
+    GREATER         reduce using rule 115 (add_c_parenthesis -> .)
+    GREATER_EQUAL   reduce using rule 115 (add_c_parenthesis -> .)
+    LESS            reduce using rule 115 (add_c_parenthesis -> .)
+    LESS_EQUAL      reduce using rule 115 (add_c_parenthesis -> .)
+    DIFFERENT       reduce using rule 115 (add_c_parenthesis -> .)
+    AND             reduce using rule 115 (add_c_parenthesis -> .)
+    OR              reduce using rule 115 (add_c_parenthesis -> .)
+    C_PARENTHESIS   reduce using rule 115 (add_c_parenthesis -> .)
+    COMMA           reduce using rule 115 (add_c_parenthesis -> .)
+    SEMICOLON       reduce using rule 115 (add_c_parenthesis -> .)
+    C_S_BRACKET     reduce using rule 115 (add_c_parenthesis -> .)
+    C_BRACKET       reduce using rule 115 (add_c_parenthesis -> .)
+
+    add_c_parenthesis              shift and go to state 262
+
+state 250
+
+    (125) functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis . add_list_index_to_stack
+    (120) add_list_index_to_stack -> .
+
+    MULTIPLY        reduce using rule 120 (add_list_index_to_stack -> .)
+    DIVIDE          reduce using rule 120 (add_list_index_to_stack -> .)
+    MOD             reduce using rule 120 (add_list_index_to_stack -> .)
+    SUM             reduce using rule 120 (add_list_index_to_stack -> .)
+    MINUS           reduce using rule 120 (add_list_index_to_stack -> .)
+    EQUALITY        reduce using rule 120 (add_list_index_to_stack -> .)
+    GREATER         reduce using rule 120 (add_list_index_to_stack -> .)
+    GREATER_EQUAL   reduce using rule 120 (add_list_index_to_stack -> .)
+    LESS            reduce using rule 120 (add_list_index_to_stack -> .)
+    LESS_EQUAL      reduce using rule 120 (add_list_index_to_stack -> .)
+    DIFFERENT       reduce using rule 120 (add_list_index_to_stack -> .)
+    AND             reduce using rule 120 (add_list_index_to_stack -> .)
+    OR              reduce using rule 120 (add_list_index_to_stack -> .)
+    C_PARENTHESIS   reduce using rule 120 (add_list_index_to_stack -> .)
+    COMMA           reduce using rule 120 (add_list_index_to_stack -> .)
+    SEMICOLON       reduce using rule 120 (add_list_index_to_stack -> .)
+    C_S_BRACKET     reduce using rule 120 (add_list_index_to_stack -> .)
+    C_BRACKET       reduce using rule 120 (add_list_index_to_stack -> .)
+
+    add_list_index_to_stack        shift and go to state 263
+
+state 251
+
+    (152) functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .
+
+    IF              reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
+    PRINT           reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
+    ID              reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
+    LIST            reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
+    WHILE           reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
+    TIMES           reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
+    BOOL            reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
+    INT             reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
+    FLOAT           reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
+    STRING          reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
+    C_BRACKET       reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
+    RETURN          reduce using rule 152 (functioncall -> ID add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS SEMICOLON generate_gosub add_c_parenthesis .)
+
+
+state 252
+
+    (155) parametersinput -> expression push_type_to_function_options generate_parameter_quadruple parametersinputloop check_params_order .
+
+    C_PARENTHESIS   reduce using rule 155 (parametersinput -> expression push_type_to_function_options generate_parameter_quadruple parametersinputloop check_params_order .)
+
+
+state 253
+
+    (157) parametersinputloop -> COMMA expression . push_type_to_function_options generate_parameter_quadruple parametersinputloop
+    (159) push_type_to_function_options -> .
+
+    COMMA           reduce using rule 159 (push_type_to_function_options -> .)
+    C_PARENTHESIS   reduce using rule 159 (push_type_to_function_options -> .)
+
+    push_type_to_function_options  shift and go to state 264
+
 state 254
 
-    (149) functiontimesloop -> TIMES O_PARENTHESIS expression . C_PARENTHESIS start_times functionblock end_times
+    (76) else -> ELSE else_condition block .
 
-    C_PARENTHESIS   shift and go to state 262
+    IF              reduce using rule 76 (else -> ELSE else_condition block .)
+    PRINT           reduce using rule 76 (else -> ELSE else_condition block .)
+    ID              reduce using rule 76 (else -> ELSE else_condition block .)
+    LIST            reduce using rule 76 (else -> ELSE else_condition block .)
+    WHILE           reduce using rule 76 (else -> ELSE else_condition block .)
+    TIMES           reduce using rule 76 (else -> ELSE else_condition block .)
+    BOOL            reduce using rule 76 (else -> ELSE else_condition block .)
+    INT             reduce using rule 76 (else -> ELSE else_condition block .)
+    FLOAT           reduce using rule 76 (else -> ELSE else_condition block .)
+    STRING          reduce using rule 76 (else -> ELSE else_condition block .)
+    C_BRACKET       reduce using rule 76 (else -> ELSE else_condition block .)
 
 
 state 255
 
-    (33) functionreturn -> RETURN add_function_var_to_stack O_BRACKET . expression C_BRACKET SEMICOLON
-    (83) expression -> . expression2 expressionoptional
-    (86) expression2 -> . exp expression2optional
-    (99) exp -> . term exp_quadruple exploop
-    (105) term -> . fact term_quadruple termloop
-    (112) fact -> . varconst
-    (113) fact -> . O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis
-    (121) varconst -> . varconstfunction
-    (122) varconst -> . constants
-    (123) varconstfunction -> . ID functionorlist
-    (129) constants -> . INTCONST add_int_constant_to_dict
-    (130) constants -> . FLOATCONST add_float_constant_to_dict
-    (131) constants -> . STRINGCONST add_string_constant_to_dict
-    (132) constants -> . booleanconst
-    (133) booleanconst -> . TRUE add_bool_constant_to_dict
-    (134) booleanconst -> . FALSE add_bool_constant_to_dict
+    (69) listelements -> expression generate_list_assignation optionallist .
 
-    O_PARENTHESIS   shift and go to state 87
-    ID              shift and go to state 94
-    INTCONST        shift and go to state 92
-    FLOATCONST      shift and go to state 86
-    STRINGCONST     shift and go to state 89
-    TRUE            shift and go to state 88
-    FALSE           shift and go to state 97
+    C_S_BRACKET     reduce using rule 69 (listelements -> expression generate_list_assignation optionallist .)
 
-    varconstfunction               shift and go to state 90
-    exp                            shift and go to state 91
-    expression2                    shift and go to state 93
-    constants                      shift and go to state 95
-    term                           shift and go to state 96
-    varconst                       shift and go to state 98
-    booleanconst                   shift and go to state 99
-    expression                     shift and go to state 263
-    fact                           shift and go to state 101
 
 state 256
 
-    (34) functionreturn -> RETURN add_function_var_to_stack expression . SEMICOLON
-
-    SEMICOLON       shift and go to state 264
-
-
-state 257
-
-    (144) functionwhileloop -> WHILE start_while O_PARENTHESIS . expression C_PARENTHESIS condition_while functionblock end_while
+    (71) optionallist -> COMMA . expression generate_list_assignation optionallist
     (83) expression -> . expression2 expressionoptional
     (86) expression2 -> . exp expression2optional
     (99) exp -> . term exp_quadruple exploop
@@ -4388,14 +4329,102 @@ state 257
     expression                     shift and go to state 265
     fact                           shift and go to state 101
 
-state 258
+state 257
 
-    (75) functioncondition -> IF O_PARENTHESIS expression . C_PARENTHESIS start_condition functionblock functionelse end_condition
+    (149) functiontimesloop -> TIMES O_PARENTHESIS expression . C_PARENTHESIS start_times functionblock end_times
 
     C_PARENTHESIS   shift and go to state 266
 
 
+state 258
+
+    (33) functionreturn -> RETURN add_function_var_to_stack O_BRACKET . expression C_BRACKET SEMICOLON
+    (83) expression -> . expression2 expressionoptional
+    (86) expression2 -> . exp expression2optional
+    (99) exp -> . term exp_quadruple exploop
+    (105) term -> . fact term_quadruple termloop
+    (112) fact -> . varconst
+    (113) fact -> . O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis
+    (121) varconst -> . varconstfunction
+    (122) varconst -> . constants
+    (123) varconstfunction -> . ID functionorlist
+    (129) constants -> . INTCONST add_int_constant_to_dict
+    (130) constants -> . FLOATCONST add_float_constant_to_dict
+    (131) constants -> . STRINGCONST add_string_constant_to_dict
+    (132) constants -> . booleanconst
+    (133) booleanconst -> . TRUE add_bool_constant_to_dict
+    (134) booleanconst -> . FALSE add_bool_constant_to_dict
+
+    O_PARENTHESIS   shift and go to state 87
+    ID              shift and go to state 94
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 86
+    STRINGCONST     shift and go to state 89
+    TRUE            shift and go to state 88
+    FALSE           shift and go to state 97
+
+    varconstfunction               shift and go to state 90
+    exp                            shift and go to state 91
+    expression2                    shift and go to state 93
+    constants                      shift and go to state 95
+    term                           shift and go to state 96
+    varconst                       shift and go to state 98
+    booleanconst                   shift and go to state 99
+    expression                     shift and go to state 267
+    fact                           shift and go to state 101
+
 state 259
+
+    (34) functionreturn -> RETURN add_function_var_to_stack expression . SEMICOLON
+
+    SEMICOLON       shift and go to state 268
+
+
+state 260
+
+    (144) functionwhileloop -> WHILE start_while O_PARENTHESIS . expression C_PARENTHESIS condition_while functionblock end_while
+    (83) expression -> . expression2 expressionoptional
+    (86) expression2 -> . exp expression2optional
+    (99) exp -> . term exp_quadruple exploop
+    (105) term -> . fact term_quadruple termloop
+    (112) fact -> . varconst
+    (113) fact -> . O_PARENTHESIS add_o_parenthesis expression C_PARENTHESIS add_c_parenthesis
+    (121) varconst -> . varconstfunction
+    (122) varconst -> . constants
+    (123) varconstfunction -> . ID functionorlist
+    (129) constants -> . INTCONST add_int_constant_to_dict
+    (130) constants -> . FLOATCONST add_float_constant_to_dict
+    (131) constants -> . STRINGCONST add_string_constant_to_dict
+    (132) constants -> . booleanconst
+    (133) booleanconst -> . TRUE add_bool_constant_to_dict
+    (134) booleanconst -> . FALSE add_bool_constant_to_dict
+
+    O_PARENTHESIS   shift and go to state 87
+    ID              shift and go to state 94
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 86
+    STRINGCONST     shift and go to state 89
+    TRUE            shift and go to state 88
+    FALSE           shift and go to state 97
+
+    varconstfunction               shift and go to state 90
+    exp                            shift and go to state 91
+    expression2                    shift and go to state 93
+    constants                      shift and go to state 95
+    term                           shift and go to state 96
+    varconst                       shift and go to state 98
+    booleanconst                   shift and go to state 99
+    expression                     shift and go to state 269
+    fact                           shift and go to state 101
+
+state 261
+
+    (75) functioncondition -> IF O_PARENTHESIS expression . C_PARENTHESIS start_condition functionblock functionelse end_condition
+
+    C_PARENTHESIS   shift and go to state 270
+
+
+state 262
 
     (126) functionorlist -> add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub add_c_parenthesis .
 
@@ -4419,7 +4448,31 @@ state 259
     C_BRACKET       reduce using rule 126 (functionorlist -> add_o_parenthesis check_function_exists O_PARENTHESIS parametersinput C_PARENTHESIS generate_gosub add_c_parenthesis .)
 
 
-state 260
+state 263
+
+    (125) functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .
+
+    MULTIPLY        reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    DIVIDE          reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    MOD             reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    SUM             reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    MINUS           reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    EQUALITY        reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    GREATER         reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    GREATER_EQUAL   reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    LESS            reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    LESS_EQUAL      reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    DIFFERENT       reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    AND             reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    OR              reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    C_PARENTHESIS   reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    COMMA           reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    SEMICOLON       reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    C_S_BRACKET     reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+    C_BRACKET       reduce using rule 125 (functionorlist -> add_list_variable add_o_parenthesis O_S_BRACKET expression C_S_BRACKET add_c_parenthesis add_list_index_to_stack .)
+
+
+state 264
 
     (157) parametersinputloop -> COMMA expression push_type_to_function_options . generate_parameter_quadruple parametersinputloop
     (161) generate_parameter_quadruple -> .
@@ -4427,9 +4480,9 @@ state 260
     COMMA           reduce using rule 161 (generate_parameter_quadruple -> .)
     C_PARENTHESIS   reduce using rule 161 (generate_parameter_quadruple -> .)
 
-    generate_parameter_quadruple   shift and go to state 267
+    generate_parameter_quadruple   shift and go to state 271
 
-state 261
+state 265
 
     (71) optionallist -> COMMA expression . generate_list_assignation optionallist
     (73) generate_list_assignation -> .
@@ -4437,118 +4490,118 @@ state 261
     COMMA           reduce using rule 73 (generate_list_assignation -> .)
     C_S_BRACKET     reduce using rule 73 (generate_list_assignation -> .)
 
-    generate_list_assignation      shift and go to state 268
+    generate_list_assignation      shift and go to state 272
 
-state 262
+state 266
 
     (149) functiontimesloop -> TIMES O_PARENTHESIS expression C_PARENTHESIS . start_times functionblock end_times
     (150) start_times -> .
 
     O_BRACKET       reduce using rule 150 (start_times -> .)
 
-    start_times                    shift and go to state 269
+    start_times                    shift and go to state 273
 
-state 263
+state 267
 
     (33) functionreturn -> RETURN add_function_var_to_stack O_BRACKET expression . C_BRACKET SEMICOLON
 
-    C_BRACKET       shift and go to state 270
+    C_BRACKET       shift and go to state 274
 
 
-state 264
+state 268
 
     (34) functionreturn -> RETURN add_function_var_to_stack expression SEMICOLON .
 
     C_BRACKET       reduce using rule 34 (functionreturn -> RETURN add_function_var_to_stack expression SEMICOLON .)
 
 
-state 265
+state 269
 
     (144) functionwhileloop -> WHILE start_while O_PARENTHESIS expression . C_PARENTHESIS condition_while functionblock end_while
 
-    C_PARENTHESIS   shift and go to state 271
+    C_PARENTHESIS   shift and go to state 275
 
 
-state 266
+state 270
 
     (75) functioncondition -> IF O_PARENTHESIS expression C_PARENTHESIS . start_condition functionblock functionelse end_condition
     (80) start_condition -> .
 
     O_BRACKET       reduce using rule 80 (start_condition -> .)
 
-    start_condition                shift and go to state 272
+    start_condition                shift and go to state 276
 
-state 267
+state 271
 
     (157) parametersinputloop -> COMMA expression push_type_to_function_options generate_parameter_quadruple . parametersinputloop
     (157) parametersinputloop -> . COMMA expression push_type_to_function_options generate_parameter_quadruple parametersinputloop
     (158) parametersinputloop -> .
 
-    COMMA           shift and go to state 236
+    COMMA           shift and go to state 237
     C_PARENTHESIS   reduce using rule 158 (parametersinputloop -> .)
 
-    parametersinputloop            shift and go to state 273
+    parametersinputloop            shift and go to state 277
 
-state 268
+state 272
 
     (71) optionallist -> COMMA expression generate_list_assignation . optionallist
     (71) optionallist -> . COMMA expression generate_list_assignation optionallist
     (72) optionallist -> .
 
-    COMMA           shift and go to state 253
+    COMMA           shift and go to state 256
     C_S_BRACKET     reduce using rule 72 (optionallist -> .)
 
-    optionallist                   shift and go to state 274
+    optionallist                   shift and go to state 278
 
-state 269
+state 273
 
     (149) functiontimesloop -> TIMES O_PARENTHESIS expression C_PARENTHESIS start_times . functionblock end_times
     (32) functionblock -> . O_BRACKET functionstatutesloop C_BRACKET
 
     O_BRACKET       shift and go to state 200
 
-    functionblock                  shift and go to state 275
+    functionblock                  shift and go to state 279
 
-state 270
+state 274
 
     (33) functionreturn -> RETURN add_function_var_to_stack O_BRACKET expression C_BRACKET . SEMICOLON
 
-    SEMICOLON       shift and go to state 276
+    SEMICOLON       shift and go to state 280
 
 
-state 271
+state 275
 
     (144) functionwhileloop -> WHILE start_while O_PARENTHESIS expression C_PARENTHESIS . condition_while functionblock end_while
     (146) condition_while -> .
 
     O_BRACKET       reduce using rule 146 (condition_while -> .)
 
-    condition_while                shift and go to state 277
+    condition_while                shift and go to state 281
 
-state 272
+state 276
 
     (75) functioncondition -> IF O_PARENTHESIS expression C_PARENTHESIS start_condition . functionblock functionelse end_condition
     (32) functionblock -> . O_BRACKET functionstatutesloop C_BRACKET
 
     O_BRACKET       shift and go to state 200
 
-    functionblock                  shift and go to state 278
+    functionblock                  shift and go to state 282
 
-state 273
+state 277
 
     (157) parametersinputloop -> COMMA expression push_type_to_function_options generate_parameter_quadruple parametersinputloop .
 
     C_PARENTHESIS   reduce using rule 157 (parametersinputloop -> COMMA expression push_type_to_function_options generate_parameter_quadruple parametersinputloop .)
 
 
-state 274
+state 278
 
     (71) optionallist -> COMMA expression generate_list_assignation optionallist .
 
     C_S_BRACKET     reduce using rule 71 (optionallist -> COMMA expression generate_list_assignation optionallist .)
 
 
-state 275
+state 279
 
     (149) functiontimesloop -> TIMES O_PARENTHESIS expression C_PARENTHESIS start_times functionblock . end_times
     (151) end_times -> .
@@ -4566,31 +4619,31 @@ state 275
     STRING          reduce using rule 151 (end_times -> .)
     C_BRACKET       reduce using rule 151 (end_times -> .)
 
-    end_times                      shift and go to state 279
+    end_times                      shift and go to state 283
 
-state 276
+state 280
 
     (33) functionreturn -> RETURN add_function_var_to_stack O_BRACKET expression C_BRACKET SEMICOLON .
 
     C_BRACKET       reduce using rule 33 (functionreturn -> RETURN add_function_var_to_stack O_BRACKET expression C_BRACKET SEMICOLON .)
 
 
-state 277
+state 281
 
     (144) functionwhileloop -> WHILE start_while O_PARENTHESIS expression C_PARENTHESIS condition_while . functionblock end_while
     (32) functionblock -> . O_BRACKET functionstatutesloop C_BRACKET
 
     O_BRACKET       shift and go to state 200
 
-    functionblock                  shift and go to state 280
+    functionblock                  shift and go to state 284
 
-state 278
+state 282
 
     (75) functioncondition -> IF O_PARENTHESIS expression C_PARENTHESIS start_condition functionblock . functionelse end_condition
     (78) functionelse -> . ELSE else_condition functionblock
     (79) functionelse -> .
 
-    ELSE            shift and go to state 282
+    ELSE            shift and go to state 286
     RETURN          reduce using rule 79 (functionelse -> .)
     IF              reduce using rule 79 (functionelse -> .)
     PRINT           reduce using rule 79 (functionelse -> .)
@@ -4604,9 +4657,9 @@ state 278
     STRING          reduce using rule 79 (functionelse -> .)
     C_BRACKET       reduce using rule 79 (functionelse -> .)
 
-    functionelse                   shift and go to state 281
+    functionelse                   shift and go to state 285
 
-state 279
+state 283
 
     (149) functiontimesloop -> TIMES O_PARENTHESIS expression C_PARENTHESIS start_times functionblock end_times .
 
@@ -4624,7 +4677,7 @@ state 279
     C_BRACKET       reduce using rule 149 (functiontimesloop -> TIMES O_PARENTHESIS expression C_PARENTHESIS start_times functionblock end_times .)
 
 
-state 280
+state 284
 
     (144) functionwhileloop -> WHILE start_while O_PARENTHESIS expression C_PARENTHESIS condition_while functionblock . end_while
     (147) end_while -> .
@@ -4642,9 +4695,9 @@ state 280
     STRING          reduce using rule 147 (end_while -> .)
     C_BRACKET       reduce using rule 147 (end_while -> .)
 
-    end_while                      shift and go to state 283
+    end_while                      shift and go to state 287
 
-state 281
+state 285
 
     (75) functioncondition -> IF O_PARENTHESIS expression C_PARENTHESIS start_condition functionblock functionelse . end_condition
     (82) end_condition -> .
@@ -4662,18 +4715,18 @@ state 281
     STRING          reduce using rule 82 (end_condition -> .)
     C_BRACKET       reduce using rule 82 (end_condition -> .)
 
-    end_condition                  shift and go to state 284
+    end_condition                  shift and go to state 288
 
-state 282
+state 286
 
     (78) functionelse -> ELSE . else_condition functionblock
     (81) else_condition -> .
 
     O_BRACKET       reduce using rule 81 (else_condition -> .)
 
-    else_condition                 shift and go to state 285
+    else_condition                 shift and go to state 289
 
-state 283
+state 287
 
     (144) functionwhileloop -> WHILE start_while O_PARENTHESIS expression C_PARENTHESIS condition_while functionblock end_while .
 
@@ -4691,7 +4744,7 @@ state 283
     C_BRACKET       reduce using rule 144 (functionwhileloop -> WHILE start_while O_PARENTHESIS expression C_PARENTHESIS condition_while functionblock end_while .)
 
 
-state 284
+state 288
 
     (75) functioncondition -> IF O_PARENTHESIS expression C_PARENTHESIS start_condition functionblock functionelse end_condition .
 
@@ -4709,16 +4762,16 @@ state 284
     C_BRACKET       reduce using rule 75 (functioncondition -> IF O_PARENTHESIS expression C_PARENTHESIS start_condition functionblock functionelse end_condition .)
 
 
-state 285
+state 289
 
     (78) functionelse -> ELSE else_condition . functionblock
     (32) functionblock -> . O_BRACKET functionstatutesloop C_BRACKET
 
     O_BRACKET       shift and go to state 200
 
-    functionblock                  shift and go to state 286
+    functionblock                  shift and go to state 290
 
-state 286
+state 290
 
     (78) functionelse -> ELSE else_condition functionblock .
 
