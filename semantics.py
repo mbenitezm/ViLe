@@ -57,11 +57,7 @@ funct_options = {
   'memory_needed' : {}
 }
 
-function_check = {
-  'id' : None,
-  'params_order' : '',
-  'current_param' : 0
-}
+current_function_check = []
 
 current_function = {
   'id' : None,
@@ -436,12 +432,12 @@ def generate_parameter_quadruple():
   global quadruplets
   type1 = types_stack.pop()
   result = operand_stack.pop()
+  function_check = current_function_check[len(current_function_check) - 1]
   if function_check['current_param'] > (len(funct_dict[function_check['id']]['params']) - 1):
-    print function_check
     print('The params in ' + function_check['id'] + ' are wrong')
     exit(0)
   current_param = funct_dict[function_check['id']]['params'][function_check['current_param']][2]
-  function_check['current_param'] = function_check['current_param'] + 1
+  current_function_check[len(current_function_check) - 1]['current_param'] = current_function_check[len(current_function_check) - 1]['current_param'] + 1
   quadruple = ["PARAM", result, type1, "", current_param, type1]
   quadruplets.append(quadruple)
   print quadruple
@@ -454,12 +450,14 @@ def generate_era(function_id):
 
 def generate_gosub():
   global quadruplets
+  function_check = current_function_check[len(current_function_check) - 1]
   quadruple = ["GOSUB", "", "", function_check['id']]
   quadruplets.append(quadruple)
   print quadruple
   if funct_dict[function_check['id']]['type'] != 5:
     types_stack.append(var_dict['global'][function_check['id']]['type'])
     operand_stack.append(var_dict['global'][function_check['id']]['address'])
+  current_function_check.pop()
 
 def create_function_end_quadruple():
   global quadruplets
@@ -833,15 +831,14 @@ def check_function_exists(function_name):
     print('The function "' + function_name + '" is not a function')
     exit(0)
   else:
-    function_check['id'] = function_name
-    function_check['params_order'] = ''
-    function_check['current_param'] = 0
+    current_function_check.append({'id' : function_name, 'params_order' : '', 'current_param' : 0})
 
 def push_type_to_function_options():
   current_type = types_stack[len(types_stack) - 1]
-  function_check['params_order'] = function_check['params_order'] + str(current_type)
+  current_function_check[len(current_function_check) - 1]['params_order'] = current_function_check[len(current_function_check) - 1]['params_order'] + str(current_type)
 
 def check_params_order():
+  function_check = current_function_check[len(current_function_check) - 1]
   if function_check['params_order'] != funct_dict[function_check['id']]['params_order']:
     print('The params in ' + function_check['id'] + ' are wrong')
     exit(0)
