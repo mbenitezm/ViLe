@@ -8,6 +8,6 @@ def int fibonacci(int n){
 
 
 main {
-	int result = fibonacci(10);
+	int result = fibonacci(25);
   print(result);
 }

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+ # -*- coding: utf-8 -*-
 from semantics import *
 from vm import *
 # Clase que maneja el mapeo de memoria del lenguaje.

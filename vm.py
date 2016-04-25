@@ -522,6 +522,9 @@ def solve():
 
     elif quadruplet[0] == 'GOSUB':
       jumps_stack.append(current_quadruple + 1)
+      if len(jumps_stack) > 1000:
+        print "Stack too deep"
+        exit(0)
       jump_to = funct_dict[function_name]['start']
       current_quadruple = jump_to
       memory_stack.append(alive_memory)

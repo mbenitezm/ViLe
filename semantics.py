@@ -288,7 +288,7 @@ def generate_operations_quadruples(scope, memory_pointer = None):
       operand_stack.append(result)
       types_stack.append(result_type)
     quadruplets.append(quadruple)
-    print quadruple
+    # print quadruple
 
 def generate_equals_quadruples():
   type2 = types_stack.pop()
@@ -303,7 +303,7 @@ def generate_equals_quadruples():
     operand1 = operand_stack.pop()
     quadruple = [operator1, operand2, type2, '',  operand1, type1]
     quadruplets.append(quadruple)
-    print quadruple
+    # print quadruple
 
 def generate_condition_if_quadruples():
   global quadruplets
@@ -315,7 +315,7 @@ def generate_condition_if_quadruples():
     quadruple = ["GOTOF", result, type1, "", ""]
     quadruplets.append(quadruple)
     jumps_stack.append(len(quadruplets) - 1)
-    print quadruple
+    # print quadruple
 
 def generate_condition_else_quadruples():
   global quadruplets
@@ -324,7 +324,7 @@ def generate_condition_else_quadruples():
   jump = jumps_stack.pop()
   quadruplets[jump][3] = len(quadruplets)
   jumps_stack.append(len(quadruplets) - 1)
-  print quadruple
+  # print quadruple
 
 def generate_condition_end_quadruples():
   global quadruplets
@@ -345,7 +345,7 @@ def generate_while_condition_quadruples():
     quadruple = ["GOTOF", result, type1, "", ""]
     quadruplets.append(quadruple)
     jumps_stack.append(len(quadruplets) - 1)
-    print quadruple 
+    # print quadruple 
 
 def generate_while_end_quadruples():
   global quadruplets
@@ -380,7 +380,7 @@ def generate_times_start_quadruples():
   result = operand_stack.pop()
   quadruple = ["GOTOF", result, bool_type, "", ""]
   quadruplets.append(quadruple)
-  print quadruple
+  # print quadruple
 
 def generate_times_end_quadruples():
   global quadruplets
@@ -404,7 +404,7 @@ def generate_print_quadruples():
   print_operand = operand_stack.pop()
   quadruple = [print_operator, '', '',  print_operand, temp_type]
   quadruplets.append(quadruple)
-  print quadruple
+  # print quadruple
 
 def semantics_add_to_stack(id):
   if id in var_dict['function']:
@@ -437,28 +437,29 @@ def generate_parameter_quadruple():
   current_function_check[len(current_function_check) - 1]['current_param'] = current_function_check[len(current_function_check) - 1]['current_param'] + 1
   quadruple = ["PARAM", result, type1, "", current_param, type1]
   quadruplets.append(quadruple)
-  print quadruple
+  # print quadruple
 
 def generate_era(function_id):
   global quadruplets
   quadruple = ["ERA", "", "", function_id]
   quadruplets.append(quadruple)
-  print quadruple
-  if var_options['scope'] == 'main':
-    result = assign_address('temps', var_dict['global'][function_id]['type'])
-  else:
-    result = assign_address('function_temps', var_dict['global'][function_id]['type'])
-  types_stack.append(var_dict['global'][function_id]['type'])
-  operand_stack.append(result)
-  types_stack.append(var_dict['global'][function_id]['type'])
-  operand_stack.append(result)
+  # print quadruple
+  if funct_dict[function_id]['type'] != types['void']:
+    if var_options['scope'] == 'main':
+      result = assign_address('temps', var_dict['global'][function_id]['type'])
+    else:
+      result = assign_address('function_temps', var_dict['global'][function_id]['type'])
+    types_stack.append(var_dict['global'][function_id]['type'])
+    operand_stack.append(result)
+    types_stack.append(var_dict['global'][function_id]['type'])
+    operand_stack.append(result)
 
 def generate_gosub():
   global quadruplets
   function_check = current_function_check[len(current_function_check) - 1]
   quadruple = ["GOSUB", "", "", function_check['id']]
   quadruplets.append(quadruple)
-  print quadruple
+  # print quadruple
   if funct_dict[function_check['id']]['type'] != 5:
     types_stack.append(var_dict['global'][function_check['id']]['type'])
     operand_stack.append(var_dict['global'][function_check['id']]['address'])
@@ -470,13 +471,13 @@ def create_function_end_quadruple():
   global quadruplets
   quadruple = ["ENDFUNCTION", "", "", ""]
   quadruplets.append(quadruple)
-  print quadruple
+  # print quadruple
 
 def create_function_return_quadruple():
   global quadruplets
   quadruple = ["RETURN", "", "", ""]
   quadruplets.append(quadruple)
-  print quadruple
+  # print quadruple
 
 def get_current_quadruple():
   global quadruplets
@@ -486,7 +487,7 @@ def generate_end_all_quadruple():
   global quadruplets
   quadruple = ["ENDALL"]
   quadruplets.append(quadruple)
-  print quadruple
+  # print quadruple
 
 def generate_list_assignation_quadruple():
   type2 = types_stack.pop()
@@ -516,7 +517,7 @@ def generate_ver_quadruple(var_id):
         add_constant_to_dict_aux(str(var_dict[var_options['scope']][var_id]['size'] - 1), 'int')
       quadruple = ["VER", operand, var_dict['constants']['0']['address'], var_dict['constants'][str(var_dict[var_options['scope']][var_id]['size'] - 1)]['address']]
       quadruplets.append(quadruple)
-      print quadruple
+      # print quadruple
     else:
       print("Error in "+ var_id + ": This variable is not a list")
       exit(0)
