@@ -1,0 +1,181 @@
+program ::= generate_main_goto functionloop fill_main_goto main generate_end_all global_memory_needed
+
+main ::= 'main' start_main block
+
+functionloop ::= function functionloop  
+
+function ::= 'def' function_head function_end
+
+function_head ::= 'void' add_function_type_to_options function_def
+              | 'bool' add_function_type_to_options function_with_return_def
+              | 'int' add_function_type_to_options function_with_return_def
+              | 'float' add_function_type_to_options function_with_return_def
+              | 'string' add_function_type_to_options function_with_return_def
+
+function_with_return_def ::= 'id' add_function_id_to_options add_function_to_global_variables check_current_quadruple '(' parameters ')' add_function_init_to_dict functionblock
+
+function_def ::= 'id' add_function_id_to_options check_current_quadruple '(' parameters ')' add_function_init_to_dict block
+
+type ::= 'bool'
+     | 'int'
+     | 'float'
+     | 'string'
+
+parametertype ::= 'bool'
+              | 'int'
+              | 'float'
+              | 'string'
+
+block ::= '{' statutesloop '}'
+
+functionblock ::= '{' functionstatutesloop '}'
+
+functionreturn ::= 'return' add_function_var_to_stack expression ';'
+
+statutesloop ::= statute statutesloop
+             |
+
+functionstatutesloop ::= functionstatute functionstatutesloop
+                     | functionreturn
+                     |
+
+statute ::= init
+        | condition
+        | writting
+        | loop
+        | assignation
+        | functioncall
+
+functionstatute ::= init
+                | functioncondition
+                | writting
+                | functionloops
+                | assignation
+                | functioncall
+
+assignation ::= var_assign '=' add_equals expression equals_quadruple ';'
+
+writting ::=  'print' '(' writtingloop ')' ';'
+
+writtingloop ::= start_printing expression print_quadruple optionalwritting
+
+optionalwritting ::= ',' writtingloop
+                 |
+
+init ::= listinit
+     | normalinit
+
+normalinit ::= type var '=' add_equals expression equals_quadruple ';'
+
+listinit ::= 'list' type 'id' '=' start_list list ';'
+
+list ::= '[' listelements ']'
+
+listelements ::= expression generate_list_assignation optionallist
+
+optionallist ::= ',' expression generate_list_assignation optionallist
+             |
+
+condition ::= 'if' '(' expression ')' start_condition block else end_condition
+
+functioncondition ::= 'if' '(' expression ')' start_condition functionblock functionelse end_condition
+ 
+else ::= 'else' else_condition block
+     |
+
+functionelse ::= 'else' else_condition functionblock
+             |
+
+expression ::= expression2 expressionoptional
+
+expressionoptional ::= logicop expression2 logic_op_quadruple
+                   |
+
+expression2 ::= exp expression2optional
+
+expression2optional ::= relop exp relop_quadruple
+                    |
+                          
+logicop ::= 'and'
+        | 'or'
+
+relop ::= '=='
+      | '>'
+      | '>='
+      | '<'
+      | '<='
+      | '!='
+
+exp ::= term exp_quadruple exploop
+
+exploop ::= addsub exp
+        |
+
+addsub ::= '+'
+       | '-'
+
+term ::= fact term_quadruple termloop
+
+termloop ::= divmult term
+
+divmult ::= '*'
+        | '/'
+        | '%'
+
+fact ::= varconst
+     | '(' add_o_parenthesis expression ')' add_c_parenthesis
+
+var_assign ::= 'id' listaccess
+
+var ::= 'id'
+
+listaccess ::= add_list_variable add_o_parenthesis '[' expression ']' add_c_parenthesis add_list_index_to_stack
+           | add_to_stack
+
+varconst ::= varconstfunction
+         | constants
+
+varconstfunction ::= 'id' functionorlist
+
+functionorlist ::= add_list_variable add_o_parenthesis '[' expression ']' add_c_parenthesis add_list_index_to_stack
+               | add_o_parenthesis check_function_exists '(' parametersinput ')' generate_gosub add_c_parenthesis
+               | add_to_stack
+
+constants ::= 'intconstant' add_int_constant_to_dict
+          | 'floatconstant' add_float_constant_to_dict
+          | 'stringconstant' add_string_constant_to_dict
+          | booleanconst
+
+booleanconst ::= 'true' add_bool_constant_to_dict
+             | 'false' add_bool_constant_to_dict
+
+loop ::= whileloop
+     | timesloop
+
+functionloops ::= functionwhileloop
+              | functiontimesloop
+
+whileloop ::= 'while' start_while '(' expression ')' condition_while block end_while
+
+functionwhileloop ::= 'while' start_while '(' expression ')' condition_while functionblock end_while
+
+timesloop ::= 'times' '(' expression ')' start_times block end_times
+
+functiontimesloop ::= 'times' '(' expression ')' start_times functionblock end_times
+
+functioncall ::= 'id' add_o_parenthesis check_function_exists '(' parametersinput ')' ';' generate_gosub add_c_parenthesis
+
+parametersinput ::= expression push_type_to_function_options generate_parameter_quadruple parametersinputloop check_params_order
+                |
+
+parametersinputloop ::= ',' expression push_type_to_function_options generate_parameter_quadruple parametersinputloop
+                    |
+
+parameters ::= parameterinit parametersloop
+           |
+
+parameterinit ::= parametertype 'id'
+
+parametersloop ::= ',' parameterinit parametersloop
+               |
+

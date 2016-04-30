@@ -126,8 +126,7 @@ def p_functionblock(p):
 
 # Regla para que pueda haber un return en una función
 def p_functionreturn(p):
-  '''functionreturn : RETURN add_function_var_to_stack O_BRACKET expression C_BRACKET SEMICOLON
-                    | RETURN add_function_var_to_stack expression SEMICOLON'''
+  '''functionreturn : RETURN add_function_var_to_stack expression SEMICOLON'''
   check_function_return()
   generate_equals_quadruples()
   create_function_return_quadruple()
@@ -249,8 +248,8 @@ def p_start_list(p):
 
 # Regla de inicialización de los elementos de una lista
 def p_listelements(p):
-  ''' listelements : expression generate_list_assignation optionallist
-                   |'''
+  ''' listelements : expression generate_list_assignation optionallist'''
+
 
 # Regla de inicialización de más elementos de una lista
 def p_optionallist(p):
