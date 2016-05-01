@@ -62,7 +62,7 @@ main {
 
   int tri = 0;
 
-  list int arr = [8, 2, 3, 4];
+  list int arr = [10 , 2, 3, 4];
   tri = arr[0] + arr[1];
 
   print(tri);
@@ -70,7 +70,8 @@ main {
   print(arr[2]);
 
   int i = 10;   
-  print(fibonacci(i));
+  print(fibonacci(arr[0]));
+  print(fibonacci(10));
 
   
 }

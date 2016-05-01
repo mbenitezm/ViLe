@@ -552,7 +552,12 @@ def solve():
       if is_global(op1):
         result = global_memory.get_value_from_real_address(type1, op1)
       else:
-        result = alive_memory.get_value_from_real_address(type1, op1)
+        if op1 < 0:
+          result = alive_memory.get_value_from_real_address(type1, -op1)
+          result = alive_memory.get_value_from_real_address(type1, result)
+        else:
+          result = alive_memory.get_value_from_real_address(type1, op1)
+     
       waking_memory.assign_to_real_address(type3, res, result)
       current_quadruple += 1
 
