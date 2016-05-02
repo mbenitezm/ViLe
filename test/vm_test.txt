@@ -73,9 +73,8 @@ main {
   print(fibonacci(arr[0]));
   print(fibonacci(10));
 
-  while (i < 20){
-  i = i + 1;
-  print(i);
+  if (fibonacci(10) > 10) {
+    print("ok");
   }
   
 }

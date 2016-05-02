@@ -604,7 +604,7 @@ parser = yacc.yacc(start='program')
 #   exit(0);
 
 def check():
-  f = open('test/vm_test.txt', 'r')
+  f = open('test/fibo_ciclico.txt', 'r')
   data = f.read()
   f.close()
   if parser.parse(data) == 'Valid':
