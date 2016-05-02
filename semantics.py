@@ -1,5 +1,5 @@
-# Semántica del compilador
 # -*- coding: utf-8 -*-
+# Semántica del compilador
 import pprint
 from collections import deque
 pp = pprint.PrettyPrinter()
