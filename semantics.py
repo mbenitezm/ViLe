@@ -537,7 +537,8 @@ def print_funct_dict():
 def print_quadruplets():
   print "\nQuadruplets"
   global quadruplets
-  pp.pprint(quadruplets)
+  for quadruplet in quadruplets:
+    pp.pprint(quadruplet)
 
 def print_global_dict():
   print "\GLOBAL DICT"

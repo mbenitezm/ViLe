@@ -619,14 +619,22 @@ def check():
 
 if __name__ == '__main__':
   # Revisa si el archivo se dio como input
-  if (len(sys.argv) > 1):
+  if (len(sys.argv) > 2):
     data = sys.argv[1]
-    if parser.parse(data) == 'Valid':
-      # print('VALID!')
-      # print_quadruplets()
-      # print_funct_dict()
-      # print_var_dict()
-      #print_global_dict()
-      solve()
+    options = sys.argv[2]
+    if options == 'solve':
+      if parser.parse(data) == 'Valid':
+        # print('VALID!')
+        # print_quadruplets()
+        # print_funct_dict()
+        # print_var_dict()
+        #print_global_dict()
+        solve()
+    elif options == 'syntax_check':
+      if parser.parse(data) == 'Valid':
+        print('This code is valid!')
+    elif options == 'print_quadruplets':
+      if parser.parse(data) == 'Valid':
+        print_quadruplets()
   else:
     print('Param missing')
