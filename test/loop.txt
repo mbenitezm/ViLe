@@ -1,0 +1,12 @@
+main{
+  int i = 0;
+  int x = 0;
+  while(true){
+    i = i + 1;
+    x = 3;
+    while(x > 0){
+      x = x - 1;
+      print(x);
+    }
+  }
+}
