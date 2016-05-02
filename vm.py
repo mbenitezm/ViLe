@@ -12,7 +12,7 @@ def solve():
   waking_memory = None
   memory_stack = []
   returns_stack = []
-  cycle_count = 0
+  current_loop_count = []
 
   while quadruplets[current_quadruple][0] != 'ENDALL':
     quadruplet = quadruplets[current_quadruple]
@@ -512,17 +512,17 @@ def solve():
 
     elif quadruplet[0] == 'GOTO':
       current_quadruple = quadruplet[3]
-      cycle_count += 1
-      if cycle_count > 100000:
-        print "Infinite or cycle is too big."
-        exit(0)
+      if len(current_loop_count) > 0:
+        current_loop_count[len(current_loop_count) - 1] += 1
+        if current_loop_count[len(current_loop_count) - 1] > 100000:
+          print "Cycle is infinite or too big."
+          exit(0)
 
     elif quadruplet[0] == 'GOTOF':
       result = alive_memory.get_value_from_real_address(4, quadruplet[1])
       jump_to = quadruplet[3]
       if result == False:
         current_quadruple = jump_to
-        cycle_count = 0
       else:
         current_quadruple += 1
 
@@ -587,6 +587,14 @@ def solve():
           result = alive_memory.get_value_from_real_address(type1, op1)
 
       print result
+      current_quadruple += 1
+
+    elif quadruplet[0] == 'WHILE':
+      current_loop_count.append(0)
+      current_quadruple += 1
+
+    elif quadruplet[0] == 'ENDWHILE':
+      current_loop_count.pop()
       current_quadruple += 1
 
 
