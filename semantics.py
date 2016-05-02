@@ -1,14 +1,18 @@
-  # -*- coding: utf-8 -*-
+# Semántica del compilador
+# -*- coding: utf-8 -*-
 import pprint
 from collections import deque
 pp = pprint.PrettyPrinter()
 
 ###### Initialize structures ###################################################
 
+# Estructura de memoria necesaria para memoria global
 global_dict = {'global_memory_needed' : None }
 
+# Diccionario de funciones
 funct_dict = {}
 
+# Traducción de tipos a enteros.
 types = {
   'int' : 1,
   'float' : 2,
@@ -18,6 +22,7 @@ types = {
   'error': -1
 }
 
+# Traducción de enteros a tipos
 types_translations = {
   1 : 'int',
   2 : 'float',
@@ -27,6 +32,7 @@ types_translations = {
   -1 : 'error'
 }
 
+# Diccionario de variables
 var_dict = {
     'global' : {
     },
@@ -40,6 +46,7 @@ var_dict = {
     }
 }
 
+# Diccionario de opciones de variables
 var_options = {
   'id' : None,
   'scope' : 'function',
@@ -48,6 +55,7 @@ var_options = {
   'size' : None
 }
 
+# Diccionario de opciones de funciones
 funct_options = {
   'id' : None,
   'start': None,
@@ -57,8 +65,10 @@ funct_options = {
   'memory_needed' : {}
 }
 
+# Stack de funciones
 current_function_check = []
 
+# Valores de la función actual
 current_function = {
   'id' : None,
   'type' : None,
@@ -67,16 +77,20 @@ current_function = {
 
 current_list = []
 
+#Cuádruplos
 quadruplets = deque([])
 
+# Stacks necesarios para generación de cuádruplos
 operand_stack = []
 operator_stack = []
 types_stack = []
 jumps_stack = []
 times_temp_stack = []
 
+# String con el orden de parámetros
 function_params_order = ''
 
+#Memoria virtual
 # Memory segment int float  bool  string
 main_segment = [0, 2500, 5000, 7500]
 function_segment = [10000, 12500, 15000, 17500]
@@ -85,6 +99,10 @@ const_segment = [30000, 32500, 35000, 37500]
 global_segment = [40000, 42500, 45000, 47500]
 fun_temp_segment = [50000, 52500, 55000, 57500]
 
+# Esta función maneja los contadores de la memoria virtual de la sección main. 
+# Cuando se asigna una variable, se suma a su tipo correspondiente uno.
+# También maneja los overflows de un lenguaje, es decir, cuando se acaba la memoria
+# disponible para alguan variable del main truena
 def add_main_memory(var_type):
     if var_type == 'int':
       if main_segment[0] > 2499:
@@ -111,6 +129,10 @@ def add_main_memory(var_type):
       else:
         main_segment[3] += 1
 
+# Esta función maneja los contadores de la memoria virtual de la sección función. 
+# Cuando se asigna una variable, se suma a su tipo correspondiente uno.
+# También maneja los overflows de un lenguaje, es decir, cuando se acaba la memoria
+# disponible para alguan variable de la función truena
 def add_function_memory(var_type):
   if var_type == 'int':
     if function_segment[0] > 12499:
@@ -137,6 +159,10 @@ def add_function_memory(var_type):
     else:
       function_segment[3] += 1
 
+# Esta función maneja los contadores de la memoria virtual de la sección temporales de main. 
+# Cuando se asigna una variable, se suma a su tipo correspondiente uno.
+# También maneja los overflows de un lenguaje, es decir, cuando se acaba la memoria
+# disponible para alguan variable de temporales de mainruena
 def add_temp_memory(var_type):
   if var_type == 1:
     if temp_segment[0] > 22499:
@@ -163,6 +189,10 @@ def add_temp_memory(var_type):
     else:
       temp_segment[3] += 1
 
+# Esta función maneja los contadores de la memoria virtual de la sección temporales de función. 
+# Cuando se asigna una variable, se suma a su tipo correspondiente uno.
+# También maneja los overflows de un lenguaje, es decir, cuando se acaba la memoria
+# disponible para alguan variable de las temporales de función truena
 def add_fun_temp_memory(var_type):
   if var_type == 1:
     if fun_temp_segment[0] > 52499:
@@ -189,6 +219,10 @@ def add_fun_temp_memory(var_type):
     else:
       fun_temp_segment[3] += 1
 
+# Esta función maneja los contadores de la memoria virtual de constantes. 
+# Cuando se asigna una variable, se suma a su tipo correspondiente uno.
+# También maneja los overflows de un lenguaje, es decir, cuando se acaba la memoria
+# disponible para alguan variable de las constantes truena
 def add_constant_memory(var_type):
   if var_type == 'int':
     if const_segment[0] > 32499:
@@ -215,6 +249,10 @@ def add_constant_memory(var_type):
     else:
       const_segment[3] += 1
 
+# Esta función maneja los contadores de la memoria virtual de la sección global. 
+# Cuando se asigna una variable, se suma a su tipo correspondiente uno.
+# También maneja los overflows de un lenguaje, es decir, cuando se acaba la memoria
+# disponible para alguan variable del global truena
 def add_global_memory(var_type):
   if var_type == 'int':
     if global_segment[0] > 42499:
@@ -241,6 +279,8 @@ def add_global_memory(var_type):
     else:
       global_segment[3] += 1
 
+# Esta función resetea la memoria virtual de las funciones cada que esta finalice
+# para que otras funciones puedan tomar las direcciones.
 def release_fun_temp_memory():
   fun_temp_segment[0] = 50000
   fun_temp_segment[1] = 52500
@@ -252,19 +292,24 @@ def release_fun_temp_memory():
   function_segment[3] = 17500
 
 ########################Quadruple Generation####################################
+
+# Genera el cuádruplo de goto al main
 def generate_main_goto():
   global quadruplets
   quadruple = ["GOTO", "", "", ""]
   quadruplets.append(quadruple)
 
+# Prende bandera de que el main se prendió
 def start_main():
   var_options['scope'] = 'main'
   funct_options['start'] = get_current_quadruple()
 
+# Rellena el salto del cuádruplo goto del main.
 def fill_main_goto():
   global quadruplets
   quadruplets[0][3] = len(quadruplets)
 
+# Genera el cuádruplo de de operaciones
 def generate_operations_quadruples(scope, memory_pointer = None):
   type2 = types_stack.pop()
   type1 = types_stack.pop()
@@ -290,6 +335,7 @@ def generate_operations_quadruples(scope, memory_pointer = None):
     quadruplets.append(quadruple)
     # print quadruple
 
+# Genera el cuádruplo de asignación
 def generate_equals_quadruples():
   type2 = types_stack.pop()
   type1 = types_stack.pop()
@@ -305,6 +351,7 @@ def generate_equals_quadruples():
     quadruplets.append(quadruple)
     # print quadruple
 
+# Genera el cuádruplo de condición del if
 def generate_condition_if_quadruples():
   global quadruplets
   type1 = types_stack.pop()
@@ -317,6 +364,7 @@ def generate_condition_if_quadruples():
     jumps_stack.append(len(quadruplets) - 1)
     # print quadruple
 
+# Genera el cuádruplo de de condición del else
 def generate_condition_else_quadruples():
   global quadruplets
   quadruple = ["GOTO", "", "", ""]
@@ -326,17 +374,20 @@ def generate_condition_else_quadruples():
   jumps_stack.append(len(quadruplets) - 1)
   # print quadruple
 
+# Genera el cuádruplo de terminación del if
 def generate_condition_end_quadruples():
   global quadruplets
   jump = jumps_stack.pop()
   quadruplets[jump][3] = len(quadruplets)
 
+# Genera el cuádruplo de inicio del while
 def generate_while_start_quadruples():
   global quadruplets
   quadruple = ["WHILE", "", "", ""]
   quadruplets.append(quadruple)
   jumps_stack.append(len(quadruplets))
 
+# Genera el cuádruplo de condición del while
 def generate_while_condition_quadruples():
   global quadruplets
   type1 = types_stack.pop()
@@ -349,6 +400,7 @@ def generate_while_condition_quadruples():
     jumps_stack.append(len(quadruplets) - 1)
     # print quadruple 
 
+# Genera el cuádruplo de finalización del while
 def generate_while_end_quadruples():
   global quadruplets
   jump_false = jumps_stack.pop()
@@ -358,6 +410,7 @@ def generate_while_end_quadruples():
   quadruple = ["ENDWHILE", "", "", ""]
   quadruplets.append(quadruple)
 
+# Genera el cuádruplo de inicio del ciclo times
 def generate_times_start_quadruples():
   global quadruplets
   int_type = types_stack.pop()
@@ -386,6 +439,7 @@ def generate_times_start_quadruples():
   quadruplets.append(quadruple)
   # print quadruple
 
+# Genera el cuádruplo de finalización del times.
 def generate_times_end_quadruples():
   global quadruplets
   jump_return = jumps_stack.pop()
@@ -402,6 +456,7 @@ def generate_times_end_quadruples():
   quadruplets.append(["GOTO", "", "", jump_return])
   quadruplets[jump_return + 1][3] = len(quadruplets)
 
+# Genera el cuádruplo de print
 def generate_print_quadruples():
   temp_type = types_stack.pop()
   print_operator = operator_stack.pop()
@@ -410,6 +465,7 @@ def generate_print_quadruples():
   quadruplets.append(quadruple)
   # print quadruple
 
+# Agrega al stack de operandos y operadores el id de la variable de lista
 def semantics_add_to_stack(id):
   if id in var_dict['function']:
     if var_dict['function'][id]['list']:
@@ -429,6 +485,7 @@ def semantics_add_to_stack(id):
     print id, " doesn't exists"
     exit(0)
 
+# Genera el cuádruplo para asignación de parametros de llamada con los de la función
 def generate_parameter_quadruple():
   global quadruplets
   type1 = types_stack.pop()
@@ -443,6 +500,7 @@ def generate_parameter_quadruple():
   quadruplets.append(quadruple)
   # print quadruple
 
+# Genera el cuádruplo de ERA, para hacer inicializar memorias
 def generate_era(function_id):
   global quadruplets
   quadruple = ["ERA", "", "", function_id]
@@ -458,6 +516,7 @@ def generate_era(function_id):
     types_stack.append(var_dict['global'][function_id]['type'])
     operand_stack.append(result)
 
+# Genera el cuádruplo de ir a subrutina
 def generate_gosub():
   global quadruplets
   function_check = current_function_check[len(current_function_check) - 1]
@@ -471,28 +530,33 @@ def generate_gosub():
     generate_equals_quadruples()
   current_function_check.pop()
 
+# Genera el cuádruplo de finalización de función
 def create_function_end_quadruple():
   global quadruplets
   quadruple = ["ENDFUNCTION", "", "", ""]
   quadruplets.append(quadruple)
   # print quadruple
 
+# Genera el cuádruplo de retorno de función
 def create_function_return_quadruple():
   global quadruplets
   quadruple = ["RETURN", "", "", ""]
   quadruplets.append(quadruple)
   # print quadruple
 
+# Regresa el cuádruplo actual
 def get_current_quadruple():
   global quadruplets
   return len(quadruplets)
 
+# Genera el cuádruplo de finalización de programa
 def generate_end_all_quadruple():
   global quadruplets
   quadruple = ["ENDALL"]
   quadruplets.append(quadruple)
   # print quadruple
 
+# Genera el cuádruplo de asignación a una lista
 def generate_list_assignation_quadruple():
   type2 = types_stack.pop()
   operand2 = operand_stack.pop()
@@ -506,6 +570,7 @@ def generate_list_assignation_quadruple():
   operator_stack.append('=')
   generate_equals_quadruples()
 
+# Genera el cuádruplo de verificación de índices de una lista
 def generate_ver_quadruple(var_id):
   global quadruplets
   if var_id in var_dict[var_options['scope']]:
@@ -530,6 +595,7 @@ def generate_ver_quadruple(var_id):
     exit(0)
 
 ################################################################################
+# Impresiones para debugging
 def print_var_dict():
   print "\nVAR DICT"
   pp.pprint(var_dict)
@@ -548,6 +614,7 @@ def print_global_dict():
   print "\GLOBAL DICT"
   pp.pprint(global_dict)
 
+# Cubo semántico
 def semantic_dict_constr():
   return { 
           types['int'] : { 
@@ -576,11 +643,13 @@ def semantic_dict_constr():
           }
          }
 
+# Construcción de cubo semántico
 def op_constr(plus, minus, mult, div, greater_than, greater_eq_than, less_than, less_eq_than, equals, and_o, or_o, equal, not_equal, mod):
   return { '+' : types[plus], '-' : types[minus], '*' : types[mult], '/' : types[div], '>' : types[greater_than], '>=' : types[greater_eq_than],
     '<' : types[less_than], '<=' : types[less_eq_than], '==' : types[equals], 'and' : types[and_o], 'or' : types[or_o], '=' : types[equal],
     '!=' : types[not_equal], '%' : types[mod]}
 
+# Construcción de cubo semántico
 def op_error():
   return { '+' : types['error'], '-' : types['error'], '*' : types['error'], '/' : types['error'], '>' : types['error'], '>=' : types['error'],
     '<' : types['error'], '<=' : types['error'], '==' : types['error'], 'and' : types['error'], 'or' : types['error'], '=' : types['error'],
@@ -588,6 +657,7 @@ def op_error():
 
 semantic_dict = semantic_dict_constr()
 
+# Agrega una variable al diccionario de variables
 def add_var_to_dict(var_id, var_type, var_list, var_size, scope):
   address = assign_address(scope, var_type)
 
@@ -600,6 +670,7 @@ def add_var_to_dict(var_id, var_type, var_list, var_size, scope):
   clean_var_options(scope)
   # print_var_dict()
 
+# Agrega una lista al diccionario de variables
 def add_list_to_dict(var_id, var_type, var_list, var_size, scope):
   list_options = current_list[len(current_list) - 1]
   address = list_options['start_address']
@@ -613,6 +684,7 @@ def add_list_to_dict(var_id, var_type, var_list, var_size, scope):
   current_list.pop()
   # print_var_dict()
 
+# Resetea las banderas de las variables
 def clean_var_options(scope):
   var_options = {
     'id' : None,
@@ -622,7 +694,8 @@ def clean_var_options(scope):
     'size' : None
   }
 
-
+# Esta función regresa la dirección de memoria virtual correspondiente que 
+# se le dará a una variable, dependiendo su scope y su tipo.
 def get_current_memory(scope, var_type):
   if scope == 'main':
     if var_type == 'int':
@@ -680,6 +753,8 @@ def get_current_memory(scope, var_type):
       address = global_segment[3]
   return address
 
+# Esta función asigna el valor a la variable con la dirección que fue obtenida
+# por la función anterior.
 def assign_address(scope, var_type):
   if scope == 'main':
     if var_type == 'int':
@@ -743,7 +818,7 @@ def assign_address(scope, var_type):
     add_global_memory(var_type)
   return address
 
-
+# Agregar constante a diccionario
 def add_constant_to_dict_aux(constant, type):
   address = assign_address('constants', type)
   var_dict['constants'][constant] = {
@@ -764,6 +839,7 @@ def add_constant_to_dict_aux(constant, type):
     'type' : types[type]
   }
 
+# Agrear función a diccionario de funciones
 def add_funct_to_dict(funct_id, funct_type, funct_params, funct_params_order, funct_start, funct_memory_needed):
   funct_dict[funct_id] = {
     'start' : funct_start,
@@ -773,6 +849,7 @@ def add_funct_to_dict(funct_id, funct_type, funct_params, funct_params_order, fu
     'memory_needed' : funct_memory_needed
   }
 
+# Agregar constante a diccionario
 def add_constant_to_dict(constant, type):
   if not(constant in var_dict['constants']):
     add_constant_to_dict_aux(constant, type)
@@ -782,15 +859,18 @@ def add_constant_to_dict(constant, type):
     operand_stack.append(var_dict['constants'][constant]['address'])
     types_stack.append(var_dict['constants'][constant]['type'])
 
+# Revisa si una variable ya fue declara en la función actual
 def var_exists(var_id, scope):
   if var_id in var_dict[scope]:
     return True
   else:
     return False
 
+# Elimina todas las variables de funciones del diccionario de variables
 def clear_var_dict():
   var_dict['function'].clear()
 
+# Resetea las banderas de las variables
 def reset_options():
   var_options = {
     'id' : None,
@@ -798,11 +878,13 @@ def reset_options():
     'type' : None,
   }
 
+# Regresa la memoria necesaria que necesitara el main y agrega el main al diccionario de funciones
 def add_main_to_dict():
   memory_needed = variable_counts(main_segment[0], main_segment[1] - 2500, main_segment[2] - 5000, main_segment[3] - 7500,
                                   temp_segment[0] - 20000, temp_segment[1] - 22500, temp_segment[2] - 25000, temp_segment[3] - 27500)
   add_funct_to_dict('main', 'void', {}, '', funct_options['start'], memory_needed)
 
+# Resetea las banderas del diccionario de funciones
 def clean_funct_options():
   funct_options = {
     'id' : None,
@@ -811,12 +893,14 @@ def clean_funct_options():
     'params_order' : ''
   }
 
+# Contador de variables para asignación de memoria real.
 def variable_counts(int_q, float_q, bool_q, string_q, temp_int_q, temp_float_q, temp_string_q, temp_bool_q):
   return { 'int' : int_q, 'float' : float_q, 'string' : string_q, 'bool' : bool_q, 
            'temp_int' : temp_int_q, 'temp_float' : temp_float_q, 'temp_string' : temp_string_q, 'temp_bool' : temp_bool_q,}
 
 ######################### FUNCTIONS METHODS ####################################
 
+# Verifica el tipo de función esperado de una función con el real.
 def check_function_return():
   return_type = types_stack.pop()
   if return_type != var_dict['global'][current_function['id']]['type']:
@@ -827,6 +911,7 @@ def check_function_return():
   current_function['return'] = True
   last_return(True)
 
+# Valida que exista un return cuándo la función no es vacía
 def validate_function_return():
   if not (current_function['return']):
     print('Function must have at least one return')
@@ -835,6 +920,7 @@ def validate_function_return():
     print("There is a case when the function doesn't end with a return")
     exit(0)
 
+# Revisa si la función existe cuando se llama
 def check_function_exists(function_name):
   if not(function_name in funct_dict):
     print('The function "' + function_name + '" is not a function')
@@ -842,52 +928,63 @@ def check_function_exists(function_name):
   else:
     current_function_check.append({'id' : function_name, 'params_order' : '', 'current_param' : 0})
 
+# Agrega el tipo de función a las opciones de la función
 def push_type_to_function_options():
   current_type = types_stack[len(types_stack) - 1]
   current_function_check[len(current_function_check) - 1]['params_order'] = current_function_check[len(current_function_check) - 1]['params_order'] + str(current_type)
 
+# Compara y verifica que los parametros de la llamada de un función correspondan con esta.
 def check_params_order():
   function_check = current_function_check[len(current_function_check) - 1]
   if function_check['params_order'] != funct_dict[function_check['id']]['params_order']:
     print('The params in ' + function_check['id'] + ' are wrong')
     exit(0)
 
+# Agrega la función global como variable al diccionario de variables para la asignación al retorno
 def add_function_to_global_variables(function_id, function_type):
   current_function['id'] = function_id
   current_function['type'] = function_type
   add_var_to_dict(function_id, function_type, False, None , 'global')
 
+# Agrega la variable de la función a los stacks
 def add_function_var_to_stack():
   types_stack.append(var_dict['global'][current_function['id']]['type'])
   operand_stack.append(var_dict['global'][current_function['id']]['address'])
   operator_stack.append('=')
 
+# Regresa la memoria necesaria para la memoria global
 def get_global_memory_needed():
   global_dict['global_memory_needed'] = variable_counts(global_segment[0] - 40000, global_segment[1] - 42500, 
                                                        global_segment[2] - 45000, global_segment[3] - 47500,
                                                        0, 0, 0, 0)
 
+# Regeresa la memoria necesaria para una función
 def get_memory_needed_for_function():
   return variable_counts(function_segment[0] - 10000, function_segment[1] - 12500, function_segment[2] - 15000, function_segment[3] - 17500,
                          fun_temp_segment[0] - 50000, fun_temp_segment[1] - 52500, fun_temp_segment[2] - 55000, fun_temp_segment[3] - 57500)
 
+# Actualiza la memoria necesaria para la memoria real de las funciones
 def update_funct_memory(function_id, function_memory_needed):
   funct_dict[function_id]['memory_needed'] = function_memory_needed
 
+# agrega el ultimo retorno de la función
 def last_return(value):
   current_function['last_return'] = value
 
 ############################# LISTS METHODS ####################################
 
+# Agrega a la lista de listas el id y su dirección de inicio
 def add_list_variable(var_id):
   current_list.append({'id' : var_id, 'start_address' : None })
 
+# Agrega el indice de la lista al stack.
 def add_list_index_to_stack():
   list_options = current_list[len(current_list) - 1]
   generate_ver_quadruple(list_options['id'])
   generate_list_index(list_options['id'])
   current_list.pop()
 
+# Genera el indice de la lista.
 def generate_list_index(var_id):
   operator_stack.append('+')
   if not(str(var_dict[var_options['scope']][var_id]['address']) in var_dict['constants']):
