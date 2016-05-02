@@ -333,7 +333,9 @@ def generate_condition_end_quadruples():
 
 def generate_while_start_quadruples():
   global quadruplets
-  jumps_stack.append(len(quadruplets) - 1)
+  quadruple = ["WHILE", "", "", ""]
+  quadruplets.append(quadruple)
+  jumps_stack.append(len(quadruplets))
 
 def generate_while_condition_quadruples():
   global quadruplets
@@ -351,8 +353,10 @@ def generate_while_end_quadruples():
   global quadruplets
   jump_false = jumps_stack.pop()
   jump_return = jumps_stack.pop()
-  quadruplets.append(["GOTO", "", "", jump_return + 1])
+  quadruplets.append(["GOTO", "", "", jump_return])
   quadruplets[jump_false][3] = len(quadruplets)
+  quadruple = ["ENDWHILE", "", "", ""]
+  quadruplets.append(quadruple)
 
 def generate_times_start_quadruples():
   global quadruplets
