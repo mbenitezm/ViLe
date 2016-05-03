@@ -10,7 +10,7 @@ def solve():
   current_quadruple = 0
   # Inicializar memoria global
   global_memory = Memory('global', global_dict['global_memory_needed'])
-  # Inicializar memoria del main
+  # Inicializar memoria del main y asignarla como viva
   alive_memory = Memory('main', funct_dict['main']['memory_needed'])
   waking_memory = None
   # Stack de memoria
@@ -34,14 +34,19 @@ def solve():
       # Se extrae la información de los cuádruplos y se consigue y asigna los valores
       # a la memoria real que le corresponde
       if is_global(op1):
+        # Conseguir el valor guardado en la memoria real de global para operando1
         operand1 = global_memory.get_value_from_real_address(type1, op1)
       else:
         if op1 < 0:
+          # Conseguir el valor guardado en la memoria real de la función. En este caso es un índice de una lista,
+          # por lo que se tiene que acceder primero a su dirección indirecta y luego a la directa.
           operand1 = alive_memory.get_value_from_real_address(type1, -op1)
           operand1 = alive_memory.get_value_from_real_address(type1, operand1)
         else:
+          # Conseguir el valor guardado en la memoria real de la función
           operand1 = alive_memory.get_value_from_real_address(type1, op1)
 
+      # Se repite lo mismo que antes pero con el operando 3
       if is_global(op2):
         operand2 = global_memory.get_value_from_real_address(type2, op2)
       else:
@@ -53,12 +58,14 @@ def solve():
 
       result = operand1 + operand2
 
+      # Asignar el resultado a la memoria real de la función
       if res < 0:
         real_res = alive_memory.get_value_from_real_address(type3, -res)
         alive_memory.assign_to_real_address(type3, real_res, result)
       else:
         alive_memory.assign_to_real_address(type3, res, result)
 
+      # Se pasa al siguiente cuádruplo
       current_quadruple += 1
     
     # Caso para resta
@@ -550,11 +557,15 @@ def solve():
 
     # Caso para ir a subrutina
     elif quadruplet[0] == 'GOSUB':
+      # Se agrega al jumo stack el cuádruplo al que se regresará cuando termine la función
       jumps_stack.append(current_quadruple + 1)
+      # Se tiene un límite de stack de recursividad
       if len(jumps_stack) > 1000:
         print "Stack too deep"
         exit(0)
+      # Se va a la dirección de inicio de la función
       jump_to = funct_dict[function_name]['start']
+      # La memoria que está viva actualmente de va a dormir, y entra la memoria de la función
       current_quadruple = jump_to
       memory_stack.append(alive_memory)
       alive_memory = waking_memory
@@ -572,8 +583,11 @@ def solve():
     # Caso para era
     elif quadruplet[0] == 'ERA':
       function_name = quadruplet[3]
+      # Se crea una nueva instancia de memoria con la memoria requerida y se asiga como
+      # Memoria que se va despertando
       memory_for_function = funct_dict[function_name]['memory_needed']
       waking_memory = Memory(function_name, memory_for_function)
+      # Se pasa al siguiente cuádruplo
       current_quadruple += 1
  
     # Caso para param

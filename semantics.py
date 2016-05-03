@@ -311,22 +311,22 @@ def fill_main_goto():
 
 # Genera el cuádruplo de de operaciones
 def generate_operations_quadruples(scope, memory_pointer = None):
-  type2 = types_stack.pop()
-  type1 = types_stack.pop()
-  operator1 = operator_stack.pop()
+  type2 = types_stack.pop() # Se saca el tipo 2 de del stack de tipos
+  type1 = types_stack.pop() # Se saca el tipo 1 del stack de tipos
+  operator1 = operator_stack.pop() # Se saca el operador del stack de operadores
   result_type = semantic_dict[type1][type2][operator1]
-  if result_type < 1:
+  if result_type < 1: # Se hace la verificación de la operación que se quiere realizar es valida
     print types_translations[type1], " and ", types_translations[type2], " are not a valid type combination for ", operator1 
     exit(0)
   else:
-    operand2 = operand_stack.pop()
-    operand1 = operand_stack.pop()
+    operand2 = operand_stack.pop() # Se saca el operando 2
+    operand1 = operand_stack.pop() # Se saca el operando 1
     if scope == 'main':
-      result = assign_address('temps', result_type)
+      result = assign_address('temps', result_type) # El resultado se asigna a memoria virtual de temporal si es mail
     else:
-      result = assign_address('function_temps', result_type)
-    quadruple = [operator1, operand1, type1, operand2, type2, result, result_type]
-    if memory_pointer != None:
+      result = assign_address('function_temps', result_type) # Si es una función se asigna a la memoria virtual de temporales de funciones
+    quadruple = [operator1, operand1, type1, operand2, type2, result, result_type] # Se genera el cuádruplo
+    if memory_pointer != None: # Se verifia si es un arreglo, si si lo es se mete la dirección indirecta a los operandos.
       operand_stack.append(-result)
       types_stack.append(memory_pointer)
     else:
@@ -354,11 +354,14 @@ def generate_equals_quadruples():
 # Genera el cuádruplo de condición del if
 def generate_condition_if_quadruples():
   global quadruplets
+  # Saca el tipo del stakc de tipo, si no es una booleana marca error
   type1 = types_stack.pop()
   if type1 != 4:
     print type1, " is not a valid operation in a condition."
   else:
+    # El resultado de esta condición esta en la pila de operandos
     result = operand_stack.pop()
+    # Se genera el cuádruplo GOTOF
     quadruple = ["GOTOF", result, type1, "", ""]
     quadruplets.append(quadruple)
     jumps_stack.append(len(quadruplets) - 1)
@@ -367,15 +370,20 @@ def generate_condition_if_quadruples():
 # Genera el cuádruplo de de condición del else
 def generate_condition_else_quadruples():
   global quadruplets
+  # Se genera el cuádruplo GOTO
   quadruple = ["GOTO", "", "", ""]
   quadruplets.append(quadruple)
+  # Se saca el salto de donde empezó el if de la pila de saltos
   jump = jumps_stack.pop()
+  # Se rellena el cuádruplo de gotof con el cuádruplo actual
   quadruplets[jump][3] = len(quadruplets)
+  # Se agrega el número de cuádruplo al stack de saltos
   jumps_stack.append(len(quadruplets) - 1)
   # print quadruple
 
 # Genera el cuádruplo de terminación del if
 def generate_condition_end_quadruples():
+  # Se rellena el cuádurplo de Goto con el cuádruplo actual
   global quadruplets
   jump = jumps_stack.pop()
   quadruplets[jump][3] = len(quadruplets)
